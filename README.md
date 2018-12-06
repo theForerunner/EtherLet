@@ -34,7 +34,7 @@ git rebase develop（如果这时候有冲突，只能联系写这部分代码�
 ```
 git push origin feature/X
 ```
-7. 去GitHub上发Pull Request请求:feature/X - > develop(**发完RequestQQ上提前告诉我一声**)
+7. 去GitHub上发Pull Request请求:feature/X - > develop(**发完Request QQ上提前告诉我一声**)
 
 
 ## 代码规范
