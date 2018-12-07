@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">WalletDemo</string>
+    <string name="host_url_emulator">http://10.0.2.2:8080</string>
+    <string name="host_url_real">http://192.168.137.1:8080</string>
+    <string name="get_theme_list_path">/theme/list</string>
+    <string name="add_theme_path">/theme/add</string>
+    <string name="info_incomplete">Incomplete Information!</string>
+    <string name="login_fail">login failed</string>
+    <string name="login_success">Login success,Enter Main Page</string>
+    <string name="no_empty">Cannot be empty!</string>
+    <string name="password_not_same">password is inconsistent!</string>
+    <string name="registration_success">Registration success</string>
+    <string name="registration_fail">Registration fail</string>
+</resources>
