@@ -1,19 +1,24 @@
 package com.example.l.EtherLet.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.model.Theme;
 import com.example.l.EtherLet.presenter.ThemePresenter;
+import com.github.clans.fab.FloatingActionMenu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +27,20 @@ public class ThemeListFragment extends Fragment implements ThemeViewInterface{
     private RecyclerView themeRecyclerView;
     private ThemeAdapter themeAdapter;
     private ThemePresenter themePresenter;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private FloatingActionMenu floatingActionsMenu;
+
+    public static ThemeListFragment newInstance() {
+        ThemeListFragment themeListFragment = new ThemeListFragment();
+        Bundle args = new Bundle();
+        themeListFragment.setArguments(args);
+        return themeListFragment;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.theme_recycler, container, false);
+        View view = inflater.inflate(R.layout.theme_list_fragment, container, false);
 
         themePresenter = new ThemePresenter(ThemeListFragment.this);
         themeRecyclerView = view.findViewById(R.id.theme_recycler);
@@ -34,12 +48,60 @@ public class ThemeListFragment extends Fragment implements ThemeViewInterface{
         themeAdapter = new ThemeAdapter(new ArrayList<Theme>());
         themeRecyclerView.setAdapter(themeAdapter);
         themePresenter.loadThemeList(this.getActivity());
+
+        swipeRefreshLayout = view.findViewById(R.id.theme_list_slide_refresh);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                themePresenter.loadThemeList(getActivity());
+            }
+        });
+
+        view.findViewById(R.id.btn_post).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        view.findViewById(R.id.btn_toTop).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                themeRecyclerView.smoothScrollToPosition(0);
+            }
+        });
+
+        view.findViewById(R.id.btn_refresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                swipeRefreshLayout.setRefreshing(true);
+                themePresenter.loadThemeList(getActivity());
+            }
+        });
+
+        floatingActionsMenu = view.findViewById(R.id.theme_list_floating_menu);
+        floatingActionsMenu.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+
+            }
+        });
         return view;
     }
+
+    @Override
+    public void showFailureMessage() {
+        swipeRefreshLayout.setRefreshing(false);
+        Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_LONG).show();
+    }
+
     @Override
     public void showThemeList(List<Theme> themeList) {
         themeAdapter = new ThemeAdapter(themeList);
         themeRecyclerView.setAdapter(themeAdapter);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     private class ThemeHolder extends RecyclerView.ViewHolder{

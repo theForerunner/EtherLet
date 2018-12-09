@@ -29,6 +29,6 @@ public class ThemePresenter implements ThemePresenterInterface, ThemeList.LoadDa
 
     @Override
     public void onFailure() {
-
+        themeViewInterface.showFailureMessage();
     }
 }

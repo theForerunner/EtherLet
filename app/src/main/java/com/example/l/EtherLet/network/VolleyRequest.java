@@ -29,6 +29,7 @@ public class VolleyRequest {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.e("VOLLEY", error.toString());
+                    volleyCallback.onFailure();
                 }
             });
 

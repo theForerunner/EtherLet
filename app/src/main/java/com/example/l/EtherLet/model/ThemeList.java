@@ -14,10 +14,15 @@ public class ThemeList implements ThemeListInterface {
 
     @Override
     public void getThemeListData(final LoadDataCallBack callBack, Context context) {
-        VolleyRequest.getJSONObject(context.getString(R.string.host_url_real) + context.getString(R.string.get_theme_list_path), null, context, new VolleyCallback() {
+        VolleyRequest.getJSONObject(context.getString(R.string.host_url_real_share) + context.getString(R.string.get_theme_list_path), null, context, new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 callBack.onSuccess(jsonObject);
+            }
+
+            @Override
+            public void onFailure() {
+                callBack.onFailure();
             }
         });
     }
@@ -28,6 +33,11 @@ public class ThemeList implements ThemeListInterface {
             @Override
             public void onSuccess(JSONObject jsonObject) {
                 callBack.onSuccess(jsonObject);
+            }
+
+            @Override
+            public void onFailure() {
+                callBack.onFailure();
             }
         });
     }

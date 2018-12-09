@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface ThemeViewInterface {
     void showThemeList(List<Theme> themeList);
+
+    void showFailureMessage();
 }

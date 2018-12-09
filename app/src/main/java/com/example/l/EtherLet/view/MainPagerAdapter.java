@@ -1,44 +1,37 @@
 package com.example.l.EtherLet.view;
 
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainPagerAdapter extends FragmentPagerAdapter {
-    private final String[] TITLES = {"Wallet", "Info", "Billboard"};
-    private ThemeListFragment themeListFragment = null;
+    private final List<Fragment> mFragments = new ArrayList<>();
+    private final List<String> mFragmentTitles = new ArrayList<>();
 
-    public MainPagerAdapter(FragmentManager fragmentManager) {
-        super(fragmentManager);
-        themeListFragment = new ThemeListFragment();
+    public MainPagerAdapter(FragmentManager fm) {
+        super(fm);
     }
 
-    @Nullable
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return TITLES[position];
-    }
-
-    @Override
-    public int getCount() {
-        return TITLES.length;
+    public void addFragment(Fragment fragment, String title) {
+        mFragments.add(fragment);
+        mFragmentTitles.add(title);
     }
 
     @Override
     public Fragment getItem(int position) {
-        Fragment fragment = null;
-        switch (position) {
-            case 0:
-                //fragment = CardFragment.newInstance(position);
-                //break;
-            case 1:
-                fragment = CardFragment.newInstance(position);
-                break;
-            case 2:
-                fragment = themeListFragment;
-                break;
-        }
-        return fragment;
+        return mFragments.get(position);
+    }
+
+    @Override
+    public int getCount() {
+        return mFragments.size();
+    }
+
+    @Override
+    public CharSequence getPageTitle(int position) {
+        return mFragmentTitles.get(position);
     }
 }

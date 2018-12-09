@@ -1,20 +1,30 @@
 package com.example.l.EtherLet;
 
-import android.graphics.drawable.ColorDrawable;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.TransitionDrawable;
+import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
-import android.util.TypedValue;
-import android.widget.Toast;
+import android.view.MenuItem;
+import android.view.View;
 
-import com.astuetz.PagerSlidingTabStrip;
+import com.example.l.EtherLet.view.CardFragment;
+import com.example.l.EtherLet.view.LoginActivity;
 import com.example.l.EtherLet.view.MainPagerAdapter;
+import com.example.l.EtherLet.view.ThemeListFragment;
+import com.mikepenz.materialdrawer.AccountHeader;
+import com.mikepenz.materialdrawer.AccountHeaderBuilder;
+import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import butterknife.BindView;
@@ -25,57 +35,89 @@ public class MainActivity extends AppCompatActivity {
     @Nullable
     @BindView(R.id.tool_bar)
     Toolbar toolbar;
-    @BindView(R.id.tab_strip)
-    PagerSlidingTabStrip tabStrip;
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbarLayout;
     @BindView(R.id.view_pager)
     ViewPager viewPager;
+    @BindView(R.id.tab_layout)
+    TabLayout tabLayout;
 
-    private MainPagerAdapter mainPagerAdapter;
     private Drawable oldBackground;
     private int currentColor;
-    private SystemBarTintManager systemBarTintManager;
+    private Drawer drawer;
+    AccountHeader headerResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        //setSupportActionBar(toolbar);
-        systemBarTintManager = new SystemBarTintManager(this);
-        systemBarTintManager.setStatusBarTintEnabled(true);
-        mainPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
-        viewPager.setAdapter(mainPagerAdapter);
-        tabStrip.setViewPager(viewPager);
 
-        final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources().getDisplayMetrics());
-        viewPager.setPageMargin(pageMargin);
-        viewPager.setCurrentItem(1);
-        //changeColor(ContextCompat.getColor(getBaseContext(), R.color.green));
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
 
-        tabStrip.setOnTabReselectedListener(new PagerSlidingTabStrip.OnTabReselectedListener() {
-            @Override
-            public void onTabReselected(int position) {
-                Toast.makeText(MainActivity.this, "Tab reselected:" + position, Toast.LENGTH_SHORT).show();
-            }
-        });
+        setUpDrawer();
+        setupViewPager();
+        tabLayout.setupWithViewPager(viewPager);
     }
 
-    private void changeColor(int newColor) {
-        tabStrip.setBackgroundColor(newColor);
-        systemBarTintManager.setTintColor(newColor);
+    private void setupViewPager() {
+        MainPagerAdapter mainPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
+        mainPagerAdapter.addFragment(CardFragment.newInstance(0), "Wallet");
+        mainPagerAdapter.addFragment(CardFragment.newInstance(0), "Info");
+        mainPagerAdapter.addFragment(ThemeListFragment.newInstance(), "Forum");
+        viewPager.setAdapter(mainPagerAdapter);
+    }
 
-        Drawable colorDrawable = new ColorDrawable(newColor);
-        Drawable bottomDrawable = new ColorDrawable(ContextCompat.getColor(getBaseContext(), android.R.color.transparent));
-        LayerDrawable layerDrawable = new LayerDrawable(new Drawable[]{colorDrawable, bottomDrawable});
-        if (oldBackground == null) {
-            getSupportActionBar().setBackgroundDrawable(layerDrawable);
-        } else {
-            TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{oldBackground, layerDrawable});
-            getSupportActionBar().setBackgroundDrawable(transitionDrawable);
-            transitionDrawable.startTransition(200);
+    private void setUpDrawer() {
+        headerResult = new AccountHeaderBuilder()
+                .withActivity(this)
+                .withHeaderBackground(R.drawable.header)
+                .addProfiles(
+                        new ProfileDrawerItem().withName("Mike Penz").withEmail("mikepenz@gmail.com").withIcon(getResources().getDrawable(R.drawable.profile))
+                )
+                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
+                    @Override
+                    public boolean onProfileChanged(View view, IProfile profile, boolean current) {
+                        return false;
+                    }
+                }).withOnAccountHeaderProfileImageListener(new AccountHeader.OnAccountHeaderProfileImageListener() {
+                    @Override
+                    public boolean onProfileImageClick(View view, IProfile profile, boolean current) {
+                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onProfileImageLongClick(View view, IProfile profile, boolean current) {
+                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                        startActivity(intent);
+                        return true;
+                    }
+                })
+                .build();
+
+        drawer = new DrawerBuilder().withAccountHeader(headerResult).withActivity(this).withTranslucentStatusBar(false).withActionBarDrawerToggle(false).build();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                drawer.openDrawer();
+                break;
         }
+        return true;
+    }
 
-        oldBackground = layerDrawable;
-        currentColor = newColor;
+    @Override
+    public void onBackPressed() {
+        if (drawer.isDrawerOpen()) {
+            drawer.closeDrawer();
+        } else {
+            super.onBackPressed();
+        }
     }
 }
