@@ -22,46 +22,7 @@
 
         </android.support.v4.widget.SwipeRefreshLayout>
 
-        <com.github.clans.fab.FloatingActionMenu
-            android:id="@+id/theme_list_floating_menu"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="40dp"
-            app:menu_colorNormal="@color/colorPrimary"
-            app:menu_colorPressed="@color/colorPrimaryDark">
 
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/btn_post"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_edit"
-                app:fab_size="mini"
-                app:fab_label="Post"
-                app:fab_colorNormal="@color/colorPrimary"
-                app:fab_colorPressed="@color/colorPrimaryDark"/>
-
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/btn_toTop"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:fab_size="mini"
-                app:fab_label="To Top"
-                app:fab_colorNormal="@color/colorPrimary"
-                app:fab_colorPressed="@color/colorPrimaryDark"/>
-
-            <com.github.clans.fab.FloatingActionButton
-                android:id="@+id/btn_refresh"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:fab_size="mini"
-                app:fab_label="Refresh"
-                app:fab_colorNormal="@color/colorPrimary"
-                app:fab_colorPressed="@color/colorPrimaryDark"/>
-
-        </com.github.clans.fab.FloatingActionMenu>
 
     </RelativeLayout>
 

@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +47,17 @@ public class ThemeListFragment extends Fragment implements ThemeViewInterface{
         themeAdapter = new ThemeAdapter(new ArrayList<Theme>());
         themeRecyclerView.setAdapter(themeAdapter);
         themePresenter.loadThemeList(this.getActivity());
-
+        themeRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0) {
+                    floatingActionsMenu.hideMenu(true);
+                } else if (dy < 0) {
+                    floatingActionsMenu.showMenu(true);
+                }
+            }
+        });
         swipeRefreshLayout = view.findViewById(R.id.theme_list_slide_refresh);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -58,36 +67,10 @@ public class ThemeListFragment extends Fragment implements ThemeViewInterface{
             }
         });
 
-        view.findViewById(R.id.btn_post).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
-            }
-        });
+        floatingActionsMenu = getActivity().findViewById(R.id.theme_list_floating_menu);
 
-        view.findViewById(R.id.btn_toTop).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                themeRecyclerView.smoothScrollToPosition(0);
-            }
-        });
+        setUpFloatingActionBtn();
 
-        view.findViewById(R.id.btn_refresh).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                swipeRefreshLayout.setRefreshing(true);
-                themePresenter.loadThemeList(getActivity());
-            }
-        });
-
-        floatingActionsMenu = view.findViewById(R.id.theme_list_floating_menu);
-        floatingActionsMenu.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-
-            }
-        });
         return view;
     }
 
@@ -152,5 +135,33 @@ public class ThemeListFragment extends Fragment implements ThemeViewInterface{
         public int getItemCount() {
             return themeList.size();
         }
+    }
+
+    public void setUpFloatingActionBtn() {
+        getActivity().findViewById(R.id.btn_post).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                floatingActionsMenu.close(false);
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        getActivity().findViewById(R.id.btn_toTop).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                floatingActionsMenu.close(true);
+                themeRecyclerView.smoothScrollToPosition(0);
+            }
+        });
+
+        getActivity().findViewById(R.id.btn_refresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                floatingActionsMenu.close(true);
+                swipeRefreshLayout.setRefreshing(true);
+                themePresenter.loadThemeList(getActivity());
+            }
+        });
     }
 }
