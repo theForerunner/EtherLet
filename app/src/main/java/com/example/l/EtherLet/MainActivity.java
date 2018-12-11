@@ -6,22 +6,32 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.l.EtherLet.view.CardFragment;
 import com.example.l.EtherLet.view.LoginActivity;
 import com.example.l.EtherLet.view.MainPagerAdapter;
 import com.example.l.EtherLet.view.ThemeListFragment;
 import com.github.clans.fab.FloatingActionMenu;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
+import com.mikepenz.iconics.IconicsDrawable;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
+import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import butterknife.BindView;
@@ -44,7 +54,9 @@ public class MainActivity extends AppCompatActivity {
     private Drawable oldBackground;
     private int currentColor;
     private Drawer drawer;
-    AccountHeader headerResult;
+    AccountHeader accountHeader;
+
+    private long exitFlag = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         floatingActionMenu.setVisibility(View.GONE);
 
+        setUpAccountHeader();
         setUpDrawer();
         setUpViewPager();
         tabLayout.setupWithViewPager(viewPager);
@@ -95,12 +108,17 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(mainPagerAdapter);
     }
 
-    private void setUpDrawer() {
-        headerResult = new AccountHeaderBuilder()
+    private void setUpAccountHeader() {
+        accountHeader = new AccountHeaderBuilder()
                 .withActivity(this)
+                .withAccountHeader(R.layout.account_header_layout)
+                .withTranslucentStatusBar(false)
                 .withHeaderBackground(R.drawable.header)
+                .withOnlyMainProfileImageVisible(true)
                 .addProfiles(
-                        new ProfileDrawerItem().withName("Mike Penz").withEmail("mikepenz@gmail.com").withIcon(getResources().getDrawable(R.drawable.profile))
+                        new ProfileDrawerItem().withName("Mike Penz").withEmail("mikepenz@gmail.com").withIcon(ContextCompat.getDrawable(this, R.drawable.profile)),
+                        new ProfileSettingDrawerItem().withName("Add Account").withIcon(GoogleMaterial.Icon.gmd_person_add).withIdentifier(100000),
+                        new ProfileSettingDrawerItem().withName("Manage Account").withIcon(GoogleMaterial.Icon.gmd_settings).withIdentifier(100001)
                 )
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
@@ -124,7 +142,35 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .build();
 
-        drawer = new DrawerBuilder().withAccountHeader(headerResult).withActivity(this).withTranslucentStatusBar(false).withActionBarDrawerToggle(false).build();
+    }
+
+    private void setUpDrawer() {
+        drawer = new DrawerBuilder()
+                .withAccountHeader(accountHeader)
+                .withActivity(this)
+                .withTranslucentStatusBar(false)
+                .withActionBarDrawerToggle(false)
+                .addDrawerItems(
+                        new PrimaryDrawerItem().withIcon(GoogleMaterial.Icon.gmd_group).withName(R.string.drawer_item_friends),
+                        new DividerDrawerItem(),
+                        new SecondaryDrawerItem().withIcon(GoogleMaterial.Icon.gmd_account_balance_wallet).withName(R.string.drawer_item_wallet)
+                )
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        if (drawerItem != null) {
+                            Intent intent = null;
+                            if (drawerItem.getIdentifier() == 100000) {
+                                intent = new Intent(MainActivity.this, LoginActivity.class);
+                            }
+                            if (intent != null) {
+                                startActivity(intent);
+                            }
+                        }
+                        return false;
+                    }
+                })
+                .build();
     }
 
     @Override
@@ -139,8 +185,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (drawer.isDrawerOpen()) {
+        if (drawer != null && drawer.isDrawerOpen()) {
             drawer.closeDrawer();
+        } else if (System.currentTimeMillis() - exitFlag > 2000) {
+            Toast.makeText(this, "Press button Again to Exit", Toast.LENGTH_SHORT).show();
+            exitFlag = System.currentTimeMillis();
         } else {
             super.onBackPressed();
         }

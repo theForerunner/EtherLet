@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,7 +19,9 @@ import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.model.Theme;
 import com.example.l.EtherLet.presenter.ThemePresenter;
 import com.github.clans.fab.FloatingActionMenu;
+import com.sackcentury.shinebuttonlib.ShineButton;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +47,7 @@ public class ThemeListFragment extends Fragment implements ThemeViewInterface{
         themePresenter = new ThemePresenter(ThemeListFragment.this);
         themeRecyclerView = view.findViewById(R.id.theme_recycler);
         themeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        themeAdapter = new ThemeAdapter(new ArrayList<Theme>());
+        themeAdapter = new ThemeAdapter(initDefaultThemeList());
         themeRecyclerView.setAdapter(themeAdapter);
         themePresenter.loadThemeList(this.getActivity());
         themeRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -90,23 +93,53 @@ public class ThemeListFragment extends Fragment implements ThemeViewInterface{
     private class ThemeHolder extends RecyclerView.ViewHolder{
         private Theme mTheme;
 
+        private CardView postCardView;
         private TextView themeSubtitleTextView;
         private TextView themeCreatorTextView;
         private TextView themeCreateDateTextView;
+        private ShineButton btnComment;
+        private ShineButton btnShare;
 
         private ThemeHolder(View itemView) {
             super(itemView);
-            themeSubtitleTextView = itemView.findViewById(R.id.theme_subtitle);
-            themeCreatorTextView = itemView.findViewById(R.id.theme_creator);
-            themeCreateDateTextView = itemView.findViewById(R.id.theme_create_date);
+            postCardView = itemView.findViewById(R.id.post_cardView);
+            themeSubtitleTextView = itemView.findViewById(R.id.post_title);
+            themeCreatorTextView = itemView.findViewById(R.id.post_creator_and_time);
+            themeCreateDateTextView = itemView.findViewById(R.id.post_content);
+            btnComment = itemView.findViewById(R.id.btn_comment);
+            btnShare = itemView.findViewById(R.id.btn_share);
         }
 
         private void bindTheme(Theme theme) {
             mTheme = theme;
             themeSubtitleTextView.setText(mTheme.getSubtitle());
-            themeCreatorTextView.setText(mTheme.getCreatorName());
-            themeCreateDateTextView.setText(mTheme.getCreateDate().toString());
+            themeCreatorTextView.setText("Posted by " + mTheme.getCreatorName() + " at " + mTheme.getCreateDate());
+            themeCreateDateTextView.setText(R.string.display_test_string_post_content);
+            btnComment.setShapeResource(R.drawable.baseline_comment_black_18dp);
+            btnShare.setShapeResource(R.drawable.baseline_share_black_18dp);
+            btnComment.init(getActivity());
+            btnShare.init(getActivity());
 
+            postCardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = null;
+                }
+            });
+
+            btnComment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+
+            btnShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
         }
     }
 
@@ -137,7 +170,7 @@ public class ThemeListFragment extends Fragment implements ThemeViewInterface{
         }
     }
 
-    public void setUpFloatingActionBtn() {
+    private void setUpFloatingActionBtn() {
         getActivity().findViewById(R.id.btn_post).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,5 +196,14 @@ public class ThemeListFragment extends Fragment implements ThemeViewInterface{
                 themePresenter.loadThemeList(getActivity());
             }
         });
+    }
+
+    private List<Theme> initDefaultThemeList() {
+        List<Theme> defaultThemeList = new ArrayList<>();
+        Theme theme = new Theme(1, getActivity().getString(R.string.display_test_string_post_title), 1, "Creator", new Timestamp(System.currentTimeMillis()), new Timestamp(System.currentTimeMillis()));
+        for (int i = 0; i < 20; i++) {
+            defaultThemeList.add(theme);
+        }
+        return defaultThemeList;
     }
 }
