@@ -1,11 +1,11 @@
 package com.example.l.EtherLet.view;
 
-import com.example.l.EtherLet.model.Theme;
+import com.example.l.EtherLet.model.Post;
 
 import java.util.List;
 
-public interface ThemeViewInterface {
-    void showThemeList(List<Theme> themeList);
+public interface PostListViewInterface {
+    void showPostList(List<Post> postList);
 
     void showFailureMessage();
 }

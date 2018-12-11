@@ -4,8 +4,8 @@
     <string name="host_url_emulator">http://10.0.2.2:8080</string>
     <string name="host_url_real">http://192.168.1.100:8080</string>
     <string name="host_url_real_share">http://192.168.137.1:8080</string>
-    <string name="get_theme_list_path">/theme/list</string>
-    <string name="add_theme_path">/theme/add</string>
+    <string name="get_theme_list_path">/post/list</string>
+    <string name="add_theme_path">/post/add</string>
 
     <string name="info_incomplete">Incomplete Information!</string>
     <string name="login_fail">login failed</string>

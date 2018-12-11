@@ -2,33 +2,33 @@ package com.example.l.EtherLet.presenter;
 
 import android.content.Context;
 
-import com.example.l.EtherLet.model.ThemeList;
+import com.example.l.EtherLet.model.PostList;
 import com.example.l.EtherLet.network.JSONParser;
-import com.example.l.EtherLet.view.ThemeViewInterface;
+import com.example.l.EtherLet.view.PostListViewInterface;
 
 import org.json.JSONObject;
 
-public class ThemePresenter implements ThemePresenterInterface, ThemeList.LoadDataCallBack {
-    private final ThemeViewInterface themeViewInterface;
-    private final ThemeList themeList;
+public class PostPresenter implements PostPresenterInterface, PostList.LoadDataCallBack {
+    private final PostListViewInterface postListViewInterface;
+    private final PostList postList;
 
-    public ThemePresenter(ThemeViewInterface themeViewInterface) {
-        this.themeViewInterface = themeViewInterface;
-        this.themeList = new ThemeList();
+    public PostPresenter(PostListViewInterface postListViewInterface) {
+        this.postListViewInterface = postListViewInterface;
+        this.postList = new PostList();
     }
 
     @Override
-    public void loadThemeList(Context context) {
-        themeList.getThemeListData(this, context);
+    public void loadPostList(Context context) {
+        postList.getPostListData(this, context);
     }
 
     @Override
     public void onSuccess(JSONObject jsonObject) {
-        themeViewInterface.showThemeList(JSONParser.parseJsonToThemeList(jsonObject));
+        postListViewInterface.showPostList(JSONParser.parseJsonToPostList(jsonObject));
     }
 
     @Override
     public void onFailure() {
-        themeViewInterface.showFailureMessage();
+        postListViewInterface.showFailureMessage();
     }
 }

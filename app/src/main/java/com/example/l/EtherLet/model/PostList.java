@@ -10,10 +10,10 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
-public class ThemeList implements ThemeListInterface {
+public class PostList implements PostListInterface {
 
     @Override
-    public void getThemeListData(final LoadDataCallBack callBack, Context context) {
+    public void getPostListData(final LoadDataCallBack callBack, Context context) {
         VolleyRequest.getJSONObject(context.getString(R.string.host_url_real_share) + context.getString(R.string.get_theme_list_path), null, context, new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
@@ -28,7 +28,7 @@ public class ThemeList implements ThemeListInterface {
     }
 
     @Override
-    public void addNewTheme(final LoadDataCallBack callBack, Context context, Map<String, Object> map) {
+    public void addNewPost(final LoadDataCallBack callBack, Context context, Map<String, Object> map) {
         VolleyRequest.getJSONObject(context.getString(R.string.host_url_real) + context.getString(R.string.add_theme_path), map, context, new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject) {
