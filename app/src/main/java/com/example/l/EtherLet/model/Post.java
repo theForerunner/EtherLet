@@ -2,7 +2,7 @@ package com.example.l.EtherLet.model;
 
 import java.sql.Timestamp;
 
-public class Theme {
+public class Post {
     private int id;
     private String subtitle;
     private int creatorId;
@@ -10,7 +10,7 @@ public class Theme {
     private Timestamp createDate;
     private Timestamp replyDate;
 
-    public Theme(int id, String subtitle, int creatorId, String creatorName, Timestamp createDate, Timestamp replyDate) {
+    public Post(int id, String subtitle, int creatorId, String creatorName, Timestamp createDate, Timestamp replyDate) {
         this.id = id;
         this.subtitle = subtitle;
         this.creatorId = creatorId;
@@ -19,7 +19,7 @@ public class Theme {
         this.replyDate = replyDate;
     }
 
-    public Theme(String subtitle, int creatorId, String creatorName, Timestamp createDate, Timestamp replyDate) {
+    public Post(String subtitle, int creatorId, String creatorName, Timestamp createDate, Timestamp replyDate) {
         this.subtitle = subtitle;
         this.creatorId = creatorId;
         this.creatorName = creatorName;

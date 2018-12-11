@@ -2,7 +2,7 @@ package com.example.l.EtherLet.network;
 
 import android.util.Log;
 
-import com.example.l.EtherLet.model.Theme;
+import com.example.l.EtherLet.model.Post;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -12,22 +12,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JSONParser {
-    public static List<Theme> parseJsonToThemeList(JSONObject jsonObject) {
-        List<Theme> themeList = new ArrayList<>();
+    public static List<Post> parseJsonToPostList(JSONObject jsonObject) {
+        List<Post> postList = new ArrayList<>();
         try {
             JSONObject data = jsonObject.getJSONObject("data");
-            JSONArray themeArray = data.getJSONArray("list");
-            for (int i = 0; i < themeArray.length(); i++) {
-                JSONObject themeObject = themeArray.getJSONObject(i);
-                Log.i("DT", themeObject.toString());
-                Theme theme = new Theme(themeObject.getInt("id"), themeObject.getString("subtitle"), themeObject.getInt("creatorId"), themeObject.getString("creatorName"), new Timestamp(themeObject.getLong("createDate")), new Timestamp(themeObject.getLong("replyDate")));
-                themeList.add(theme);
+            JSONArray postArray = data.getJSONArray("list");
+            for (int i = 0; i < postArray.length(); i++) {
+                JSONObject postObject = postArray.getJSONObject(i);
+                Log.i("DT", postObject.toString());
+                Post post = new Post(postObject.getInt("id"), postObject.getString("subtitle"), postObject.getInt("creatorId"), postObject.getString("creatorName"), new Timestamp(postObject.getLong("createDate")), new Timestamp(postObject.getLong("replyDate")));
+                postList.add(post);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.i("DT", "Length of themeList: " + themeList.size());
-        return themeList;
+        Log.i("DT", "Length of postList: " + postList.size());
+        return postList;
 
     }
 }
