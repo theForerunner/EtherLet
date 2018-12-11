@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:fitsSystemWindows="true">
 
@@ -22,10 +21,10 @@
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="48dp"
-            app:layout_scrollFlags="scroll|enterAlways">
+            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed">
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/tool_bar"
+                android:id="@+id/main_page_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/colorPrimary"
@@ -102,6 +101,7 @@
             android:id="@+id/btn_toTop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:src="@drawable/baseline_arrow_upward_white_24"
             app:fab_size="mini"
             app:fab_label="To Top"
             app:fab_colorNormal="@color/colorPrimary"
@@ -111,6 +111,7 @@
             android:id="@+id/btn_refresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:src="@drawable/baseline_refresh_white_24"
             app:fab_size="mini"
             app:fab_label="Refresh"
             app:fab_colorNormal="@color/colorPrimary"

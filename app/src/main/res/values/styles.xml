@@ -8,9 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/green</item>
-        <item name="colorPrimaryDark">@color/green</item>
+    <style name="AppTheme.NoActionBar" parent="@style/Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="actionBarSize">40dp</item>
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>

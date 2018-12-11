@@ -1,7 +1,6 @@
 package com.example.l.EtherLet;
 
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -24,7 +23,6 @@ import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
@@ -38,7 +36,7 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity {
 
     @Nullable
-    @BindView(R.id.tool_bar)
+    @BindView(R.id.main_page_toolbar)
     Toolbar toolbar;
     @BindView(R.id.collapsing_toolbar)
     CollapsingToolbarLayout collapsingToolbarLayout;
@@ -49,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.post_list_floating_menu)
     FloatingActionMenu floatingActionMenu;
 
-    private Drawable oldBackground;
-    private int currentColor;
     private Drawer drawer;
     AccountHeader accountHeader;
 
@@ -64,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_menu_white_24);
 
         floatingActionMenu.setVisibility(View.GONE);
 
@@ -111,10 +107,10 @@ public class MainActivity extends AppCompatActivity {
                 .withActivity(this)
                 .withAccountHeader(R.layout.account_header_layout)
                 .withTranslucentStatusBar(false)
-                .withHeaderBackground(R.drawable.header)
                 .withOnlyMainProfileImageVisible(true)
+                .withTextColorRes(R.color.black_semi_transparent)
                 .addProfiles(
-                        new ProfileDrawerItem().withName("Mike Penz").withEmail("mikepenz@gmail.com").withIcon(ContextCompat.getDrawable(this, R.drawable.profile)),
+                        new ProfileDrawerItem().withName("Mike Penz").withEmail("mikepenz@gmail.com").withIcon(ContextCompat.getDrawable(this, R.drawable.my_profile)),
                         new ProfileSettingDrawerItem().withName("Add Account").withIcon(GoogleMaterial.Icon.gmd_person_add).withIdentifier(100000),
                         new ProfileSettingDrawerItem().withName("Manage Account").withIcon(GoogleMaterial.Icon.gmd_settings).withIdentifier(100001)
                 )
@@ -146,11 +142,11 @@ public class MainActivity extends AppCompatActivity {
         drawer = new DrawerBuilder()
                 .withAccountHeader(accountHeader)
                 .withActivity(this)
+                .withDrawerWidthDp(250)
                 .withTranslucentStatusBar(false)
                 .withActionBarDrawerToggle(false)
                 .addDrawerItems(
                         new PrimaryDrawerItem().withIcon(GoogleMaterial.Icon.gmd_group).withName(R.string.drawer_item_friends),
-                        new DividerDrawerItem(),
                         new SecondaryDrawerItem().withIcon(GoogleMaterial.Icon.gmd_account_balance_wallet).withName(R.string.drawer_item_wallet)
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {

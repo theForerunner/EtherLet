@@ -3,36 +3,31 @@ package com.example.l.EtherLet.model;
 import java.sql.Timestamp;
 
 public class Post {
-    private int id;
+    private int postId;
     private String subtitle;
     private int creatorId;
     private String creatorName;
     private Timestamp createDate;
-    private Timestamp replyDate;
+    private int commentCount;
 
-    public Post(int id, String subtitle, int creatorId, String creatorName, Timestamp createDate, Timestamp replyDate) {
-        this.id = id;
+    public Post(int postId, String subtitle, int creatorId, String creatorName, Timestamp createDate, int commentCount) {
+        this.postId = postId;
         this.subtitle = subtitle;
         this.creatorId = creatorId;
         this.creatorName = creatorName;
         this.createDate = createDate;
-        this.replyDate = replyDate;
+        this.commentCount = commentCount;
     }
 
-    public Post(String subtitle, int creatorId, String creatorName, Timestamp createDate, Timestamp replyDate) {
+    public Post(String subtitle, int creatorId, String creatorName, Timestamp createDate) {
         this.subtitle = subtitle;
         this.creatorId = creatorId;
         this.creatorName = creatorName;
         this.createDate = createDate;
-        this.replyDate = replyDate;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public int getPostId() {
+        return postId;
     }
 
     public String getSubtitle() {
@@ -67,12 +62,7 @@ public class Post {
         this.creatorId = creatorId;
     }
 
-    public Timestamp getReplyDate() {
-        return replyDate;
+    public int getCommentCount() {
+        return commentCount;
     }
-
-    public void setReplyDate(Timestamp replyDate) {
-        this.replyDate = replyDate;
-    }
-
 }
