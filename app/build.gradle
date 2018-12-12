@@ -47,4 +47,5 @@ dependencies {
     implementation 'com.mikepenz:fontawesome-typeface:5.0.6.0@aar'
     implementation 'com.mikepenz:octicons-typeface:3.0.0.1@aar'
     implementation 'com.sackcentury:shinebutton:0.2.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.0'
 }

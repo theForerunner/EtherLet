@@ -19,4 +19,6 @@
     <color name="pink_pressed">#ec407a</color>
     <color name="blue_semi_transparent">#805677fc</color>
     <color name="blue_semi_transparent_pressed">#80738ffe</color>
+    <color name="red_for_price_rise">#e95133</color>
+    <color name="green_for_price_drop">#26c45c</color>
 </resources>
