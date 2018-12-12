@@ -27,7 +27,7 @@ public class InfoJSONParser {
             JSONObject jsonObject=new JSONObject(responseData);
             String data=jsonObject.getString("data");
             JSONArray dataList=new JSONArray(data);
-            for(int i=0;i<dataList.length();i++){
+            for(int i=0;i<100;i++){
                 JSONObject dataObject=dataList.getJSONObject(i);
                 String name=dataObject.getString("name");
                 list.add(name);
@@ -47,7 +47,7 @@ public class InfoJSONParser {
             JSONObject jsonObject=new JSONObject(responseData);
             String data=jsonObject.getString("data");
             JSONArray dataList=new JSONArray(data);
-            for(int j=0;j<dataList.length();j++){
+            for(int j=0;j<100;j++){
                 JSONObject dataObject=dataList.getJSONObject(j);
                 CoinInfo info=new CoinInfo();
                 info.setSymbol(dataObject.getString("symbol"));
