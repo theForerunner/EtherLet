@@ -18,7 +18,7 @@
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:toolbarId="@+id/post_detailed_page_toolbar"
-            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways|snap"
             app:contentScrim="?attr/colorPrimary">
 
             <android.support.v7.widget.Toolbar
