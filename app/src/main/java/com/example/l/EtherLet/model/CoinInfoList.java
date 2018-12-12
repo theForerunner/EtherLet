@@ -59,7 +59,7 @@ public class CoinInfoList implements CoinListInterface {
     @Override
     public String getInfoUrl(){
         String url="https://data.block.cc/api/v1/price?symbol_name=";
-        for(int i=0;i<nameList.size();i++){
+        for(int i=0;i<nameList.size()&&i<100;i++){
             if(i==0){
                url=url+nameList.get(0);
             }
