@@ -8,4 +8,5 @@ public interface CoinListInterface {
     void setNameList(List<String> list);
     void setInfoList(List<CoinInfo> list);
     String getInfoUrl();
+    List<CoinInfo> initDefaultInfoList();
 }

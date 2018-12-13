@@ -79,7 +79,8 @@ public class CoinInfoList implements CoinListInterface {
         this.infoList=list;
     }
 
-    private List<CoinInfo> initDefaultInfoList() {
+    @Override
+    public List<CoinInfo> initDefaultInfoList() {
         List<CoinInfo> defaultInfoList = new ArrayList<>();
         CoinInfo info = new CoinInfo();
         info.setSymbol("BTC");
@@ -88,7 +89,7 @@ public class CoinInfoList implements CoinListInterface {
         info.setHigh("8368.41733741");
         info.setLow("7972.64470958");
         info.setChangeMonthly("0.008");
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 100; i++) {
             defaultInfoList.add(info);
         }
         return defaultInfoList;

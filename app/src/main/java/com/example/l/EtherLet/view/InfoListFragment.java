@@ -55,6 +55,8 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
         infoRecyclerView.addItemDecoration(itemDecoration);
         infoSwipeRefreshLayout = view.findViewById(R.id.info_list_slide_refresh);
         infoSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        infoAdapter = new InfoAdapter(initDefaultInfoList());
+        infoRecyclerView.setAdapter(infoAdapter);
         infoPresenter.loadInfoList();
         infoSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -172,6 +174,21 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
         DecimalFormat df=new DecimalFormat("0.00");
         String convertPrice=df.format(priceDouble)+"$";
         return convertPrice;
+    }
+
+    public List<CoinInfo> initDefaultInfoList() {
+        List<CoinInfo> defaultInfoList = new ArrayList<>();
+        CoinInfo info = new CoinInfo();
+        info.setSymbol("BTC");
+        info.setName("bitcoin");
+        info.setPriceUSD("8134.85601071");
+        info.setHigh("8368.41733741");
+        info.setLow("7972.64470958");
+        info.setChangeMonthly("0.008");
+        for (int i = 0; i < 100; i++) {
+            defaultInfoList.add(info);
+        }
+        return defaultInfoList;
     }
 
 }
