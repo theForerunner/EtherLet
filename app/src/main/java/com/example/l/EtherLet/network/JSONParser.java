@@ -20,7 +20,7 @@ public class JSONParser {
             for (int i = 0; i < postArray.length(); i++) {
                 JSONObject postObject = postArray.getJSONObject(i);
                 Log.i("DT", postObject.toString());
-                Post post = new Post(postObject.getInt("id"), postObject.getString("subtitle"), postObject.getInt("creatorId"), postObject.getString("creatorName"), new Timestamp(postObject.getLong("createDate")), new Timestamp(postObject.getLong("replyDate")));
+                Post post = new Post(postObject.getInt("id"), postObject.getString("subtitle"), postObject.getInt("creatorId"), postObject.getString("creatorName"), new Timestamp(postObject.getLong("createDate")), 0);
                 postList.add(post);
             }
         } catch (Exception e) {

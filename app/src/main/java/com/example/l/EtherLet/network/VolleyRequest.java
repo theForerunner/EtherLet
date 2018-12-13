@@ -13,14 +13,14 @@ import org.json.JSONObject;
 import java.util.Map;
 
 public class VolleyRequest {
-    public static void getJSONObject(String url, Map<String, Object> map, Context context, final VolleyCallback volleyCallback) {
+    public static void getJSONObject(int method, String url, Map<String, Object> map, Context context, final VolleyCallback volleyCallback) {
         try {
             JSONObject params = null;
             if (map != null) {
                 params = new JSONObject(map);
             }
             Log.i("VOLLEY", "url: " + url);
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(JsonObjectRequest.Method.POST, url, params, new Response.Listener<JSONObject>() {
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(method, url, params, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.i("VOLLEY", response.toString());
@@ -39,4 +39,5 @@ public class VolleyRequest {
             e.printStackTrace();
         }
     }
+
 }
