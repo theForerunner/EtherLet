@@ -2,28 +2,47 @@ package com.example.l.EtherLet.model;
 
 
 
+import android.content.Context;
+
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.l.EtherLet.network.HttpUtil;
 import com.example.l.EtherLet.network.InfoJSONParser;
+import com.example.l.EtherLet.network.VolleyCallback;
+import com.example.l.EtherLet.network.VolleyRequest;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.Response;
 
 public class CoinInfoList implements CoinListInterface {
 
     private List<CoinInfo> infoList=new ArrayList<>();
     private List<String> nameList=new ArrayList<>();
-    private InfoJSONParser infoJSONParser=new InfoJSONParser();
+    private String url="https://data.block.cc/api/v1/price?symbol_name=";
+    private boolean isInitUrl=false;
+    private boolean isInitList=false;
 
 
     @Override
-    public List<CoinInfo> getInfoList(){
-        HttpUtil.sendRequestWithOkhttp(getInfoUrl(),new okhttp3.Callback(){
+    public void getInfoListData(final InfoLoadDataCallBack callBack, Context context){
+        if(isInitUrl){
+            VolleyRequest.getJSONObject(JsonObjectRequest.Method.GET, url, null, context, new VolleyCallback() {
+                @Override
+                public void onSuccess(JSONObject jsonObject) {callBack.onInfoSuccess(jsonObject);isInitList=true;}
+                @Override
+                public void onFailure() {callBack.onInfoFailure(); }
+            });
+        }
+
+
+    }
+
+        /*HttpUtil.sendRequestWithOkhttp(getInfoUrl(),new okhttp3.Callback(){
             @Override
             public void onFailure(Call call, IOException e) {
 
@@ -34,15 +53,20 @@ public class CoinInfoList implements CoinListInterface {
                 infoList=infoJSONParser.parseJSONInfoList(response);
             }
         });
+        return infoList;*/
 
-        //infoList=initDefaultInfoList();//测试
-        return infoList;
 
-    }
     @Override
-    public void getNameList(){
+    public void getNameListData(final NameLoadDataCallBack callBack, Context context){
+        VolleyRequest.getJSONObject(JsonObjectRequest.Method.GET, "https://data.block.cc/api/v1/symbols", null, context, new VolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject) {callBack.onNameSuccess(jsonObject);}
+            @Override
+            public void onFailure() { callBack.onNameFailure(); }
+        });
 
-        HttpUtil.sendRequestWithOkhttp("https://data.block.cc/api/v1/symbols",new okhttp3.Callback(){
+
+        /*HttpUtil.sendRequestWithOkhttp("https://data.block.cc/api/v1/symbols",new okhttp3.Callback(){
             @Override
             public void onFailure(Call call, IOException e) {
 
@@ -50,25 +74,27 @@ public class CoinInfoList implements CoinListInterface {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                nameList=infoJSONParser.parseJSONSymbolList(response);
+                nameList=InfoJSONParser.parseJSONNameList(response);
             }
-        });
+        });*/
 
     }
 
     @Override
-    public String getInfoUrl(){
-        String url="https://data.block.cc/api/v1/price?symbol_name=";
-        for(int i=0;i<nameList.size()&&i<100;i++){
+    public void setInfoUrl(){
+        for(int i=0;i<nameList.size();i++){
             if(i==0){
                url=url+nameList.get(0);
             }
             url=url+","+nameList.get(i);
         }
-        return url;
-
+        isInitUrl=true;
     }
 
+    @Override
+    public String getInfoUrl(){
+        return url;
+    }
     @Override
     public void setNameList(List<String> list){
         this.nameList=list;
@@ -77,6 +103,15 @@ public class CoinInfoList implements CoinListInterface {
     @Override
     public void setInfoList(List<CoinInfo> list){
         this.infoList=list;
+    }
+
+    @Override
+    public  List<CoinInfo> getInfoList(){
+        return infoList;
+    }
+    @Override
+    public  List<String> getNameList(){
+        return nameList;
     }
 
     @Override
@@ -94,4 +129,12 @@ public class CoinInfoList implements CoinListInterface {
         }
         return defaultInfoList;
     }
+
+
+    @Override
+    public boolean isInit(){
+        return isInitList;
+    }
+
+
 }

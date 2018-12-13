@@ -22,8 +22,8 @@
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
             android:text="TYPE"
-            android:textStyle="bold"
             android:textColor="@color/md_blue_grey_700"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.025"
@@ -40,8 +40,8 @@
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
             android:text="PRICE"
-            android:textStyle="bold"
             android:textColor="@color/md_blue_grey_700"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -49,28 +49,67 @@
 
         <TextView
             android:id="@+id/text_info_title_trend"
-            android:layout_width="50dp"
+            android:layout_width="54dp"
             android:layout_height="20dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
-            android:text="TREND"
-            android:textStyle="bold"
+            android:text="TREND:"
             android:textColor="@color/md_blue_grey_700"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.937"
+            app:layout_constraintHorizontal_bias="0.821"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <LinearLayout
+            android:id="@+id/info_text_range_button_layout"
+            android:layout_width="55dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="300dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.111"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/text_info_title_range"
+                android:layout_width="44dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="Month"
+                android:textColor="@color/md_light_blue_800"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/text_info_title_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:text="▼"
+                android:textColor="@color/md_light_blue_800"
+                android:textSize="10dp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+
     </android.support.constraint.ConstraintLayout>
+
     <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
-
 
 
         <RelativeLayout
@@ -87,7 +126,7 @@
                     android:id="@+id/info_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"/>
+                    android:orientation="vertical" />
 
             </android.support.v4.widget.SwipeRefreshLayout>
 

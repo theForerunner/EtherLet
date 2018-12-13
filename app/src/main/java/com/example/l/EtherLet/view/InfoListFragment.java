@@ -1,5 +1,7 @@
 package com.example.l.EtherLet.view;
 
+import android.content.Context;
+import android.icu.text.IDNA;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,9 +11,15 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.ListPopupWindow;
 import android.widget.TextView;
 
 import com.example.l.EtherLet.R;
@@ -30,6 +38,14 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
     private InfoAdapter infoAdapter;
     private InfoPresenter infoPresenter;
     private SwipeRefreshLayout infoSwipeRefreshLayout;
+    private List<CoinInfo> infoList;
+    private TextView range;
+    private LinearLayout rangeLayout;
+    private ListPopupWindow rangeWindow;
+    private boolean click=false;
+    private ArrayList<String> rangeList=new ArrayList<>();
+    private Context context;
+    private String rangeSelect;
 
 
     public static InfoListFragment newInstance() {
@@ -39,41 +55,75 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
         return infoListFragment;
     }
 
-
-
-
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.info_list_fragment, container, false);
-
+        range=view.findViewById(R.id.text_info_title_range);
+        rangeLayout=view.findViewById(R.id.info_text_range_button_layout);
+        initRangeList();
+        rangeSelect="Month";
+        rangeWindow=new ListPopupWindow(this.getActivity());
         infoPresenter = new InfoPresenter(InfoListFragment.this);
         infoRecyclerView = view.findViewById(R.id.info_recycler);
         infoRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         RecyclerView.ItemDecoration itemDecoration=new DividerItemDecoration(this.getActivity(),DividerItemDecoration.VERTICAL);
         infoRecyclerView.addItemDecoration(itemDecoration);
+        infoList=new ArrayList<>();
+        infoList=initDefaultInfoList();
+        infoAdapter=new InfoAdapter(infoList);
+        infoRecyclerView.setAdapter(infoAdapter);
+        infoPresenter.loadNameList(getActivity());
         infoSwipeRefreshLayout = view.findViewById(R.id.info_list_slide_refresh);
         infoSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
-        infoAdapter = new InfoAdapter(initDefaultInfoList());
-        infoRecyclerView.setAdapter(infoAdapter);
-        infoPresenter.loadInfoList();
         infoSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                infoPresenter.loadInfoList();
+                infoPresenter.loadInfoList(getActivity());
+            }
+        });
+        context=getActivity();
+        rangeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!click){
+                    rangeWindow.setAdapter(new ArrayAdapter(context,R.layout.history_list,rangeList));
+                    rangeWindow.setDropDownGravity(Gravity.END);
+                    rangeWindow.setAnchorView(rangeLayout);
+                    rangeWindow.show();
+                    click=true;
+                }
+                else click=false;
+
+            }
+        });
+        rangeWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                range.setText(rangeList.get(position));
+                rangeSelect=rangeList.get(position);
+                infoPresenter.loadInfoList(getActivity());
+                rangeWindow.dismiss();
+                click=false;
             }
         });
         return view;
     }
 
     @Override
-    public void showInfoList(List<CoinInfo> list)
+    public void initInfoList(List<CoinInfo> list)
     {
-        infoAdapter = new InfoAdapter(list);
+        infoList=list;
+        infoAdapter = new InfoAdapter(infoList);
         infoRecyclerView.setAdapter(infoAdapter);
         infoSwipeRefreshLayout.setRefreshing(false);
 
+    }
+    @Override
+    public void upDateInfoList(List<CoinInfo> list){
+        infoList=list;
+        infoAdapter.notifyDataSetChanged();
+        infoSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -81,6 +131,10 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
 
     }
 
+    @Override
+    public Context getInfoContext(){
+        return getActivity();
+    }
     private class InfoHolder extends RecyclerView.ViewHolder{
         private CoinInfo coinInfo;
         private ConstraintLayout constraintLayout;
@@ -92,7 +146,6 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
         private TextView highPriceTextView;
         private TextView lowPriceTextView;
         private TextView changeTextView;
-
 
 
 
@@ -111,40 +164,67 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
 
         private void bindInfo(CoinInfo info) {
             coinInfo=info;
-            symbolTextView.setText(coinInfo.getSymbol());
-            nameTextView.setText(coinInfo.getName());
-            priceTextView.setText(convertPrice(coinInfo.getPriceUSD()));
-            highPriceTextView.setText(convertPrice(coinInfo.getHigh()));
-            lowPriceTextView.setText(convertPrice(coinInfo.getLow()));
-            Double change=Double.parseDouble(coinInfo.getChangeMonthly())*100;
-            boolean flag=false;
-            if(change>=0){
-                flag=true;
-                changeTextView.setTextColor(getResources().getColor(R.color.red_for_price_rise));
+            if(info.getSymbol().equals("")){
+                symbolTextView.setText("");
+                nameTextView.setText("");
+                priceTextView.setText("");
+                highTextView.setText("");
+                lowTextView.setText("");
+                highPriceTextView.setText("");
+                lowPriceTextView.setText("");
+                changeTextView.setText("");
             }
-            else {
-                changeTextView.setTextColor(getResources().getColor(R.color.green_for_price_drop));
+            else
+            {
+                symbolTextView.setText(coinInfo.getSymbol());
+                nameTextView.setText(coinInfo.getName());
+                priceTextView.setText(convertPrice(coinInfo.getPriceUSD()));
+                highPriceTextView.setText(convertPrice(coinInfo.getHigh()));
+                lowPriceTextView.setText(convertPrice(coinInfo.getLow()));
 
-            }
-            DecimalFormat df=new DecimalFormat("0.00");
-            String changeString=df.format(change)+"%";
-            if(flag){
-               changeString="+"+changeString;
-            }
-            changeTextView.setText(changeString);
-            constraintLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+                String changeRange="";
+                if(rangeSelect.equals("Month")){
+                    changeRange=coinInfo.getChangeMonthly();
+                }
+                else if(rangeSelect.equals("Week")){
+                    changeRange=coinInfo.getChangeWeekly();
+                }
+                else if(rangeSelect.equals("Daily")){
+                    changeRange=coinInfo.getChangeDaily();
+                }
+                else if(rangeSelect.equals("Hour")){
+                    changeRange=coinInfo.getChangeHour();
+                }
+                Double change=Double.parseDouble(changeRange)*100;
+                boolean flag=false;
+                if(change>=0){
+                    flag=true;
+                    changeTextView.setTextColor(getResources().getColor(R.color.red_for_price_rise));
+                }
+                else {
+                    changeTextView.setTextColor(getResources().getColor(R.color.green_for_price_drop));
 
                 }
-            });
+                DecimalFormat df=new DecimalFormat("0.00");
+                String changeString=df.format(change)+"%";
+                if(flag){
+                    changeString="+"+changeString;
+                }
+                changeTextView.setText(changeString);
+                constraintLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+
+            }
 
 
         }
     }
     private class InfoAdapter extends RecyclerView.Adapter<InfoHolder> {
         private List<CoinInfo> infoList;
-
         InfoAdapter(List<CoinInfo> infoList) {
             this.infoList = infoList;
         }
@@ -167,6 +247,11 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
         public int getItemCount() {
             return infoList.size();
         }
+
+        /*@Override
+        public long getItemId(int position){
+            return infoList.get(position).hashCode();
+        }*/
     }
 
     private String convertPrice(String price){
@@ -179,16 +264,22 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
     public List<CoinInfo> initDefaultInfoList() {
         List<CoinInfo> defaultInfoList = new ArrayList<>();
         CoinInfo info = new CoinInfo();
-        info.setSymbol("BTC");
-        info.setName("bitcoin");
-        info.setPriceUSD("8134.85601071");
-        info.setHigh("8368.41733741");
-        info.setLow("7972.64470958");
-        info.setChangeMonthly("0.008");
+        info.setSymbol("");
+        info.setName("");
+        info.setPriceUSD("");
+        info.setHigh("");
+        info.setLow("");
+        info.setChangeMonthly("");
         for (int i = 0; i < 100; i++) {
             defaultInfoList.add(info);
         }
         return defaultInfoList;
     }
 
+    public void initRangeList(){
+        rangeList.add("Hour");
+        rangeList.add("Daily");
+        rangeList.add("Week");
+        rangeList.add("Month");
+    }
 }
