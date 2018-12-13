@@ -22,4 +22,9 @@ public class InfoPresenter implements InfoPresenterInterface {
         List<CoinInfo> list=infoList.getInfoList();
         infoListViewInterface.showInfoList(list);
     }
+    @Override
+    public void loadDefaultData(){
+        infoListViewInterface.showInfoList(infoList.initDefaultInfoList());
+    }
+
 }

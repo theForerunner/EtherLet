@@ -4,5 +4,6 @@ import android.content.Context;
 
 public interface InfoPresenterInterface {
     void loadInfoList();
+    void loadDefaultData();
 
 }
