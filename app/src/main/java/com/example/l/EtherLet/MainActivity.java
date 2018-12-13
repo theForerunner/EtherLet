@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.l.EtherLet.view.CardFragment;
+import com.example.l.EtherLet.view.InfoListFragment;
 import com.example.l.EtherLet.view.LoginActivity;
 import com.example.l.EtherLet.view.MainPagerAdapter;
 import com.example.l.EtherLet.view.PostListFragment;
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
     private void setUpViewPager() {
         MainPagerAdapter mainPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
         mainPagerAdapter.addFragment(CardFragment.newInstance(0), "Wallet");
-        mainPagerAdapter.addFragment(CardFragment.newInstance(0), "Info");
+        mainPagerAdapter.addFragment(InfoListFragment.newInstance(), "Info");
         mainPagerAdapter.addFragment(PostListFragment.newInstance(), "Forum");
         viewPager.setAdapter(mainPagerAdapter);
     }
