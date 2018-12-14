@@ -7,6 +7,7 @@ import com.example.l.EtherLet.model.Post;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,5 +30,15 @@ public class JSONParser {
         Log.i("DT", "Length of postList: " + postList.size());
         return postList;
 
+    }
+
+    public static BigDecimal parseJsonToAccountBalance(JSONObject jsonObject){
+        BigDecimal balance=null;
+        try{
+            balance=new BigDecimal(jsonObject.getString("result"));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return balance;
     }
 }

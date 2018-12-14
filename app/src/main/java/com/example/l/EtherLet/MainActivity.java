@@ -17,6 +17,7 @@ import com.example.l.EtherLet.view.CardFragment;
 import com.example.l.EtherLet.view.LoginActivity;
 import com.example.l.EtherLet.view.MainPagerAdapter;
 import com.example.l.EtherLet.view.PostListFragment;
+import com.example.l.EtherLet.view.WalletFragment;
 import com.github.clans.fab.FloatingActionMenu;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -96,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpViewPager() {
         MainPagerAdapter mainPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
-        mainPagerAdapter.addFragment(CardFragment.newInstance(0), "Wallet");
+        mainPagerAdapter.addFragment(WalletFragment.newInstance(), "Wallet");
         mainPagerAdapter.addFragment(CardFragment.newInstance(0), "Info");
         mainPagerAdapter.addFragment(PostListFragment.newInstance(), "Forum");
         viewPager.setAdapter(mainPagerAdapter);
