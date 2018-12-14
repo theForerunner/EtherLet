@@ -84,7 +84,7 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
     @Override
     public void showFailureMessage() {
         swipeRefreshLayout.setRefreshing(false);
-        if (isVisible()) {
+        if (ifVisible) {
             Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_LONG).show();
         }
     }
@@ -210,5 +210,11 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
             defaultPostList.add(post);
         }
         return defaultPostList;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        ifVisible = isVisibleToUser;
     }
 }
