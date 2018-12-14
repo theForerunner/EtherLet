@@ -8,7 +8,6 @@ import java.util.List;
 
 public interface InfoListViewInterface {
     void initInfoList(List<CoinInfo> list);
-    void upDateInfoList(List<CoinInfo> list);
-    void showFailMessgae();
-    Context getInfoContext();
+    void updateInfoList(List<CoinInfo> list);
+    void showFailMessage();
 }

@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListPopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.model.CoinInfo;
@@ -44,7 +45,6 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
     private ListPopupWindow rangeWindow;
     private boolean click=false;
     private ArrayList<String> rangeList=new ArrayList<>();
-    private Context context;
     private String rangeSelect;
 
 
@@ -59,21 +59,24 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.info_list_fragment, container, false);
-        range=view.findViewById(R.id.text_info_title_range);
-        rangeLayout=view.findViewById(R.id.info_text_range_button_layout);
+
+        range = view.findViewById(R.id.text_info_title_range);
+        rangeLayout = view.findViewById(R.id.info_text_range_button_layout);
         initRangeList();
-        rangeSelect="Month";
-        rangeWindow=new ListPopupWindow(this.getActivity());
+        rangeSelect = "Month";
+        rangeWindow = new ListPopupWindow(getActivity());
+
         infoPresenter = new InfoPresenter(InfoListFragment.this);
+
         infoRecyclerView = view.findViewById(R.id.info_recycler);
         infoRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        RecyclerView.ItemDecoration itemDecoration=new DividerItemDecoration(this.getActivity(),DividerItemDecoration.VERTICAL);
+        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this.getActivity(), DividerItemDecoration.VERTICAL);
         infoRecyclerView.addItemDecoration(itemDecoration);
-        infoList=new ArrayList<>();
-        infoList=initDefaultInfoList();
-        infoAdapter=new InfoAdapter(infoList);
+
+        infoAdapter = new InfoAdapter(initDefaultInfoList());
         infoRecyclerView.setAdapter(infoAdapter);
-        infoPresenter.loadNameList(getActivity());
+        infoPresenter.loadInfoList(getActivity());
+
         infoSwipeRefreshLayout = view.findViewById(R.id.info_list_slide_refresh);
         infoSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         infoSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -82,12 +85,12 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
                 infoPresenter.loadInfoList(getActivity());
             }
         });
-        context=getActivity();
+
         rangeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(!click){
-                    rangeWindow.setAdapter(new ArrayAdapter(context,R.layout.history_list,rangeList));
+                    rangeWindow.setAdapter(new ArrayAdapter(getActivity(),R.layout.history_list,rangeList));
                     rangeWindow.setDropDownGravity(Gravity.END);
                     rangeWindow.setAnchorView(rangeLayout);
                     rangeWindow.show();
@@ -110,31 +113,30 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
         return view;
     }
 
+
     @Override
     public void initInfoList(List<CoinInfo> list)
     {
-        infoList=list;
-        infoAdapter = new InfoAdapter(infoList);
+        infoAdapter = new InfoAdapter(list);
         infoRecyclerView.setAdapter(infoAdapter);
         infoSwipeRefreshLayout.setRefreshing(false);
-
     }
+
     @Override
-    public void upDateInfoList(List<CoinInfo> list){
+    public void updateInfoList(List<CoinInfo> list){
         infoList=list;
         infoAdapter.notifyDataSetChanged();
         infoSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
-    public void showFailMessgae(){
-
+    public void showFailMessage(){
+        infoSwipeRefreshLayout.setRefreshing(false);
+        if (isVisible()) {
+            Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_LONG).show();
+        }
     }
 
-    @Override
-    public Context getInfoContext(){
-        return getActivity();
-    }
     private class InfoHolder extends RecyclerView.ViewHolder{
         private CoinInfo coinInfo;
         private ConstraintLayout constraintLayout;
@@ -223,6 +225,7 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
 
         }
     }
+
     private class InfoAdapter extends RecyclerView.Adapter<InfoHolder> {
         private List<CoinInfo> infoList;
         InfoAdapter(List<CoinInfo> infoList) {

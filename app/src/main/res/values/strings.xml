@@ -7,6 +7,9 @@
     <string name="get_theme_list_path">/post/list</string>
     <string name="add_theme_path">/post/add</string>
 
+    <string name="get_coin_info_list_url_header">https://data.block.cc/api/v1/price?symbol_name=</string>
+    <string name="get_coin_symbol_list_url">https://data.block.cc/api/v1/symbols</string>
+
     <string name="info_incomplete">Incomplete Information!</string>
     <string name="login_fail">login failed</string>
     <string name="login_success">Login success,Enter Main Page</string>

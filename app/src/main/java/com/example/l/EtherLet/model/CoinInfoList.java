@@ -5,136 +5,62 @@ package com.example.l.EtherLet.model;
 import android.content.Context;
 
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.l.EtherLet.network.HttpUtil;
-import com.example.l.EtherLet.network.InfoJSONParser;
+import com.example.l.EtherLet.R;
+import com.example.l.EtherLet.network.JSONParser;
 import com.example.l.EtherLet.network.VolleyCallback;
 import com.example.l.EtherLet.network.VolleyRequest;
 
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.Call;
-import okhttp3.Response;
 
 public class CoinInfoList implements CoinListInterface {
 
-    private List<CoinInfo> infoList=new ArrayList<>();
-    private List<String> nameList=new ArrayList<>();
-    private String url="https://data.block.cc/api/v1/price?symbol_name=";
-    private boolean isInitUrl=false;
-    private boolean isInitList=false;
-
+    private String url = "https://data.block.cc/api/v1/price?symbol_name=bitcoin,monero,ethereum,dash,eos,bitcoin-gold,ripple,litecoin,bitcoin-cash,ethereum-classic,qtum,tron,bitcoin-cash-sv,zcash,neo,stellar,omisego,waves,trueusd,dogecoin,tether,paxos-standard,true-chain,0x,aeternity,binance-coin,mithril,cardano,zb-blockchain,mr,alibabacoin,nem,kyber-network,bgg,moeda-loyalty-points,okb,ravencoin,eosdac,iota,currency-network,aelf,ip-chain,zilliqa,nxt,ontology,playgroundz,hycon,cryptonex,gxm,filecoin,latoken,basic-attention-token,decentraland,baxs,vet,bytom,huobi-token,zzex,polymath-network,hshare,tch,icon,usdc,status,infinity-economics,chainlink,waltonchain,atbcoin,syscoin,tenx,bancor,ink,swisscoin,iostoken,quarkchain,gifto,cybermiles,fcc,hc,bumo,ins-ecosystem,oneroot-network,davinci-coin,lisk,nex,metaverse,cube,tezos,cryptoworld-vip,sirin-labs-token,apis,cortex,ut,pfc,haven-protocol,mobilego,bitshares,wax,factom,augur,";
 
     @Override
-    public void getInfoListData(final InfoLoadDataCallBack callBack, Context context){
-        if(isInitUrl){
-            VolleyRequest.getJSONObject(JsonObjectRequest.Method.GET, url, null, context, new VolleyCallback() {
-                @Override
-                public void onSuccess(JSONObject jsonObject) {callBack.onInfoSuccess(jsonObject);isInitList=true;}
-                @Override
-                public void onFailure() {callBack.onInfoFailure(); }
-            });
-        }
-
-
-    }
-
-        /*HttpUtil.sendRequestWithOkhttp(getInfoUrl(),new okhttp3.Callback(){
+    public void getInfoListData(final InfoLoadDataCallBack callBack, final Context context){
+        VolleyRequest.getJSONObject(JsonObjectRequest.Method.GET, url, null, context, new VolleyCallback() {
             @Override
-            public void onFailure(Call call, IOException e) {
-
+            public void onSuccess(JSONObject jsonObject, Context context) {
+                callBack.onInfoSuccess(jsonObject);
+                refreshUrl(context);
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                infoList=infoJSONParser.parseJSONInfoList(response);
+            public void onFailure() {
+                callBack.onInfoFailure();
             }
         });
-        return infoList;*/
 
+    }
 
-    @Override
-    public void getNameListData(final NameLoadDataCallBack callBack, Context context){
-        VolleyRequest.getJSONObject(JsonObjectRequest.Method.GET, "https://data.block.cc/api/v1/symbols", null, context, new VolleyCallback() {
+    private void refreshUrl(final Context context) {
+        VolleyRequest.getJSONObject(JsonObjectRequest.Method.GET, context.getString(R.string.get_coin_symbol_list_url), null, context, new VolleyCallback() {
             @Override
-            public void onSuccess(JSONObject jsonObject) {callBack.onNameSuccess(jsonObject);}
+            public void onSuccess(JSONObject jsonObject, Context context) {
+                url = context.getString(R.string.get_coin_info_list_url_header) + setSubInfoUrl(JSONParser.parseJSONToNameList(jsonObject));
+            }
+
             @Override
-            public void onFailure() { callBack.onNameFailure(); }
+            public void onFailure() {
+            }
         });
-
-
-        /*HttpUtil.sendRequestWithOkhttp("https://data.block.cc/api/v1/symbols",new okhttp3.Callback(){
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                nameList=InfoJSONParser.parseJSONNameList(response);
-            }
-        });*/
-
     }
 
-    @Override
-    public void setInfoUrl(){
-        for(int i=0;i<nameList.size();i++){
-            if(i==0){
-               url=url+nameList.get(0);
-            }
-            url=url+","+nameList.get(i);
+    private String setSubInfoUrl(List<String> nameList){
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < nameList.size(); i++) {
+            stringBuilder.append(nameList.get(i));
+            stringBuilder.append(",");
         }
-        isInitUrl=true;
+        return stringBuilder.toString();
     }
 
-    @Override
-    public String getInfoUrl(){
-        return url;
+    public interface InfoLoadDataCallBack {
+        void onInfoSuccess(JSONObject jsonObject);
+        void onInfoFailure();
     }
-    @Override
-    public void setNameList(List<String> list){
-        this.nameList=list;
-    }
-
-    @Override
-    public void setInfoList(List<CoinInfo> list){
-        this.infoList=list;
-    }
-
-    @Override
-    public  List<CoinInfo> getInfoList(){
-        return infoList;
-    }
-    @Override
-    public  List<String> getNameList(){
-        return nameList;
-    }
-
-    @Override
-    public List<CoinInfo> initDefaultInfoList() {
-        List<CoinInfo> defaultInfoList = new ArrayList<>();
-        CoinInfo info = new CoinInfo();
-        info.setSymbol("BTC");
-        info.setName("bitcoin");
-        info.setPriceUSD("8134.85601071");
-        info.setHigh("8368.41733741");
-        info.setLow("7972.64470958");
-        info.setChangeMonthly("0.008");
-        for (int i = 0; i < 100; i++) {
-            defaultInfoList.add(info);
-        }
-        return defaultInfoList;
-    }
-
-
-    @Override
-    public boolean isInit(){
-        return isInitList;
-    }
-
-
 }
+
+

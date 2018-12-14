@@ -20,7 +20,6 @@ import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.model.Post;
 import com.example.l.EtherLet.presenter.PostPresenter;
 import com.github.clans.fab.FloatingActionMenu;
-import com.sackcentury.shinebuttonlib.ShineButton;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -33,6 +32,7 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
     private PostPresenter postPresenter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private FloatingActionMenu floatingActionMenu;
+    private boolean ifVisible = false;
 
     public static PostListFragment newInstance() {
         PostListFragment postListFragment = new PostListFragment();
@@ -49,9 +49,11 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
         postPresenter = new PostPresenter(PostListFragment.this);
         postListRecyclerView = view.findViewById(R.id.post_list_recycler);
         postListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         postAdapter = new PostAdapter(initDefaultPostList());
         postListRecyclerView.setAdapter(postAdapter);
         postPresenter.loadPostList(this.getActivity());
+
         postListRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -82,7 +84,9 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
     @Override
     public void showFailureMessage() {
         swipeRefreshLayout.setRefreshing(false);
-        Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_LONG).show();
+        if (isVisible()) {
+            Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
