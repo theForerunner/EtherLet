@@ -13,7 +13,7 @@ import org.json.JSONObject;
 import java.util.Map;
 
 public class VolleyRequest {
-    public static void getJSONObject(int method, String url, Map<String, Object> map, Context context, final VolleyCallback volleyCallback) {
+    public static void getJSONObject(int method, String url, Map<String, Object> map, final Context context, final VolleyCallback volleyCallback) {
         try {
             JSONObject params = null;
             if (map != null) {
@@ -24,7 +24,8 @@ public class VolleyRequest {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.i("VOLLEY", response.toString());
-                    volleyCallback.onSuccess(response);
+                    //volleyCallback.onSuccess(response);
+                    volleyCallback.onSuccess(response, context);
                 }
             }, new Response.ErrorListener() {
                 @Override
