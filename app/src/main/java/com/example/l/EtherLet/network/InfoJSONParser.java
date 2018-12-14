@@ -18,13 +18,11 @@ import okhttp3.Request;
 
 public class InfoJSONParser {
 
+    private static int length=150;
 
-    public List<String> parseJSONSymbolList(okhttp3.Response response) throws IOException {
-
+    public static List<String> parseJSONNameList(JSONObject jsonObject){
         List<String> list=new ArrayList<>();
-        String responseData=response.body().string();
         try{
-            JSONObject jsonObject=new JSONObject(responseData);
             String data=jsonObject.getString("data");
             JSONArray dataList=new JSONArray(data);
             for(int i=0;i<100;i++){
@@ -40,11 +38,10 @@ public class InfoJSONParser {
         return list;
     }
 
-    public List<CoinInfo> parseJSONInfoList(okhttp3.Response response) throws IOException{
+    public static List<CoinInfo> parseJSONInfoList(JSONObject jsonObject){
         List<CoinInfo> list=new ArrayList<>();
-        String responseData=response.body().string();
         try{
-            JSONObject jsonObject=new JSONObject(responseData);
+
             String data=jsonObject.getString("data");
             JSONArray dataList=new JSONArray(data);
             for(int j=0;j<100;j++){
