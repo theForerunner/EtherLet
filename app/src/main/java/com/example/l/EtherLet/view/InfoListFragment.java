@@ -73,11 +73,9 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
         infoRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this.getActivity(), DividerItemDecoration.VERTICAL);
         infoRecyclerView.addItemDecoration(itemDecoration);
-
         infoAdapter = new InfoAdapter(initDefaultInfoList());
         infoRecyclerView.setAdapter(infoAdapter);
         infoPresenter.loadInfoList(getActivity());
-
         infoSwipeRefreshLayout = view.findViewById(R.id.info_list_slide_refresh);
         infoSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         infoSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -86,7 +84,6 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
                 infoPresenter.loadInfoList(getActivity());
             }
         });
-
         rangeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -252,10 +249,6 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
             return infoList.size();
         }
 
-        /*@Override
-        public long getItemId(int position){
-            return infoList.get(position).hashCode();
-        }*/
     }
 
     private String convertPrice(String price){
