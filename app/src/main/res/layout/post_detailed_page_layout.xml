@@ -27,6 +27,7 @@
                 android:layout_width="match_parent"
                 android:background="@color/primary"
                 app:layout_collapseMode="pin"
+                app:navigationIcon="@drawable/baseline_arrow_back_white_24"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
 
             </android.support.v7.widget.Toolbar>
@@ -36,9 +37,11 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/post_detailed_nested_scroll_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior">
+        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior"
+        android:background="@color/white_pressed">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -46,6 +49,7 @@
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/post_detailed_header"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
@@ -138,7 +142,6 @@
 
         </LinearLayout>
 
-
     </android.support.v4.widget.NestedScrollView>
 
     <com.github.clans.fab.FloatingActionMenu
@@ -157,19 +160,9 @@
             android:id="@+id/btn_post_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_edit"
+            android:src="@drawable/outline_add_comment_white_24"
             app:fab_size="mini"
-            app:fab_label="Post"
-            app:fab_colorNormal="@color/colorPrimary"
-            app:fab_colorPressed="@color/colorPrimaryDark"/>
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/btn_post_share"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/baseline_share_white_24"
-            app:fab_size="mini"
-            app:fab_label="Post"
+            app:fab_label="Comment"
             app:fab_colorNormal="@color/colorPrimary"
             app:fab_colorPressed="@color/colorPrimaryDark"/>
 
@@ -194,4 +187,5 @@
             app:fab_colorPressed="@color/colorPrimaryDark"/>
 
     </com.github.clans.fab.FloatingActionMenu>
+
 </android.support.design.widget.CoordinatorLayout>

@@ -8,7 +8,9 @@
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
     card_view:cardBackgroundColor="@android:color/white"
-    card_view:cardCornerRadius="8dp">
+    card_view:cardCornerRadius="8dp"
+    android:clickable="true"
+    android:foreground="?attr/selectableItemBackground" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,10 +20,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="0dp">
+            android:layout_margin="10dp">
 
             <TextView
                 android:id="@+id/post_title"
@@ -55,48 +54,6 @@
                 android:textSize="15sp" />
 
         </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:orientation="horizontal"
-            android:layout_marginBottom="5dp">
-
-            <android.support.design.button.MaterialButton
-                android:id="@+id/btn_comment"
-                style="@android:style/Widget.Material.Button.Borderless"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:padding="0dp"
-                android:gravity="center"
-                card_view:iconGravity="textStart"
-                android:background="@color/white"
-                android:text="@string/display_test_string_post_comment_count"
-                android:textColor="@color/grey"
-                android:textStyle="bold"
-                card_view:backgroundTint="@color/white"
-                card_view:icon="@drawable/baseline_comment_black_24"
-                card_view:iconTint="@color/grey" />
-
-            <android.support.design.button.MaterialButton
-                android:id="@+id/btn_share"
-                style="@android:style/Widget.Material.Button.Borderless"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:padding="0dp"
-                android:gravity="center"
-                card_view:iconGravity="textStart"
-                android:background="@color/white"
-                android:text="@string/display_test_string_post_btn_share"
-                android:textColor="@color/grey"
-                android:textStyle="bold"
-                card_view:backgroundTint="@color/white"
-                card_view:icon="@drawable/baseline_share_black_24"
-                card_view:iconTint="@color/grey" />
-
-        </LinearLayout>
 
     </LinearLayout>
 

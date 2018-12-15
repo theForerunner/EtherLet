@@ -3,6 +3,10 @@ package com.example.l.EtherLet.view;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.button.MaterialButton;
+import android.support.design.widget.BottomSheetDialog;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,9 +15,11 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.model.Comment;
+import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
 import java.sql.Timestamp;
@@ -31,6 +37,17 @@ public class PostDetailedPageActivity extends AppCompatActivity {
     RecyclerView commentListRecyclerView;
     @BindView(R.id.post_detailed_page_floating_menu)
     FloatingActionMenu floatingActionMenu;
+    @BindView(R.id.btn_post_comment)
+    FloatingActionButton btnComment;
+    @BindView(R.id.btn_to_post_Top)
+    FloatingActionButton btnToTop;
+    @BindView(R.id.btn_post_refresh)
+    FloatingActionButton btnRefresh;
+    @BindView(R.id.post_detailed_nested_scroll_page)
+    NestedScrollView nestedScrollView;
+    @BindView(R.id.post_detailed_header)
+    LinearLayout postContentLinearLayout;
+    private BottomSheetDialog newCommentBottomSheetDialog;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,24 +56,27 @@ public class PostDetailedPageActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_arrow_back_white_24);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         commentListRecyclerView.setLayoutManager(new LinearLayoutManager(PostDetailedPageActivity.this));
         CommentAdapter commentAdapter = new CommentAdapter(initDefaultCommentList());
         commentListRecyclerView.setAdapter(commentAdapter);
 
-        commentListRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        nestedScrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (dy > 0) {
+            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (scrollY - oldScrollY > 10) {
                     floatingActionMenu.hideMenu(true);
-                } else if (dy < 0) {
+                } else if (oldScrollY - scrollY > 10) {
                     floatingActionMenu.showMenu(true);
                 }
             }
         });
+        setUpBottomSheetDialog();
+        setUpFloatingActionBtn();
+        commentListRecyclerView.setFocusable(false);
     }
 
     private class CommentHolder extends RecyclerView.ViewHolder {
@@ -121,36 +141,63 @@ public class PostDetailedPageActivity extends AppCompatActivity {
     }
 
     private void setUpFloatingActionBtn() {
-        findViewById(R.id.btn_post_comment).setOnClickListener(new View.OnClickListener() {
+        btnComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 floatingActionMenu.close(true);
+                newCommentBottomSheetDialog.show();
+            }
+        });
+
+        btnToTop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                floatingActionMenu.close(true);
+                nestedScrollView.smoothScrollTo(0, postContentLinearLayout.getTop());
+            }
+        });
+
+        btnRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                floatingActionMenu.close(true);
+            }
+        });
+    }
+
+    private void setUpBottomSheetDialog() {
+        newCommentBottomSheetDialog = new BottomSheetDialog(PostDetailedPageActivity.this);
+        View bottomSheetView = LayoutInflater.from(PostDetailedPageActivity.this).inflate(R.layout.new_comment_sheet_layout, null);
+        newCommentBottomSheetDialog.setContentView(bottomSheetView);
+        newCommentBottomSheetDialog.getDelegate().findViewById(android.support.design.R.id.design_bottom_sheet).setBackgroundColor(ContextCompat.getColor(PostDetailedPageActivity.this, android.R.color.transparent));
+        newCommentBottomSheetDialog.setCancelable(true);
+        newCommentBottomSheetDialog.setCanceledOnTouchOutside(true);
+
+        MaterialButton btnCancel = bottomSheetView.findViewById(R.id.btn_new_comment_cancel);
+        MaterialButton btnPost = bottomSheetView.findViewById(R.id.btn_new_comment);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newCommentBottomSheetDialog.cancel();
+            }
+        });
+        btnPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 //TODO
             }
         });
 
-        findViewById(R.id.btn_post_share).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                floatingActionMenu.close(true);
-                //TODO
-            }
-        });
+    }
 
-        findViewById(R.id.btn_to_post_Top).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                floatingActionMenu.close(true);
-                commentListRecyclerView.smoothScrollToPosition(0);
+    @Override
+    public void onBackPressed() {
+        if (floatingActionMenu != null && floatingActionMenu.isShown()) {
+            if (floatingActionMenu.isOpened()) {
+                floatingActionMenu.close(false);
             }
-        });
-
-        findViewById(R.id.btn_post_refresh).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                floatingActionMenu.close(true);
-                //TODO
-            }
-        });
+            floatingActionMenu.hideMenu(false);
+        }
+        super.onBackPressed();
     }
 }
