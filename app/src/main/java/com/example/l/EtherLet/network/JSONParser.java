@@ -4,14 +4,13 @@ import android.util.Log;
 
 import com.example.l.EtherLet.model.CoinInfo;
 import com.example.l.EtherLet.model.Post;
-import com.example.l.EtherLet.model.Transaction;
+import com.example.l.EtherLet.model.WalletModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,12 +102,12 @@ public class JSONParser {
         return price;
     }
 
-    public static List<Transaction> parseJsonToTxList(JSONObject jsonObject){
-        List<Transaction> TxList=new ArrayList<>();
+    public static List<WalletModel.Transaction> parseJsonToTxList(JSONObject jsonObject){
+        List<WalletModel.Transaction> TxList=new ArrayList<>();
         try{
             JSONArray dataList=jsonObject.optJSONArray("result");
             for(int i=0;i<dataList.length();i++){
-                Transaction Tx=new Transaction();
+                WalletModel.Transaction Tx=new WalletModel.Transaction();
                 JSONObject data=dataList.getJSONObject(i);
                 Tx.setTimeStamp(data.getString("timeStamp"));
                 Tx.setSenderAddress(data.getString("from"));

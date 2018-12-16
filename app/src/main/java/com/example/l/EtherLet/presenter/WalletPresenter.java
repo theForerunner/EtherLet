@@ -1,6 +1,7 @@
 package com.example.l.EtherLet.presenter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.example.l.EtherLet.model.WalletModel;
 import com.example.l.EtherLet.network.JSONParser;
@@ -31,8 +32,9 @@ public class WalletPresenter implements WalletModel.ApiAccessCallBack {
         myWallet.getDollarBalance(this,context);
     }
 
-    public void sendMoney(){
+    public Bitmap sendMoney(){
         //TODO 新活动，显示好友列表，搜索用户和扫描二维码选项
+        return myWallet.getAddressQrCode();
     }
 
     public void requestMoney(){

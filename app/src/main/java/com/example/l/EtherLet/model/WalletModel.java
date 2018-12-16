@@ -1,10 +1,13 @@
 package com.example.l.EtherLet.model;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.l.EtherLet.network.VolleyCallback;
 import com.example.l.EtherLet.network.VolleyRequest;
+import com.example.l.EtherLet.presenter.QRCodeUtil;
+import com.google.zxing.qrcode.encoder.QRCode;
 
 import org.json.JSONObject;
 import org.web3j.crypto.Credentials;
@@ -76,6 +79,10 @@ public class WalletModel {
         }
     }
 
+    public Bitmap getAddressQrCode(){
+        return QRCodeUtil.createQRCodeBitmap(credentials.getAddress(),480,480);
+    }
+
     public void getTransactionList(final ApiAccessCallBack callback,Context context){
         VolleyRequest.getJSONObject(
                 JsonObjectRequest.Method.POST,
@@ -97,17 +104,69 @@ public class WalletModel {
     }
 
     public interface ApiAccessCallBack {
-        /*
-        void onGetBalanceSuccess(JSONObject jsonObject);
-
-        void onGetDollarBalanceSuccess(JSONObject jsonObject);
-
-        void onGetTransactionListSuccess(JSONObject jsonObject);
-        */
-
         void onGetBalanceSuccess(JSONObject jsonObject);
         void onGetTxListSuccess(JSONObject jsonObject);
         void onFailure();
+    }
+
+
+    public static class Transaction {
+        private String senderAddress;
+        private String receiverAddress;
+        private String value;
+        private String timeStamp;
+        private String status;
+
+        public Transaction(){}
+
+        public Transaction(boolean init){
+            if(!init) return;
+            senderAddress="jhdsbcscldjncsldnl327e8fsdnsd";
+            receiverAddress="sdcskjcnlkjdnv3872sjdfvkjsd";
+            value="16.00";
+            timeStamp="20181212";
+            status="1";
+        }
+
+        public String getSenderAddress() {
+            return senderAddress;
+        }
+
+        public void setSenderAddress(String senderAddress) {
+            this.senderAddress = senderAddress;
+        }
+
+        public void setReceiverAddress(String receiverAddress) {
+            this.receiverAddress = receiverAddress;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+
+        public void setTimeStamp(String timeStamp) {
+            this.timeStamp = timeStamp;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public String getReceiverAddress() {
+            return receiverAddress;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public String getTimeStamp() {
+            return timeStamp;
+        }
+
+        public String getStatus() {
+            return status;
+        }
     }
 
 

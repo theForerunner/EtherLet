@@ -10,7 +10,7 @@ public class WalletSendActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wallet_send);
+        setContentView(R.layout.qr_code_layout);
     }
 
 }
