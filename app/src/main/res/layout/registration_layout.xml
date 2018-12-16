@@ -88,7 +88,7 @@
         app:met_primaryColor="@color/colorEditText"
         app:met_textColorHint="@color/colorHint" />
 
-    <com.gc.materialdesign.views.ButtonRectangle
+    <android.support.design.button.MaterialButton
         android:id="@+id/button_sign"
         android:layout_width="212dp"
         android:layout_height="50dp"
