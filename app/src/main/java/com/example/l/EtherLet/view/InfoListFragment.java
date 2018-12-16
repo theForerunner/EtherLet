@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.button.MaterialButton;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -47,6 +50,8 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
     private ArrayList<String> rangeList=new ArrayList<>();
     private String rangeSelect;
     private boolean ifVisible = false;
+
+    private BottomSheetDialog newPostBottomSheetDialog;
 
 
     public static InfoListFragment newInstance() {
@@ -181,7 +186,6 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
                 priceTextView.setText(convertPrice(coinInfo.getPriceUSD()));
                 highPriceTextView.setText(convertPrice(coinInfo.getHigh()));
                 lowPriceTextView.setText(convertPrice(coinInfo.getLow()));
-
                 String changeRange="";
                 if(rangeSelect.equals("Month")){
                     changeRange=coinInfo.getChangeMonthly();
