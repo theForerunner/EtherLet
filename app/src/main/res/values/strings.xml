@@ -31,4 +31,9 @@
     <string name="display_test_string_post_comment_count">50</string>
     <string name="display_test_string_post_btn_share">Share</string>
     <string name="title_activity_wallet_send">WalletSendActivity</string>
+
+    <string name="new_post_sheet_hint_title">An interesting title</string>
+    <string name="new_post_sheet_hint_content">Your post content</string>
+
+    <string name="new_comment_sheet_hint">Your comment</string>
 </resources>

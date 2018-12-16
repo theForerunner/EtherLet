@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.button.MaterialButton;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,14 +27,22 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class PostListFragment extends Fragment implements PostListViewInterface {
 
-    private RecyclerView postListRecyclerView;
+    @BindView(R.id.post_list_recycler)
+    RecyclerView postListRecyclerView;
+    @BindView(R.id.post_list_slide_refresh)
+    SwipeRefreshLayout swipeRefreshLayout;
+    @Nullable
+    FloatingActionMenu floatingActionMenu;
     private PostAdapter postAdapter;
     private PostPresenter postPresenter;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private FloatingActionMenu floatingActionMenu;
     private boolean ifVisible = false;
+    private BottomSheetDialog newPostBottomSheetDialog;
+
 
     public static PostListFragment newInstance() {
         PostListFragment postListFragment = new PostListFragment();
@@ -45,9 +55,10 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.post_list_fragment, container, false);
+        ButterKnife.bind(this, view);
 
         postPresenter = new PostPresenter(PostListFragment.this);
-        postListRecyclerView = view.findViewById(R.id.post_list_recycler);
+        //postListRecyclerView = view.findViewById(R.id.post_list_recycler);
         postListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         postAdapter = new PostAdapter(initDefaultPostList());
@@ -59,13 +70,17 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy > 0) {
-                    floatingActionMenu.hideMenu(true);
+                    if (floatingActionMenu != null) {
+                        floatingActionMenu.hideMenu(true);
+                    }
                 } else if (dy < 0) {
-                    floatingActionMenu.showMenu(true);
+                    if (floatingActionMenu != null) {
+                        floatingActionMenu.showMenu(true);
+                    }
                 }
             }
         });
-        swipeRefreshLayout = view.findViewById(R.id.post_list_slide_refresh);
+        //swipeRefreshLayout = view.findViewById(R.id.post_list_slide_refresh);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -74,8 +89,11 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
             }
         });
 
-        floatingActionMenu = getActivity().findViewById(R.id.post_list_floating_menu);
+        if (getActivity() != null) {
+            floatingActionMenu = getActivity().findViewById(R.id.post_list_floating_menu);
+        }
 
+        setUpBottomSheetDialog();
         setUpFloatingActionBtn();
 
         return view;
@@ -84,7 +102,7 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
     @Override
     public void showFailureMessage() {
         swipeRefreshLayout.setRefreshing(false);
-        if (isVisible()) {
+        if (ifVisible) {
             Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_LONG).show();
         }
     }
@@ -96,24 +114,21 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
         swipeRefreshLayout.setRefreshing(false);
     }
 
-    private class PostHolder extends RecyclerView.ViewHolder{
+    class PostHolder extends RecyclerView.ViewHolder{
         private Post mPost;
 
-        private CardView postCardView;
-        private TextView postSubtitleTextView;
-        private TextView postCreatorTextView;
-        private TextView postCreateDateTextView;
-        private MaterialButton btnComment;
-        private MaterialButton btnShare;
+        @BindView(R.id.post_cardView)
+        CardView postCardView;
+        @BindView(R.id.post_title)
+        TextView postSubtitleTextView;
+        @BindView(R.id.post_creator_and_time)
+        TextView postCreatorTextView;
+        @BindView(R.id.post_content)
+        TextView postCreateDateTextView;
 
-        private PostHolder(View itemView) {
+        PostHolder(View itemView) {
             super(itemView);
-            postCardView = itemView.findViewById(R.id.post_cardView);
-            postSubtitleTextView = itemView.findViewById(R.id.post_title);
-            postCreatorTextView = itemView.findViewById(R.id.post_creator_and_time);
-            postCreateDateTextView = itemView.findViewById(R.id.post_content);
-            btnComment = itemView.findViewById(R.id.btn_comment);
-            btnShare = itemView.findViewById(R.id.btn_share);
+            ButterKnife.bind(this, itemView);
         }
 
         private void bindPost(Post post) {
@@ -121,30 +136,18 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
             postSubtitleTextView.setText(mPost.getSubtitle());
             postCreatorTextView.setText("Posted by " + mPost.getCreatorName() + " at " + mPost.getCreateDate());
             postCreateDateTextView.setText(R.string.display_test_string_post_content);
-            btnComment.setText("" + mPost.getCommentCount());
 
-            postCardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), PostDetailedPageActivity.class);
-                    startActivity(intent);
-                }
-            });
-
-            btnComment.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), PostDetailedPageActivity.class);
-                    startActivity(intent);
-                }
-            });
-
-            btnShare.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
+            if (floatingActionMenu != null) {
+                postCardView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getActivity(), PostDetailedPageActivity.class);
+                        startActivity(intent);
+                        floatingActionMenu.close(true);
+                        floatingActionMenu.hideMenu(false);
+                    }
+                });
+            }
         }
     }
 
@@ -176,39 +179,76 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
     }
 
     private void setUpFloatingActionBtn() {
-        getActivity().findViewById(R.id.btn_post).setOnClickListener(new View.OnClickListener() {
+        if (getActivity() != null && floatingActionMenu != null) {
+            getActivity().findViewById(R.id.btn_post).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    floatingActionMenu.close(false);
+
+                    newPostBottomSheetDialog.show();
+                    //Intent intent = new Intent(getActivity(), NewPostPageActivity.class);
+                    //startActivity(intent);
+                }
+            });
+
+            getActivity().findViewById(R.id.btn_toTop).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    floatingActionMenu.close(true);
+                    postListRecyclerView.smoothScrollToPosition(0);
+                }
+            });
+
+            getActivity().findViewById(R.id.btn_refresh).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    floatingActionMenu.close(true);
+                    swipeRefreshLayout.setRefreshing(true);
+                    postPresenter.loadPostList(getActivity());
+                }
+            });
+        }
+    }
+
+    private void setUpBottomSheetDialog() {
+        newPostBottomSheetDialog = new BottomSheetDialog(getActivity());
+        View bottomSheetView = LayoutInflater.from(getActivity()).inflate(R.layout.new_post_sheet_layout, null);
+        newPostBottomSheetDialog.setContentView(bottomSheetView);
+        newPostBottomSheetDialog.getDelegate().findViewById(android.support.design.R.id.design_bottom_sheet).setBackgroundColor(ContextCompat.getColor(getActivity(), android.R.color.transparent));
+        newPostBottomSheetDialog.setCancelable(true);
+        newPostBottomSheetDialog.setCanceledOnTouchOutside(true);
+
+        MaterialButton btnCancel = bottomSheetView.findViewById(R.id.btn_new_post_cancel);
+        MaterialButton btnPost = bottomSheetView.findViewById(R.id.btn_new_post);
+        btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                floatingActionMenu.close(false);
-                Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivity(intent);
+                newPostBottomSheetDialog.cancel();
+            }
+        });
+        btnPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO
             }
         });
 
-        getActivity().findViewById(R.id.btn_toTop).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                floatingActionMenu.close(true);
-                postListRecyclerView.smoothScrollToPosition(0);
-            }
-        });
-
-        getActivity().findViewById(R.id.btn_refresh).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                floatingActionMenu.close(true);
-                swipeRefreshLayout.setRefreshing(true);
-                postPresenter.loadPostList(getActivity());
-            }
-        });
     }
 
     private List<Post> initDefaultPostList() {
         List<Post> defaultPostList = new ArrayList<>();
-        Post post = new Post(1, getActivity().getString(R.string.display_test_string_post_title), 1, "Creator", new Timestamp(System.currentTimeMillis()), 10);
-        for (int i = 0; i < 20; i++) {
-            defaultPostList.add(post);
+        if (getActivity() != null) {
+            Post post = new Post(1, getActivity().getString(R.string.display_test_string_post_title), 1, "Creator", new Timestamp(System.currentTimeMillis()), 10);
+            for (int i = 0; i < 20; i++) {
+                defaultPostList.add(post);
+            }
         }
         return defaultPostList;
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        ifVisible = isVisibleToUser;
     }
 }

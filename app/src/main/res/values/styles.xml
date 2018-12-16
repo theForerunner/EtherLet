@@ -24,4 +24,13 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+    <style name="TabLayoutTextStyle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="MyEditText" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/background</item>
+        <item name="colorControlActivated">@color/background</item>
+    </style>
 </resources>

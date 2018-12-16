@@ -2,13 +2,16 @@ package com.example.l.EtherLet;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -48,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
     TabLayout tabLayout;
     @BindView(R.id.post_list_floating_menu)
     FloatingActionMenu floatingActionMenu;
-
     private Drawer drawer;
     AccountHeader accountHeader;
 
@@ -61,8 +63,9 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.baseline_menu_white_24);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         floatingActionMenu.setVisibility(View.GONE);
 
@@ -85,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 if (floatingActionMenu.isOpened()) {
-                    floatingActionMenu.close(false);
+                    floatingActionMenu.close(true);
                 }
                 floatingActionMenu.setVisibility(View.GONE);
             }
@@ -112,13 +115,19 @@ public class MainActivity extends AppCompatActivity {
                 .withOnlyMainProfileImageVisible(true)
                 .withTextColorRes(R.color.black_semi_transparent)
                 .addProfiles(
-                        new ProfileDrawerItem().withName("Mike Penz").withEmail("mikepenz@gmail.com").withIcon(ContextCompat.getDrawable(this, R.drawable.my_profile)),
+                        new ProfileDrawerItem().withName("theForerunner").withEmail("4runn3rcn@gmail.com").withIcon(ContextCompat.getDrawable(this, R.drawable.my_profile)),
                         new ProfileSettingDrawerItem().withName("Add Account").withIcon(GoogleMaterial.Icon.gmd_person_add).withIdentifier(100000),
                         new ProfileSettingDrawerItem().withName("Manage Account").withIcon(GoogleMaterial.Icon.gmd_settings).withIdentifier(100001)
                 )
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
                     public boolean onProfileChanged(View view, IProfile profile, boolean current) {
+                        if (profile instanceof IDrawerItem) {
+                            if (profile.getIdentifier() == 100000) {
+                                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                            }
+                        }
                         return false;
                     }
                 }).withOnAccountHeaderProfileImageListener(new AccountHeader.OnAccountHeaderProfileImageListener() {
@@ -135,9 +144,13 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
                         return true;
                     }
+                }).withOnAccountHeaderSelectionViewClickListener(new AccountHeader.OnAccountHeaderSelectionViewClickListener() {
+                    @Override
+                    public boolean onClick(View view, IProfile profile) {
+                        return false;
+                    }
                 })
                 .build();
-
     }
 
     private void setUpDrawer() {
@@ -189,5 +202,11 @@ public class MainActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        floatingActionMenu.showMenu(true);
     }
 }

@@ -46,6 +46,7 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
     private boolean click=false;
     private ArrayList<String> rangeList=new ArrayList<>();
     private String rangeSelect;
+    private boolean ifVisible = false;
 
 
     public static InfoListFragment newInstance() {
@@ -132,7 +133,7 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
     @Override
     public void showFailMessage(){
         infoSwipeRefreshLayout.setRefreshing(false);
-        if (isVisible()) {
+        if (ifVisible) {
             Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_LONG).show();
         }
     }
@@ -284,5 +285,11 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
         rangeList.add("Daily");
         rangeList.add("Week");
         rangeList.add("Month");
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        ifVisible = isVisibleToUser;
     }
 }
