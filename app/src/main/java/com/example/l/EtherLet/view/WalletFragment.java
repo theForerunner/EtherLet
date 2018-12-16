@@ -15,9 +15,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.model.WalletModel;
 import com.example.l.EtherLet.presenter.WalletPresenter;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +38,7 @@ public class WalletFragment extends Fragment {
     private SwipeRefreshLayout swipeRefreshLayout;
     private BottomSheetDialog newQRCodeBottomSheetDialog;
     private Button sendMoney;
+    private Button requestMoney;
 
     public static WalletFragment newInstance() {
         WalletFragment f = new WalletFragment();
@@ -57,13 +63,20 @@ public class WalletFragment extends Fragment {
         setUpBottomSheetDialog();
 
         sendMoney=rootView.findViewById(R.id.Send);
+        requestMoney=rootView.findViewById(R.id.request);
         sendMoney.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //walletPresenter.sendMoney("0x6B96D5c8AbA7fEf48f958Cc9Bb9023DF57B85925");
                 sendMoney();
             }
         });
-
+        requestMoney.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                requestMoney();
+            }
+        });
         return rootView;
     }
 
@@ -79,13 +92,31 @@ public class WalletFragment extends Fragment {
         transactionListRecyclerView.setAdapter(transactionAdapter);
     }
 
-    public void sendMoney() {
+    public void requestMoney() {
         newQRCodeBottomSheetDialog.show();
     }
 
-    public void requestMoney() {
+    public void sendMoney() {
+        new IntentIntegrator(this.getActivity())
+                .setOrientationLocked(false)
+                .setCaptureActivity(CodeScanActivity.class) // 设置自定义的activity是CustomActivity
+                .initiateScan(); // 初始化扫描
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
+        if(intentResult != null) {
+            if(intentResult.getContents() == null) {
+                return;
+            } else {
+                String ScanResult = intentResult.getContents();
+                System.out.println(ScanResult);
+                walletPresenter.sendMoney(ScanResult);
+            }
+        } else {
+            super.onActivityResult(requestCode,resultCode,data);
+        }
+    }
 
     /**
      * Recycler view for transaction list
@@ -165,6 +196,6 @@ public class WalletFragment extends Fragment {
         newQRCodeBottomSheetDialog.setCanceledOnTouchOutside(true);
 
         ImageView qrImage=bottomSheetView.findViewById(R.id.qr_code);
-        qrImage.setImageBitmap(walletPresenter.sendMoney());
+        qrImage.setImageBitmap(walletPresenter.requestMoney());
     }
 }

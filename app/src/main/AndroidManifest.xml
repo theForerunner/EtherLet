@@ -25,9 +25,7 @@
         <activity android:name=".view.LoginActivity" />
         <activity android:name=".view.RegistrationActivity" />
         <activity android:name=".view.PostDetailedPageActivity" />
-        <activity
-            android:name=".view.WalletSendActivity"
-            android:label="@string/title_activity_wallet_send"></activity>
+        <activity android:name=".view.CodeScanActivity"></activity>
     </application>
 
 </manifest>

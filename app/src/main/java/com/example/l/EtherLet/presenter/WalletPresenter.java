@@ -32,13 +32,14 @@ public class WalletPresenter implements WalletModel.ApiAccessCallBack {
         myWallet.getDollarBalance(this,context);
     }
 
-    public Bitmap sendMoney(){
+    public Bitmap requestMoney(){
         //TODO 新活动，显示好友列表，搜索用户和扫描二维码选项
         return myWallet.getAddressQrCode();
     }
 
-    public void requestMoney(){
-        //TODO 新活动，显示好友列表，搜索用户和展示二维码选项
+    public void sendMoney(String address){
+        //TODO 新活动，显示好友列表，搜索用户和展示二维码选项；做金额输入页面
+        myWallet.makeTransaction(address,(float)0.01);
     }
 
     public void getTransactionList(Context context){
