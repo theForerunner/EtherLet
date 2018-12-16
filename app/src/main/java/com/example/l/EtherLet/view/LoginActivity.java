@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.button.MaterialButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -21,7 +22,6 @@ import android.widget.Toast;
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.model.UserModel;
 import com.example.l.EtherLet.presenter.LoginPresenter;
-import com.gc.materialdesign.views.ButtonRectangle;
 
 import java.util.ArrayList;
 
@@ -30,8 +30,8 @@ public class LoginActivity extends AppCompatActivity implements LoginViewInterfa
     private ConstraintLayout constraintLayout;
     private EditText userId;
     private EditText userPassword;
-    private ButtonRectangle loginButton;
-    private ButtonRectangle RegisterButton;
+    private MaterialButton loginButton;
+    private MaterialButton RegisterButton;
     private TextView userHistory;
     private ListPopupWindow historyWindow;
     private CheckBox checkSavePassword;

@@ -25,8 +25,9 @@ public class InfoPresenter implements InfoPresenterInterface, CoinInfoList.InfoL
 
     @Override
     public void onInfoSuccess(JSONObject jsonObject){
-        //infoList.setInfoList(JSONParser.parseJSONToInfoList(jsonObject));
-        //infoListViewInterface.updateInfoList(JSONParser.parseJSONToInfoList(jsonObject));
+        if(infoList.isInit()){
+            infoListViewInterface.updateInfoList(JSONParser.parseJSONToInfoList(jsonObject));
+        }
         infoListViewInterface.initInfoList(JSONParser.parseJSONToInfoList(jsonObject));
     }
 
