@@ -4,12 +4,14 @@ import android.util.Log;
 
 import com.example.l.EtherLet.model.CoinInfo;
 import com.example.l.EtherLet.model.Post;
+import com.example.l.EtherLet.model.Transaction;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,10 +86,40 @@ public class JSONParser {
     public static BigDecimal parseJsonToAccountBalance(JSONObject jsonObject){
         BigDecimal balance=null;
         try{
-            balance=new BigDecimal(jsonObject.getString("result"));
+            balance=new BigDecimal(jsonObject.getString("result")).divide(new BigDecimal(10e17));
         }catch (Exception e){
             e.printStackTrace();
         }
         return balance;
+    }
+
+    public static BigDecimal parseJsonToDollarPrice(JSONObject jsonObject){
+        BigDecimal price=null;
+        try{
+            price=new BigDecimal(jsonObject.getString("ethusd"));
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return price;
+    }
+
+    public static List<Transaction> parseJsonToTxList(JSONObject jsonObject){
+        List<Transaction> TxList=new ArrayList<>();
+        try{
+            JSONArray dataList=jsonObject.optJSONArray("result");
+            for(int i=0;i<dataList.length();i++){
+                Transaction Tx=new Transaction();
+                JSONObject data=dataList.getJSONObject(i);
+                Tx.setTimeStamp(data.getString("timeStamp"));
+                Tx.setSenderAddress(data.getString("from"));
+                Tx.setReceiverAddress(data.getString("to"));
+                Tx.setValue(data.getString("value"));
+                Tx.setStatus(data.getString("txreceipt_status"));
+                TxList.add(Tx);
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return TxList;
     }
 }

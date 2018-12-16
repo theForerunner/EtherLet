@@ -8,9 +8,9 @@ import com.example.l.EtherLet.view.WalletFragment;
 
 import org.json.JSONObject;
 
-import java.math.BigDecimal;
+import java.math.RoundingMode;
 
-public class WalletPresenter implements WalletModel.balanceCallBack {
+public class WalletPresenter implements WalletModel.ApiAccessCallBack {
     private WalletModel myWallet;
     private WalletFragment walletFragment;
 
@@ -27,6 +27,9 @@ public class WalletPresenter implements WalletModel.balanceCallBack {
     public void getBalance(Context context){
         myWallet.getBalance(this,context);
     }
+    public void getDollarBalance(Context context){
+        myWallet.getDollarBalance(this,context);
+    }
 
     public void sendMoney(){
         //TODO 新活动，显示好友列表，搜索用户和扫描二维码选项
@@ -36,13 +39,22 @@ public class WalletPresenter implements WalletModel.balanceCallBack {
         //TODO 新活动，显示好友列表，搜索用户和展示二维码选项
     }
 
+    public void getTransactionList(Context context){
+        myWallet.getTransactionList(this,context);
+    }
+
     @Override
-    public void onSuccess(JSONObject jsonObject){
-        walletFragment.showBalance(JSONParser.parseJsonToAccountBalance(jsonObject));
+    public void onGetBalanceSuccess(JSONObject ethObject){
+        walletFragment.showBalance(JSONParser.parseJsonToAccountBalance(ethObject).setScale(2,RoundingMode.HALF_UP));
+    }
+
+    @Override
+    public void onGetTxListSuccess(JSONObject jsonObject){
+        walletFragment.showTransactionList(JSONParser.parseJsonToTxList(jsonObject));
     }
 
     @Override
     public void onFailure(){
-        //todo 失败信息
+        System.out.println("Connection Error: Volley Fail!!");
     }
 }

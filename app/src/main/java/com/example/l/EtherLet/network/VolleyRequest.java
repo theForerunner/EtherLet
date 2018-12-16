@@ -24,7 +24,6 @@ public class VolleyRequest {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.i("VOLLEY", response.toString());
-                    //volleyCallback.onSuccess(response);
                     volleyCallback.onSuccess(response, context);
                 }
             }, new Response.ErrorListener() {
@@ -40,5 +39,4 @@ public class VolleyRequest {
             e.printStackTrace();
         }
     }
-
 }
