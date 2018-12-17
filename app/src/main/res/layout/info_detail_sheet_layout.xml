@@ -12,7 +12,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="400dp"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -31,42 +31,136 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            tools:layout_editor_absoluteY="50dp">
 
 
             <TextView
-                android:id="@+id/textView2"
+                android:id="@+id/info_detail_symbol"
                 android:layout_width="71dp"
-                android:layout_height="48dp"
+                android:layout_height="34dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:textColor="@color/md_black_1000"
+                android:layout_marginBottom="308dp"
+                android:gravity="top"
                 android:text="BTC"
+                android:textColor="@color/md_black_1000"
                 android:textSize="30dp"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.026"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0" />
 
             <com.github.mikephil.charting.charts.CandleStickChart
                 android:id="@+id/candler_chart"
                 android:layout_width="match_parent"
-                android:layout_height="444dp"
+                android:layout_height="288dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView2" />
+                app:layout_constraintTop_toBottomOf="@+id/info_detail_symbol"
+                app:layout_constraintVertical_bias="0.333" />
+
+            <TextView
+                android:id="@+id/info_detail_volume_text"
+                android:layout_width="57dp"
+                android:layout_height="21dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="Volume:"
+                android:textSize="15dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.228"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.041" />
+
+            <TextView
+                android:id="@+id/info_detail_volume"
+                android:layout_width="wrap_content"
+                android:layout_height="19dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="volume"
+                android:textColor="@color/md_light_blue_800"
+                android:textSize="15dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/info_detail_volume_text"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.044" />
+
+            <LinearLayout
+                android:id="@+id/info_detail_range_button_layout"
+                android:layout_width="55dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="300dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.041">
+
+                <TextView
+                    android:id="@+id/text_info_detail_range"
+                    android:layout_width="44dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:text="Month"
+                    android:textColor="@color/md_light_blue_800"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/text_info_detail_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:gravity="left"
+                    android:text="▼"
+                    android:textColor="@color/md_light_blue_800"
+                    android:textSize="10dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/info_detail_range"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="Range:"
+                android:textSize="15dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.795"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.041" />
+
         </android.support.constraint.ConstraintLayout>
-
-
-
 
 
     </LinearLayout>

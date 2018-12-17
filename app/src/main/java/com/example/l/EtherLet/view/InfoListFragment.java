@@ -1,9 +1,7 @@
 package com.example.l.EtherLet.view;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.icu.text.IDNA;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,7 +18,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
@@ -29,20 +26,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.l.EtherLet.R;
-import com.example.l.EtherLet.model.CandleEntry;
 import com.example.l.EtherLet.model.CoinInfo;
-import com.example.l.EtherLet.model.Post;
 import com.example.l.EtherLet.presenter.InfoPresenter;
-import com.example.l.EtherLet.presenter.PostPresenter;
 import com.github.mikephil.charting.charts.CandleStickChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.CandleData;
 import com.github.mikephil.charting.data.CandleDataSet;
+import com.github.mikephil.charting.data.CandleEntry;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class InfoListFragment extends Fragment implements InfoListViewInterface {
 
@@ -55,12 +53,16 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
     private LinearLayout rangeLayout;
     private ListPopupWindow rangeWindow;
     private boolean click=false;
+    private boolean clickDetail=false;
     private ArrayList<String> rangeList=new ArrayList<>();
     private String rangeSelect;
+    private ArrayList<String> detailRangeList=new ArrayList<>();
+    private String detailRangeSelect;
     private boolean ifVisible = false;
-
+    private List<com.github.mikephil.charting.data.CandleEntry> candleEntryList=new ArrayList<>();
+    private CandleStickChart candleStickChart;
+    private String dataSet;
     private BottomSheetDialog infoDetailBottomSheetDialog;
-
 
     public static InfoListFragment newInstance() {
         InfoListFragment infoListFragment = new InfoListFragment();
@@ -79,9 +81,8 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
         initRangeList();
         rangeSelect = "Month";
         rangeWindow = new ListPopupWindow(getActivity());
-
+        initDetailRangeList();
         infoPresenter = new InfoPresenter(InfoListFragment.this);
-
         infoRecyclerView = view.findViewById(R.id.info_recycler);
         infoRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this.getActivity(), DividerItemDecoration.VERTICAL);
@@ -123,7 +124,6 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
         });
         return view;
     }
-
 
     @Override
     public void initInfoList(List<CoinInfo> list)
@@ -226,16 +226,50 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
                 constraintLayout.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
                         infoDetailBottomSheetDialog = new BottomSheetDialog(getActivity());
                         View bottomSheetView = LayoutInflater.from(getActivity()).inflate(R.layout.info_detail_sheet_layout, null);
                         infoDetailBottomSheetDialog.setContentView(bottomSheetView);
                         infoDetailBottomSheetDialog.getDelegate().findViewById(android.support.design.R.id.design_bottom_sheet).setBackgroundColor(ContextCompat.getColor(getActivity(), android.R.color.transparent));
-                        infoDetailBottomSheetDialog.setCancelable(true);
+                        infoDetailBottomSheetDialog.setCancelable(false);
                         infoDetailBottomSheetDialog.setCanceledOnTouchOutside(true);
+                        TextView symbolText=bottomSheetView.findViewById(R.id.info_detail_symbol);
+                        TextView volumeText=bottomSheetView.findViewById(R.id.info_detail_volume);
+                        symbolText.setText(info.getSymbol());
+                        volumeText.setText(info.getVolume());
                         MaterialButton btnCancel = bottomSheetView.findViewById(R.id.btn_info_detail_cancel);
-                        CandleStickChart candleStickChart=bottomSheetView.findViewById(R.id.candler_chart);
+                        LinearLayout detailRangeLayout=bottomSheetView.findViewById(R.id.info_detail_range_button_layout);
+                        TextView detailRange=bottomSheetView.findViewById(R.id.text_info_detail_range);
+                        candleStickChart=bottomSheetView.findViewById(R.id.candler_chart);
+                        detailRangeSelect="5m";
+                        detailRange.setText(detailRangeSelect);
+                        ListPopupWindow detailRangeWindow=new ListPopupWindow(getActivity());
+                        dataSet=info.getName();
+                        initCandleChart(info.getSymbol(),"bitfinex",detailRangeSelect,candleStickChart);
+                        detailRangeLayout.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                if(!clickDetail){
+                                    detailRangeWindow.setAdapter(new ArrayAdapter(getActivity(),R.layout.history_list,detailRangeList));
+                                    detailRangeWindow.setDropDownGravity(Gravity.END);
+                                    detailRangeWindow.setAnchorView(detailRangeLayout);
+                                    detailRangeWindow.show();
+                                    clickDetail=true;
+                                }
+                                else clickDetail=false;
 
-                        initCandleChart(candleStickChart);
+                            }
+                        });
+                        detailRangeWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                detailRange.setText(detailRangeList.get(position));
+                                detailRangeSelect=detailRangeList.get(position);
+                                infoPresenter.getCandleEntryList(info.getSymbol(),"bitfinex",detailRangeSelect,getActivity());
+                                detailRangeWindow.dismiss();
+                                clickDetail=false;
+                            }
+                        });
                         btnCancel.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -243,13 +277,9 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
                             }
                         });
                         infoDetailBottomSheetDialog.show();
-
                     }
                 });
-
             }
-
-
         }
     }
 
@@ -308,6 +338,14 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
         rangeList.add("Week");
         rangeList.add("Month");
     }
+    public void initDetailRangeList(){
+        detailRangeList.add("5m");
+        detailRangeList.add("15m");
+        detailRangeList.add("30m");
+        detailRangeList.add("1h");
+        detailRangeList.add("6h");
+        detailRangeList.add("1d");
+    }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
@@ -315,54 +353,56 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
         ifVisible = isVisibleToUser;
     }
 
-    public void initCandleChart(CandleStickChart mChart){
+    public void initCandleChart(String symbol,String trader,String _enum,CandleStickChart mChart){
+        mChart.setDrawBorders(true);
+        mChart.setBorderWidth(1);
         mChart.setDrawGridBackground(false);
         mChart.setTouchEnabled(true);
         mChart.setDragEnabled(true);
         mChart.setScaleEnabled(true);
-        mChart.setPinchZoom(true);
-        mChart.setDrawGridBackground(false); // 是否显示表格颜色
-        //mChart.setBackgroundColor(color);// 设置背景
-        //mChart.setGridBackgroundColor(color);//设置表格背景色
-        mChart.setTouchEnabled(true); // enable touch gestures
-        mChart.setDragEnabled(true);// 是否可以拖拽
-        mChart.setScaleEnabled(true);// 是否可以缩放
-        mChart.setPinchZoom(false);// if disabled, scaling can be done on x- and y-axis separately
-        mChart.setScaleYEnabled(false);// if disabled, scaling can be done on x-axis
-        mChart.setScaleXEnabled(false);// if disabled, scaling can be done on  y-axis
-        mChart.animateX(2500); // 立即执行的动画,x轴
-
+        mChart.setScaleXEnabled(true);
+        mChart.setScaleYEnabled(true);
+        mChart.setDrawGridBackground(false);
+        mChart.setNoDataText("Now Loading Data......Please Click to Refresh");
+        Description description=new Description();
+        description.setText("");
+        mChart.setDescription(description);
         XAxis xAxis =mChart.getXAxis();
+        xAxis.setDrawLabels(true);
+        xAxis.setDrawAxisLine(false);
+        xAxis.setDrawGridLines(false);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setDrawGridLines(true);
-        //xAxis.setGridColor(colorLine);//X轴刻度线颜色
-        //xAxis.setTextColor(colorText);//X轴文字颜色
         YAxis leftAxis = mChart.getAxisLeft();
         leftAxis.setEnabled(true);
         leftAxis.setLabelCount(7,false);
         leftAxis.setDrawGridLines(true);
         leftAxis.setDrawAxisLine(false);
-        //leftAxis.setGridColor(colorLine);
-        //leftAxis.setTextColor(colorText);
         YAxis rightAxis =mChart.getAxisRight();
         rightAxis.setEnabled(false);
+        infoPresenter.getCandleEntryList(symbol,trader,_enum,getActivity());
+    }
 
-        List<com.github.mikephil.charting.data.CandleEntry> list=null;
-        CandleDataSet set = new CandleDataSet(list, "Data Set");
+    @Override
+    public void setCandleEntryList(List<CandleEntry> list){
+
+        candleEntryList=list;
+        CandleDataSet set = new CandleDataSet(candleEntryList, dataSet);
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
-        set.setShadowColor(Color.DKGRAY);//影线颜色
-        set.setShadowColorSameAsCandle(true);//影线颜色与实体一致
+        set.setShadowColor(Color.DKGRAY);
+        set.setShadowColorSameAsCandle(true);
         set.setShadowWidth(0.7f);//影线
         set.setDecreasingColor(Color.RED);
-        set.setDecreasingPaintStyle(Paint.Style.FILL);//红涨，实体
+        set.setDecreasingPaintStyle(Paint.Style.FILL);
         set.setIncreasingColor(Color.GREEN);
-        set.setIncreasingPaintStyle(Paint.Style.STROKE);//绿跌，空心
-        set.setNeutralColor(Color.RED);//当天价格不涨不跌（一字线）颜色
-        set.setHighlightLineWidth(1f);//选中蜡烛时的线宽
-        set.setDrawValues(false);//在图表中的元素上面是否显示数值
-
-
+        set.setIncreasingPaintStyle(Paint.Style.STROKE);
+        set.setNeutralColor(Color.RED);
+        set.setHighlightLineWidth(1f);
+        set.setDrawValues(true);
+        CandleData data = new CandleData(set);
+        candleStickChart.setData(data);
 
     }
+
 
 }
