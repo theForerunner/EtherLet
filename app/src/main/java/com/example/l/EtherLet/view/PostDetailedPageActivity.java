@@ -7,6 +7,7 @@ import android.support.design.button.MaterialButton;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,9 +17,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.l.EtherLet.R;
-import com.example.l.EtherLet.model.Comment;
+import com.example.l.EtherLet.model.dto.CommentDTO;
+import com.example.l.EtherLet.model.dto.UserDTO;
+import com.example.l.EtherLet.presenter.CommentPresenter;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
@@ -28,8 +35,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
-public class PostDetailedPageActivity extends AppCompatActivity {
+public class PostDetailedPageActivity extends AppCompatActivity implements CommentListViewInterface{
     @Nullable
     @BindView(R.id.post_detailed_page_toolbar)
     Toolbar toolbar;
@@ -47,7 +55,13 @@ public class PostDetailedPageActivity extends AppCompatActivity {
     NestedScrollView nestedScrollView;
     @BindView(R.id.post_detailed_header)
     LinearLayout postContentLinearLayout;
+    @BindView(R.id.post_detailed_comment_count)
+    TextView postDetailedCommentCountTextView;
+    @BindView(R.id.comment_list_swipe_refresh)
+    SwipeRefreshLayout commentListSwipeRefreshLayout;
     private BottomSheetDialog newCommentBottomSheetDialog;
+    private CommentAdapter commentAdapter;
+    private CommentPresenter commentPresenter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,44 +74,66 @@ public class PostDetailedPageActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        commentListRecyclerView.setLayoutManager(new LinearLayoutManager(PostDetailedPageActivity.this));
-        CommentAdapter commentAdapter = new CommentAdapter(initDefaultCommentList());
-        commentListRecyclerView.setAdapter(commentAdapter);
+        commentPresenter = new CommentPresenter(this);
 
-        nestedScrollView.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-                if (scrollY - oldScrollY > 10) {
-                    floatingActionMenu.hideMenu(true);
-                } else if (oldScrollY - scrollY > 10) {
-                    floatingActionMenu.showMenu(true);
-                }
+        commentListRecyclerView.setLayoutManager(new LinearLayoutManager(PostDetailedPageActivity.this));
+        commentAdapter = new CommentAdapter(initDefaultCommentList());
+        commentListRecyclerView.setAdapter(commentAdapter);
+        commentPresenter.loadCommentList(this);
+
+        nestedScrollView.setOnScrollChangeListener((View.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (scrollY - oldScrollY > 10) {
+                floatingActionMenu.hideMenu(true);
+            } else if (oldScrollY - scrollY > 10) {
+                floatingActionMenu.showMenu(true);
             }
         });
+
+        commentListSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        commentListSwipeRefreshLayout.setOnRefreshListener(() -> commentPresenter.loadCommentList(this));
+
         setUpBottomSheetDialog();
         setUpFloatingActionBtn();
+
         commentListRecyclerView.setFocusable(false);
     }
 
-    private class CommentHolder extends RecyclerView.ViewHolder {
-        private Comment mComment;
+    class CommentHolder extends RecyclerView.ViewHolder {
+        private CommentDTO mCommentDTO;
+
+        @BindView(R.id.commenter_image)
+        CircleImageView commenterImage;
+        @BindView(R.id.commenter_name)
+        TextView commenterName;
+        @BindView(R.id.comment_time)
+        TextView commentTime;
+        @BindView(R.id.comment_seq)
+        TextView commentSeq;
+        @BindView(R.id.comment_content)
+        TextView commentContent;
 
         private CommentHolder(View itemView) {
             super(itemView);
-            //TODO
+            ButterKnife.bind(this, itemView);
         }
 
-        private void bindComment(Comment comment) {
-            mComment = comment;
-            //TODO
+        private void bindComment(CommentDTO commentDTO) {
+            mCommentDTO = commentDTO;
+            Glide.with(PostDetailedPageActivity.this)
+                    .load(getString(R.string.host_url_real_share) + getString(R.string.download_user_image_path) + mCommentDTO.getCommentSender().getUserId())
+                    .apply(new RequestOptions().placeholder(R.drawable.my_profile))
+                    .into(commenterImage);
+            commenterName.setText(mCommentDTO.getCommentSender().getUserUsername());
+            commentTime.setText(getString(R.string.comment_time_text_view_header) + mCommentDTO.getCommentTime().toString());
+            commentContent.setText(mCommentDTO.getCommentContent());
         }
     }
 
     private class CommentAdapter extends RecyclerView.Adapter<CommentHolder> {
-        private List<Comment> commentList;
+        private List<CommentDTO> commentDTOList;
 
-        CommentAdapter(List<Comment> commentList) {
-            this.commentList = commentList;
+        CommentAdapter(List<CommentDTO> commentDTOList) {
+            this.commentDTOList = commentDTOList;
         }
 
         @NonNull
@@ -110,13 +146,13 @@ public class PostDetailedPageActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull CommentHolder commentHolder, int i) {
-            Comment comment = commentList.get(i);
-            commentHolder.bindComment(comment);
+            CommentDTO commentDTO = commentDTOList.get(i);
+            commentHolder.bindComment(commentDTO);
         }
 
         @Override
         public int getItemCount() {
-            return commentList.size();
+            return commentDTOList.size();
         }
     }
 
@@ -131,37 +167,30 @@ public class PostDetailedPageActivity extends AppCompatActivity {
         return true;
     }
 
-    private List<Comment> initDefaultCommentList() {
-        List<Comment> commentList = new ArrayList<>();
-        Comment comment = new Comment(1, "This is a sample content of a comment. Bla bla bla.", 1, "Commenter", new Timestamp(System.currentTimeMillis()), commentList.size() + 1, 5);
+    private List<CommentDTO> initDefaultCommentList() {
+        List<CommentDTO> commentDTOList = new ArrayList<>();
+        CommentDTO commentDTO = new CommentDTO(1, "This is a sample content of a commentDTO. Bla bla bla.", 1, new UserDTO(1, "theForerunner"), new Timestamp(System.currentTimeMillis()));
         for (int i = 0; i < 20; i++) {
-            commentList.add(comment);
+            commentDTOList.add(commentDTO);
         }
-        return commentList;
+        return commentDTOList;
     }
 
     private void setUpFloatingActionBtn() {
-        btnComment.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                floatingActionMenu.close(true);
-                newCommentBottomSheetDialog.show();
-            }
+        btnComment.setOnClickListener(v -> {
+            floatingActionMenu.close(true);
+            newCommentBottomSheetDialog.show();
         });
 
-        btnToTop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                floatingActionMenu.close(true);
-                nestedScrollView.smoothScrollTo(0, postContentLinearLayout.getTop());
-            }
+        btnToTop.setOnClickListener(v -> {
+            floatingActionMenu.close(true);
+            nestedScrollView.smoothScrollTo(0, postContentLinearLayout.getTop());
         });
 
-        btnRefresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                floatingActionMenu.close(true);
-            }
+        btnRefresh.setOnClickListener(v -> {
+            floatingActionMenu.close(true);
+            commentListSwipeRefreshLayout.setRefreshing(true);
+            commentPresenter.loadCommentList(PostDetailedPageActivity.this);
         });
     }
 
@@ -199,5 +228,19 @@ public class PostDetailedPageActivity extends AppCompatActivity {
             floatingActionMenu.hideMenu(false);
         }
         super.onBackPressed();
+    }
+
+    @Override
+    public void showFailureMessage() {
+        commentListSwipeRefreshLayout.setRefreshing(false);
+        Toast.makeText(this, "Network Error", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showCommentList(List<CommentDTO> commentDTOList) {
+        commentAdapter = new CommentAdapter(commentDTOList);
+        commentListRecyclerView.setAdapter(commentAdapter);
+        postDetailedCommentCountTextView.setText(commentDTOList.size());
+        commentListSwipeRefreshLayout.setRefreshing(false);
     }
 }

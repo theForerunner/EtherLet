@@ -2,7 +2,6 @@ package com.example.l.EtherLet.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.button.MaterialButton;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -15,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.model.WalletModel;
@@ -26,8 +24,6 @@ import com.google.zxing.integration.android.IntentResult;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
-import io.reactivex.annotations.Nullable;
 
 
 public class WalletFragment extends Fragment {
@@ -81,8 +77,8 @@ public class WalletFragment extends Fragment {
     }
 
     public void showBalance(BigDecimal balance) {
-        TextView ethView = this.getActivity().findViewById(R.id.balanceEth);
-        TextView dollarView = this.getActivity().findViewById(R.id.balanceDollar);
+        TextView ethView = getActivity().findViewById(R.id.balanceEth);
+        TextView dollarView = getActivity().findViewById(R.id.balanceDollar);
         ethView.setText(balance.toString() + " ETH");
         //dollarView.setText("$"+dollarBalance.toString()+" USD");
     }
