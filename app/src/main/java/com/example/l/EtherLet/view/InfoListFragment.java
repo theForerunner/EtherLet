@@ -401,7 +401,7 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
             set.setIncreasingPaintStyle(Paint.Style.STROKE);
             set.setNeutralColor(Color.RED);
             set.setHighlightLineWidth(1f);
-            set.setDrawValues(true);
+            set.setDrawValues(false);
             CandleData data = new CandleData(set);
             candleStickChart.setData(data);
         }
