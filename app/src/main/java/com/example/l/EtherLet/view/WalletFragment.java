@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class WalletFragment extends Fragment {
+public class WalletFragment extends Fragment implements WalletInterface{
 
     private WalletPresenter walletPresenter;
     private RecyclerView transactionListRecyclerView;
@@ -76,6 +76,7 @@ public class WalletFragment extends Fragment {
         return rootView;
     }
 
+    @Override
     public void showBalance(BigDecimal balance) {
         TextView ethView = getActivity().findViewById(R.id.balanceEth);
         TextView dollarView = getActivity().findViewById(R.id.balanceDollar);
@@ -83,15 +84,18 @@ public class WalletFragment extends Fragment {
         //dollarView.setText("$"+dollarBalance.toString()+" USD");
     }
 
+    @Override
     public void showTransactionList(List<WalletModel.Transaction> transactionList) {
         transactionAdapter=new TransactionAdapter(transactionList);
         transactionListRecyclerView.setAdapter(transactionAdapter);
     }
 
+    @Override
     public void requestMoney() {
         newQRCodeBottomSheetDialog.show();
     }
 
+    @Override
     public void sendMoney() {
         new IntentIntegrator(this.getActivity())
                 .setOrientationLocked(false)
