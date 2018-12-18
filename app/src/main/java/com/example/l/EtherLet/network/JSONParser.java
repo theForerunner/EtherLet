@@ -3,7 +3,10 @@ package com.example.l.EtherLet.network;
 import android.util.Log;
 
 import com.example.l.EtherLet.model.CoinInfo;
-import com.example.l.EtherLet.model.Post;
+import com.example.l.EtherLet.model.dto.CommentDTO;
+import com.example.l.EtherLet.model.dto.FriendDTO;
+import com.example.l.EtherLet.model.dto.PostDTO;
+import com.example.l.EtherLet.model.dto.UserDTO;
 import com.example.l.EtherLet.model.WalletModel;
 import com.example.l.EtherLet.view.InfoListViewInterface;
 import com.github.mikephil.charting.data.CandleEntry;
@@ -23,23 +26,57 @@ public class JSONParser {
 
     private static int length=150;
 
-    public static List<Post> parseJsonToPostList(JSONObject jsonObject) {
-        List<Post> postList = new ArrayList<>();
+    public static List<PostDTO> parseJsonToPostList(JSONObject jsonObject) {
+        List<PostDTO> postDTOList = new ArrayList<>();
         try {
             JSONObject data = jsonObject.getJSONObject("data");
             JSONArray postArray = data.getJSONArray("list");
             for (int i = 0; i < postArray.length(); i++) {
                 JSONObject postObject = postArray.getJSONObject(i);
                 Log.i("DT", postObject.toString());
-                Post post = new Post(postObject.getInt("id"), postObject.getString("subtitle"), postObject.getInt("creatorId"), postObject.getString("creatorName"), new Timestamp(postObject.getLong("createDate")), 0);
-                postList.add(post);
+                JSONObject userObject = postObject.getJSONObject("postCreator");
+                PostDTO postDTO = new PostDTO(postObject.getInt("postId"), postObject.getString("postTitle"), new UserDTO(userObject.getInt("userId"), userObject.getString("userUsername")), postObject.getString("postContent"), new Timestamp(postObject.getLong("postTime")));
+                postDTOList.add(postDTO);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.i("DT", "Length of postList: " + postList.size());
-        return postList;
+        Log.i("DT", "Length of postDTOList: " + postDTOList.size());
+        return postDTOList;
 
+    }
+
+    public static List<CommentDTO> parseJsonToCommentList(JSONObject jsonObject) {
+        List<CommentDTO> commentDTOList = new ArrayList<>();
+        try {
+            JSONObject data = jsonObject.getJSONObject("data");
+            JSONArray commentArray = data.getJSONArray("list");
+            for (int i = 0; i < commentArray.length(); i++) {
+                JSONObject commentObject = commentArray.getJSONObject(i);
+                Log.i("DT", commentObject.toString());
+                JSONObject userObject = commentObject.getJSONObject("commentSender");
+                CommentDTO commentDTO = new CommentDTO(commentObject.getInt("commentId"), commentObject.getString("commentContent"), commentObject.getInt("postId"), new UserDTO(userObject.getInt("userId"), userObject.getString("userUsername")), new Timestamp(commentObject.getLong("commentTime")));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return commentDTOList;
+    }
+
+    public static List<FriendDTO> parseJsonToFriendList(JSONObject jsonObject) {
+        List<FriendDTO> friendDTOList = new ArrayList<>();
+        try {
+            JSONObject data = jsonObject.getJSONObject("data");
+            JSONArray friendArray = data.getJSONArray("list");
+            for (int i = 0; i < friendArray.length(); i++) {
+                JSONObject friendObject = friendArray.getJSONObject(i);
+                Log.i("DT", friendObject.toString());
+                FriendDTO friendDTO = new FriendDTO(friendObject.getInt("friendshipId"), friendObject.getInt("userId"), friendObject.getString("userUsername"), friendObject.getString("userKey"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return friendDTOList;
     }
 
     public static List<String> parseJSONToNameList(JSONObject jsonObject){

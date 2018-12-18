@@ -1,7 +1,5 @@
 package com.example.l.EtherLet.view;
 
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,6 +26,15 @@ import android.widget.Toast;
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.model.CoinInfo;
 import com.example.l.EtherLet.presenter.InfoPresenter;
+
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
+
+import android.graphics.Color;
+import android.graphics.Paint;
+
 import com.github.mikephil.charting.charts.CandleStickChart;
 import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.Legend;
@@ -36,11 +43,6 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.CandleData;
 import com.github.mikephil.charting.data.CandleDataSet;
 import com.github.mikephil.charting.data.CandleEntry;
-
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
 
 public class InfoListFragment extends Fragment implements InfoListViewInterface {
 

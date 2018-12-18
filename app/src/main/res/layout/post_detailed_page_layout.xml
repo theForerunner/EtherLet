@@ -40,7 +40,7 @@
         android:id="@+id/post_detailed_nested_scroll_page"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="android.support.design.widget.AppBarLayout$ScrollingViewBehavior"
+        android:fillViewport="true"
         android:background="@color/white_pressed">
 
         <LinearLayout
@@ -63,7 +63,7 @@
                     android:layout_marginEnd="10dp">
 
                     <de.hdodenhof.circleimageview.CircleImageView
-                        android:id="@+id/post_creator_image"
+                        android:id="@+id/post_detailed_creator_image"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_alignParentStart="true"
@@ -71,28 +71,28 @@
                         android:src="@drawable/my_profile" />
 
                     <TextView
-                        android:id="@+id/post_creator_name"
+                        android:id="@+id/post_detailed_creator_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/display_test_string_post_creator"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="@color/black_semi_transparent"
-                        android:layout_toEndOf="@+id/post_creator_image"
+                        android:layout_toEndOf="@+id/post_detailed_creator_image"
                         android:layout_marginTop="10dp" />
 
                     <TextView
-                        android:id="@+id/post_create_time"
+                        android:id="@+id/post_detailed_create_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/display_test_string_post_time"
                         android:textSize="14sp"
                         android:textColor="@color/half_black"
-                        android:layout_toEndOf="@+id/post_creator_image"
-                        android:layout_below="@+id/post_creator_name"/>
+                        android:layout_toEndOf="@+id/post_detailed_creator_image"
+                        android:layout_below="@+id/post_detailed_creator_name"/>
 
                     <TextView
-                        android:id="@+id/post_comment_count"
+                        android:id="@+id/post_detailed_comment_count"
                         android:drawableStart="@drawable/baseline_comment_black_18dp"
                         android:drawablePadding="10dp"
                         android:drawableTint="@color/grey"
@@ -132,13 +132,20 @@
 
             </LinearLayout>
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/comment_list_recycler"
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/comment_list_swipe_refresh"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp">
+                android:layout_height="match_parent">
 
-            </android.support.v7.widget.RecyclerView>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/comment_list_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                </android.support.v7.widget.RecyclerView>
+
+            </android.support.v4.widget.SwipeRefreshLayout>
 
         </LinearLayout>
 
