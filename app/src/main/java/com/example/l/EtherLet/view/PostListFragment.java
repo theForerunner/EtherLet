@@ -138,7 +138,7 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
             mPostDTO = postDTO;
             postTitle.setText(mPostDTO.getPostTitle());
             postCreatorName.setText(mPostDTO.getPostCreator().getUserUsername());
-            postCreateTime.setText(getString(R.string.post_create_time_text_view_header) + mPostDTO.getPostTime().toString());
+            postCreateTime.setText(getString(R.string.post_create_time_text_view_header) + " " + mPostDTO.getPostTime().toString());
             postCreateContent.setText(mPostDTO.getPostContent());
             Glide.with(getView())
                     .load(getString(R.string.host_url_real_share) + getString(R.string.download_user_image_path) + mPostDTO.getPostCreator().getUserId())
@@ -149,6 +149,12 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
                     floatingActionMenu.close(true);
                     floatingActionMenu.hideMenu(false);
                     Intent intent = new Intent(getActivity(), PostDetailedPageActivity.class);
+                    intent.putExtra("postCreatorId", mPostDTO.getPostCreator().getUserId());
+                    intent.putExtra("postCreatorName", mPostDTO.getPostCreator().getUserUsername());
+                    intent.putExtra("postCreateTime", mPostDTO.getPostTime().toString());
+                    intent.putExtra("postTitle", mPostDTO.getPostTitle());
+                    intent.putExtra("postContent", mPostDTO.getPostContent());
+                    intent.putExtra("postId", mPostDTO.getPostId());
                     startActivity(intent);
                 });
             }

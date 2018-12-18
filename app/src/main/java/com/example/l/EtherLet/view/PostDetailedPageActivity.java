@@ -1,5 +1,6 @@
 package com.example.l.EtherLet.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -56,9 +57,19 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
     @BindView(R.id.post_detailed_header)
     LinearLayout postContentLinearLayout;
     @BindView(R.id.post_detailed_comment_count)
-    TextView postDetailedCommentCountTextView;
+    TextView postDetailedCommentCount;
     @BindView(R.id.comment_list_swipe_refresh)
     SwipeRefreshLayout commentListSwipeRefreshLayout;
+    @BindView(R.id.post_detailed_creator_image)
+    CircleImageView posterImage;
+    @BindView(R.id.post_detailed_creator_name)
+    TextView posterName;
+    @BindView(R.id.post_detailed_create_time)
+    TextView postTime;
+    @BindView(R.id.post_detailed_title)
+    TextView postTitle;
+    @BindView(R.id.post_detailed_content)
+    TextView postContent;
     private BottomSheetDialog newCommentBottomSheetDialog;
     private CommentAdapter commentAdapter;
     private CommentPresenter commentPresenter;
@@ -68,6 +79,16 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
         super.onCreate(savedInstanceState);
         setContentView(R.layout.post_detailed_page_layout);
         ButterKnife.bind(this);
+
+        Intent intent = getIntent();
+        Glide.with(this)
+                .load(getString(R.string.host_url_real_share) + getString(R.string.download_user_image_path) + intent.getIntExtra("postCreatorId", 1))
+                .apply(new RequestOptions().placeholder(R.drawable.my_profile))
+                .into(posterImage);
+        posterName.setText(intent.getStringExtra("postCreatorName"));
+        postTime.setText(getString(R.string.post_create_time_text_view_header) + " " + intent.getStringExtra("postCreateTime"));
+        postTitle.setText(intent.getStringExtra("postTitle"));
+        postContent.setText(intent.getStringExtra("postContent"));
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -79,7 +100,8 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
         commentListRecyclerView.setLayoutManager(new LinearLayoutManager(PostDetailedPageActivity.this));
         commentAdapter = new CommentAdapter(initDefaultCommentList());
         commentListRecyclerView.setAdapter(commentAdapter);
-        commentPresenter.loadCommentList(this);
+        int postId = intent.getIntExtra("postId", 1);
+        commentPresenter.loadCommentList(this, postId);
 
         nestedScrollView.setOnScrollChangeListener((View.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
             if (scrollY - oldScrollY > 10) {
@@ -90,10 +112,10 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
         });
 
         commentListSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
-        commentListSwipeRefreshLayout.setOnRefreshListener(() -> commentPresenter.loadCommentList(this));
+        commentListSwipeRefreshLayout.setOnRefreshListener(() -> commentPresenter.loadCommentList(this, postId));
 
         setUpBottomSheetDialog();
-        setUpFloatingActionBtn();
+        setUpFloatingActionBtn(postId);
 
         commentListRecyclerView.setFocusable(false);
     }
@@ -124,7 +146,7 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
                     .apply(new RequestOptions().placeholder(R.drawable.my_profile))
                     .into(commenterImage);
             commenterName.setText(mCommentDTO.getCommentSender().getUserUsername());
-            commentTime.setText(getString(R.string.comment_time_text_view_header) + mCommentDTO.getCommentTime().toString());
+            commentTime.setText(getString(R.string.comment_time_text_view_header) + " " + mCommentDTO.getCommentTime().toString());
             commentContent.setText(mCommentDTO.getCommentContent());
         }
     }
@@ -176,7 +198,7 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
         return commentDTOList;
     }
 
-    private void setUpFloatingActionBtn() {
+    private void setUpFloatingActionBtn(int post_id) {
         btnComment.setOnClickListener(v -> {
             floatingActionMenu.close(true);
             newCommentBottomSheetDialog.show();
@@ -190,7 +212,7 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
         btnRefresh.setOnClickListener(v -> {
             floatingActionMenu.close(true);
             commentListSwipeRefreshLayout.setRefreshing(true);
-            commentPresenter.loadCommentList(PostDetailedPageActivity.this);
+            commentPresenter.loadCommentList(PostDetailedPageActivity.this, post_id);
         });
     }
 
@@ -204,17 +226,9 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
 
         MaterialButton btnCancel = bottomSheetView.findViewById(R.id.btn_new_comment_cancel);
         MaterialButton btnPost = bottomSheetView.findViewById(R.id.btn_new_comment);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                newCommentBottomSheetDialog.cancel();
-            }
-        });
-        btnPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO
-            }
+        btnCancel.setOnClickListener(v -> newCommentBottomSheetDialog.cancel());
+        btnPost.setOnClickListener(v -> {
+            //TODO
         });
 
     }
@@ -240,7 +254,7 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
     public void showCommentList(List<CommentDTO> commentDTOList) {
         commentAdapter = new CommentAdapter(commentDTOList);
         commentListRecyclerView.setAdapter(commentAdapter);
-        postDetailedCommentCountTextView.setText(commentDTOList.size());
+        postDetailedCommentCount.setText("" + commentDTOList.size());
         commentListSwipeRefreshLayout.setRefreshing(false);
     }
 }

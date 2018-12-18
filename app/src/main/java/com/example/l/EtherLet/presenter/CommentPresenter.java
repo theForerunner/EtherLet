@@ -18,8 +18,8 @@ public class CommentPresenter implements CommentPresenterInterface, CommentList.
     }
 
     @Override
-    public void loadCommentList(Context context) {
-        commentList.getCommentList(this, context);
+    public void loadCommentList(Context context, int post_id) {
+        commentList.getCommentList(this, context, post_id);
     }
 
     @Override

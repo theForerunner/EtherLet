@@ -2,7 +2,6 @@ package com.example.l.EtherLet.model;
 
 import android.content.Context;
 
-import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.network.VolleyCallback;
@@ -15,8 +14,8 @@ import java.util.Map;
 public class CommentList implements CommentListInterface {
 
     @Override
-    public void getCommentList(LoadDataCallBack callBack, Context context) {
-        VolleyRequest.getJSONObject(JsonObjectRequest.Method.GET, context.getString(R.string.host_url_real_share) + context.getString(R.string.get_comment_list_path), null, context, new VolleyCallback() {
+    public void getCommentList(LoadDataCallBack callBack, Context context, int post_id) {
+        VolleyRequest.getJSONObject(JsonObjectRequest.Method.GET, context.getString(R.string.host_url_real_share) + context.getString(R.string.get_comment_list_path) + post_id, null, context, new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject, Context context) {
                 callBack.onSuccess(jsonObject);

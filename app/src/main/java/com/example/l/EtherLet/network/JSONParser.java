@@ -52,6 +52,7 @@ public class JSONParser {
                 Log.i("DT", commentObject.toString());
                 JSONObject userObject = commentObject.getJSONObject("commentSender");
                 CommentDTO commentDTO = new CommentDTO(commentObject.getInt("commentId"), commentObject.getString("commentContent"), commentObject.getInt("postId"), new UserDTO(userObject.getInt("userId"), userObject.getString("userUsername")), new Timestamp(commentObject.getLong("commentTime")));
+                commentDTOList.add(commentDTO);
             }
         } catch (Exception e) {
             e.printStackTrace();
