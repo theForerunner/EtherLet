@@ -3,6 +3,7 @@ package com.example.l.EtherLet.view;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.button.MaterialButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -12,7 +13,6 @@ import android.widget.Toast;
 
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.presenter.RegistrationPresenter;
-import com.gc.materialdesign.views.ButtonRectangle;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 public class RegistrationActivity extends AppCompatActivity implements RegistrationViewInterface {
@@ -22,7 +22,7 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
     private MaterialEditText editID;
     private MaterialEditText editPassword;
     private MaterialEditText editPasswordRepeat;
-    private ButtonRectangle signButton;
+    private MaterialButton signButton;
     private static RegistrationActivity instance;
 
     private RegistrationPresenter presenter;

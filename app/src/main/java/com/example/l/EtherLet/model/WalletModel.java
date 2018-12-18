@@ -19,13 +19,15 @@ import org.web3j.utils.Convert;
 
 import java.math.BigDecimal;
 
+import static org.web3j.protocol.Web3j.*;
+
 public class WalletModel {
     private String url ="https://ropsten.infura.io/v3/311d966c7f17491d9528f19b47dea261";
     private Web3j web3j;
     private Credentials credentials;
 
     public WalletModel(String privateKey){
-        web3j=Web3j.build(new HttpService(url));
+        web3j=build(new HttpService(url));
         credentials  = Credentials.create(privateKey);
     }
 
