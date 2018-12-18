@@ -63,7 +63,6 @@ public class WalletFragment extends Fragment implements WalletInterface{
         sendMoney.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //walletPresenter.sendMoney("0x6B96D5c8AbA7fEf48f958Cc9Bb9023DF57B85925");
                 sendMoney();
             }
         });

@@ -6,11 +6,11 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface WalletInterface {
-    public void showBalance(BigDecimal balance);
+    void showBalance(BigDecimal balance);
 
-    public void showTransactionList(List<WalletModel.Transaction> transactionList);
+    void showTransactionList(List<WalletModel.Transaction> transactionList);
 
-    public void requestMoney();
+    void requestMoney();
 
-    public void sendMoney();
+    void sendMoney();
 }
