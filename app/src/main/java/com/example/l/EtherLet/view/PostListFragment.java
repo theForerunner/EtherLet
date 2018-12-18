@@ -15,11 +15,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.l.EtherLet.GlobalData;
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.model.dto.PostDTO;
 import com.example.l.EtherLet.model.dto.UserDTO;
@@ -28,7 +30,9 @@ import com.github.clans.fab.FloatingActionMenu;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,7 +50,7 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
     private PostPresenter postPresenter;
     private boolean ifVisible = false;
     private BottomSheetDialog newPostBottomSheetDialog;
-
+    private GlobalData globalData;
 
     public static PostListFragment newInstance() {
         PostListFragment postListFragment = new PostListFragment();
@@ -60,6 +64,8 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.post_list_fragment, container, false);
         ButterKnife.bind(this, view);
+
+        globalData = (GlobalData) getActivity().getApplication();
 
         postPresenter = new PostPresenter(PostListFragment.this);
 
@@ -151,7 +157,7 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
                     Intent intent = new Intent(getActivity(), PostDetailedPageActivity.class);
                     intent.putExtra("postCreatorId", mPostDTO.getPostCreator().getUserId());
                     intent.putExtra("postCreatorName", mPostDTO.getPostCreator().getUserUsername());
-                    intent.putExtra("postCreateTime", mPostDTO.getPostTime().toString());
+                    intent.putExtra("postCreateTime", mPostDTO.getPostTime());
                     intent.putExtra("postTitle", mPostDTO.getPostTitle());
                     intent.putExtra("postContent", mPostDTO.getPostContent());
                     intent.putExtra("postId", mPostDTO.getPostId());
@@ -218,9 +224,17 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
 
         MaterialButton btnCancel = bottomSheetView.findViewById(R.id.btn_new_post_cancel);
         MaterialButton btnPost = bottomSheetView.findViewById(R.id.btn_new_post);
+        EditText postTitle = bottomSheetView.findViewById(R.id.new_post_title_edit);
+        EditText postContent = bottomSheetView.findViewById(R.id.new_post_content_edit);
         btnCancel.setOnClickListener(v -> newPostBottomSheetDialog.cancel());
         btnPost.setOnClickListener(v -> {
-            //TODO
+            Map<String, Object> postMap = new HashMap<>();
+            postMap.put("postTitle", postTitle.getText().toString());
+            postMap.put("postContent", postContent.getText().toString());
+            postMap.put("postCreatorId", globalData.getPrimaryUser().getUserId());
+            postMap.put("postTime", System.currentTimeMillis());
+            postPresenter.addNewPost(getActivity(), postMap);
+            newPostBottomSheetDialog.cancel();
         });
 
     }

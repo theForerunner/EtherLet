@@ -4,12 +4,12 @@ import java.util.ArrayList;
 
 public class UserBusiness implements UserInterface {
     @Override
-    public void login(final String userId, final String password, final OnLoginListener listener) {
+    public void login(final String userAccount, final String password, final OnLoginListener listener) {
 
-        if(userId.equals("Robbin")&&password.equals("1234")){//模拟成功
-            UserModel user=new UserModel();
-            user.setUserId(userId);
-            user.setPassword(password);
+        if(userAccount.equals("Robbin")&&password.equals("1234")){//模拟成功
+            User user=new User();
+            user.setUserAccount(userAccount);
+            user.setUserPassword(password);
             listener.loginSuccess(user);
         }else
         {

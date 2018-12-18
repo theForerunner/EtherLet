@@ -14,7 +14,7 @@ import java.util.Map;
 public class PostList implements PostListInterface {
 
     @Override
-    public void getPostListData(final LoadDataCallBack callBack, Context context) {
+    public void loadPostListData(final LoadDataCallBack callBack, Context context) {
         VolleyRequest.getJSONObject(JsonObjectRequest.Method.GET, context.getString(R.string.host_url_real_share) + context.getString(R.string.get_post_list_path), null, context, new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject, Context context) {
@@ -30,7 +30,7 @@ public class PostList implements PostListInterface {
 
     @Override
     public void addNewPost(final LoadDataCallBack callBack, Context context, Map<String, Object> map) {
-        VolleyRequest.getJSONObject(JsonObjectRequest.Method.POST, context.getString(R.string.host_url_real) + context.getString(R.string.add_post_path), map, context, new VolleyCallback() {
+        VolleyRequest.getJSONObject(JsonObjectRequest.Method.POST, context.getString(R.string.host_url_real_share) + context.getString(R.string.add_post_path), map, context, new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject, Context context) {
                 callBack.onSuccess(jsonObject);

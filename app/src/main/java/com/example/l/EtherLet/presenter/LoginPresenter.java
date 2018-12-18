@@ -3,7 +3,7 @@ package com.example.l.EtherLet.presenter;
 import com.example.l.EtherLet.model.OnLoginListener;
 import com.example.l.EtherLet.model.UserBusiness;
 import com.example.l.EtherLet.model.UserInterface;
-import com.example.l.EtherLet.model.UserModel;
+import com.example.l.EtherLet.model.User;
 import com.example.l.EtherLet.view.LoginViewInterface;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public class LoginPresenter {
     public void Login(){
         userBusiness.login(loginView.getUserId(), loginView.getPassword(), new OnLoginListener() {
             @Override
-            public void loginSuccess(UserModel user) {
+            public void loginSuccess(User user) {
                 loginView.enterMainActivity(user);
 
             }

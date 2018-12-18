@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.l.EtherLet.model.User;
 import com.example.l.EtherLet.view.InfoListFragment;
 import com.example.l.EtherLet.view.LoginActivity;
 import com.example.l.EtherLet.view.MainPagerAdapter;
@@ -54,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        GlobalData globalData = (GlobalData) getApplication();
+        globalData.setPrimaryUser(new User(1, "4runn3rcn@gmail.com", "123456", "4Runn3r", "123456"));
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {

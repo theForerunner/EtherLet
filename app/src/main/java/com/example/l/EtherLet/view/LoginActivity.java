@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 
 import com.example.l.EtherLet.R;
-import com.example.l.EtherLet.model.UserModel;
+import com.example.l.EtherLet.model.User;
 import com.example.l.EtherLet.presenter.LoginPresenter;
 
 import java.util.ArrayList;
@@ -158,7 +158,7 @@ public class LoginActivity extends AppCompatActivity implements LoginViewInterfa
 
 
     @Override
-    public void enterMainActivity(UserModel user) {//转到主界面
+    public void enterMainActivity(User user) {//转到主界面
 
         //Intent intent = new Intent(LoginActivity.this,MainActivity.class);
         //startActivity(intent);
