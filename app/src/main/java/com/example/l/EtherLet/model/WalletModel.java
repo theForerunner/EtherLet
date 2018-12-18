@@ -2,22 +2,24 @@ package com.example.l.EtherLet.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.l.EtherLet.network.VolleyCallback;
 import com.example.l.EtherLet.network.VolleyRequest;
-import com.example.l.EtherLet.presenter.QRCodeUtil;
-import com.google.zxing.qrcode.encoder.QRCode;
+import com.example.l.EtherLet.network.Web3jRequest;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import org.json.JSONObject;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
-import org.web3j.tx.Transfer;
-import org.web3j.utils.Convert;
-
-import java.math.BigDecimal;
 
 import static org.web3j.protocol.Web3j.*;
 
@@ -70,19 +72,52 @@ public class WalletModel {
         );
     }
 
-    public void makeTransaction(String toAddress,float sum){
-        TransactionReceipt transactionReceipt = null;
+    public void makeTransaction(String toAddress,float sum,Handler handler){
+        /*
+        //TransactionReceipt transactionReceipt = null;
         try {
-            transactionReceipt = Transfer.sendFunds(
+            //transactionReceipt =
+            Transfer.sendFunds(
                     web3j, credentials, toAddress,
                     BigDecimal.valueOf(sum), Convert.Unit.ETHER).send();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        */
+        new Thread(new Web3jRequest(web3j, credentials, toAddress, sum,handler)).start();
     }
 
     public Bitmap getAddressQrCode(){
-        return QRCodeUtil.createQRCodeBitmap(credentials.getAddress(),480,480);
+        Bitmap bitmap = null;
+        BitMatrix result = null;
+        String str=credentials.getAddress();
+        MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+        try {
+            result = multiFormatWriter.encode(str, BarcodeFormat.QR_CODE, 480, 480);
+            // 使用 ZXing Android Embedded 要写的代码
+            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+            bitmap = barcodeEncoder.createBitmap(result);
+        } catch (WriterException e){
+            e.printStackTrace();
+        } catch (IllegalArgumentException iae){ // ?
+            return null;
+        }
+
+        // 如果不使用 ZXing Android Embedded 的话，要写的代码
+
+//        int w = result.getWidth();
+//        int h = result.getHeight();
+//        int[] pixels = new int[w * h];
+//        for (int y = 0; y < h; y++) {
+//            int offset = y * w;
+//            for (int x = 0; x < w; x++) {
+//                pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
+//            }
+//        }
+//        bitmap = Bitmap.createBitmap(w,h,Bitmap.Config.ARGB_8888);
+//        bitmap.setPixels(pixels,0,100,0,0,w,h);
+
+        return bitmap;
     }
 
     public void getTransactionList(final ApiAccessCallBack callback,Context context){
@@ -104,13 +139,6 @@ public class WalletModel {
                 }
         );
     }
-
-    public interface ApiAccessCallBack {
-        void onGetBalanceSuccess(JSONObject jsonObject);
-        void onGetTxListSuccess(JSONObject jsonObject);
-        void onFailure();
-    }
-
 
     public static class Transaction {
         private String senderAddress;
@@ -171,5 +199,9 @@ public class WalletModel {
         }
     }
 
-
+    public interface ApiAccessCallBack {
+        void onGetBalanceSuccess(JSONObject jsonObject);
+        void onGetTxListSuccess(JSONObject jsonObject);
+        void onFailure();
+    }
 }
