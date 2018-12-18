@@ -19,9 +19,9 @@ import butterknife.OnClick;
 
 public class CodeScanActivity extends AppCompatActivity implements DecoratedBarcodeView.TorchListener {
 
-    @BindView(R.id.btn_switch) Button swichLight;
-    @BindView(R.id.btn_hint1) Button hint1Show;
-    @BindView(R.id.btn_hint2) Button hint2Show;
+    //@BindView(R.id.btn_switch) Button swichLight;
+    //@BindView(R.id.btn_hint1) Button hint1Show;
+    //@BindView(R.id.btn_hint2) Button hint2Show;
     @BindView(R.id.dbv_custom) DecoratedBarcodeView mDBV;
 
     private CaptureManager captureManager;
@@ -63,18 +63,17 @@ public class CodeScanActivity extends AppCompatActivity implements DecoratedBarc
         ButterKnife.bind(this);
 
         mDBV.setTorchListener(this);
-
+        /*
         // 如果没有闪光灯功能，就去掉相关按钮
         if(!hasFlash()) {
             swichLight.setVisibility(View.GONE);
         }
-
+        */
         //重要代码，初始化捕获
         captureManager = new CaptureManager(this,mDBV);
         captureManager.initializeFromIntent(getIntent(),savedInstanceState);
         captureManager.decode();
     }
-
     // torch 手电筒
     @Override
     public void onTorchOn() {
@@ -88,11 +87,13 @@ public class CodeScanActivity extends AppCompatActivity implements DecoratedBarc
         isLightOn = false;
     }
 
+    /*
     // 判断是否有闪光灯功能
     private boolean hasFlash() {
         return getApplicationContext().getPackageManager()
                 .hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
     }
+
 
     // 点击切换闪光灯
     @OnClick(R.id.btn_switch)
@@ -103,4 +104,5 @@ public class CodeScanActivity extends AppCompatActivity implements DecoratedBarc
             mDBV.setTorchOn();
         }
     }
+    */
 }

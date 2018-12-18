@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import com.example.l.EtherLet.model.WalletModel;
 import com.example.l.EtherLet.network.JSONParser;
 import com.example.l.EtherLet.view.WalletFragment;
+import com.example.l.EtherLet.view.WalletInterface;
 
 import org.json.JSONObject;
 
@@ -13,14 +14,14 @@ import java.math.RoundingMode;
 
 public class WalletPresenter implements WalletModel.ApiAccessCallBack {
     private WalletModel myWallet;
-    private WalletFragment walletFragment;
+    private WalletInterface walletInterface;
 
     public WalletPresenter(WalletFragment walletFragment){
-        myWallet=new WalletModel(getUserPrivatekey());
-        this.walletFragment=walletFragment;
+        myWallet=new WalletModel(getUserPrivateKey());
+        this.walletInterface =walletFragment;
     }
 
-    private String getUserPrivatekey(){
+    private String getUserPrivateKey(){
         String privateKey="5f073440e41311395fcc0ff5b10454040ef332b02d2caf6976231450aede0f6a";
         return privateKey;
     }
@@ -48,12 +49,12 @@ public class WalletPresenter implements WalletModel.ApiAccessCallBack {
 
     @Override
     public void onGetBalanceSuccess(JSONObject ethObject){
-        walletFragment.showBalance(JSONParser.parseJsonToAccountBalance(ethObject).setScale(2,RoundingMode.HALF_UP));
+        walletInterface.showBalance(JSONParser.parseJsonToAccountBalance(ethObject).setScale(2,RoundingMode.HALF_UP));
     }
 
     @Override
     public void onGetTxListSuccess(JSONObject jsonObject){
-        walletFragment.showTransactionList(JSONParser.parseJsonToTxList(jsonObject));
+        walletInterface.showTransactionList(JSONParser.parseJsonToTxList(jsonObject));
     }
 
     @Override
