@@ -23,6 +23,7 @@
             android:layout_marginBottom="@dimen/material_drawer_account_header_horizontal_bottom"
             android:layout_marginStart="@dimen/material_drawer_vertical_padding"
             android:layout_marginTop="45dp"
+            android:scaleType="fitXY"
             android:clickable="true"
             android:elevation="2dp" />
 

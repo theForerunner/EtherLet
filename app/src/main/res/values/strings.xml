@@ -7,9 +7,10 @@
     <string name="host_url_real_share">http://192.168.137.1:8080</string>
     <string name="get_user_path">/user/</string>
     <string name="get_user_summary_path">/user/summary/</string>
+    <string name="user_login_path">/user/login</string>
     <string name="get_user_list_path">/user/list</string>
     <string name="update_user_path">/user/update</string>
-    <string name="add_user_path">/user/add</string>
+    <string name="add_user_path">/user/register</string>
     <string name="upload_user_image_path">/user/image/upload/</string>
     <string name="download_user_image_path">/user/image/download/</string>
     <string name="get_post_list_path">/post/list</string>
@@ -45,7 +46,6 @@
     <string name="display_test_string_post_btn_share">Share</string>
 
     <string name="title_activity_wallet_send">WalletSendActivity</string>
-
     <string name="new_post_sheet_hint_title">An interesting title</string>
     <string name="new_post_sheet_hint_content">Your postDTO content</string>
 

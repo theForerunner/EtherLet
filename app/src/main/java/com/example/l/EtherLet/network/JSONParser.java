@@ -2,12 +2,14 @@ package com.example.l.EtherLet.network;
 
 import android.util.Log;
 
-import com.example.l.EtherLet.model.CoinInfo;
+import com.example.l.EtherLet.model.dto.CoinInfo;
 import com.example.l.EtherLet.model.dto.CommentDTO;
 import com.example.l.EtherLet.model.dto.FriendDTO;
 import com.example.l.EtherLet.model.dto.PostDTO;
+import com.example.l.EtherLet.model.dto.User;
 import com.example.l.EtherLet.model.dto.UserDTO;
 import com.example.l.EtherLet.model.WalletModel;
+import com.github.mikephil.charting.data.CandleEntry;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,6 +23,17 @@ import java.util.List;
 public class JSONParser {
 
     private static int length=150;
+
+    public static User parseJsonToUser(JSONObject jsonObject) {
+        User user = null;
+        try {
+            JSONObject userData = jsonObject.getJSONObject("data");
+            user = new User(userData.getInt("userId"), userData.getString("userAccount"), userData.getString("userPassword"), userData.getString("userUsername"), userData.getString("userKey"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
 
     public static List<PostDTO> parseJsonToPostList(JSONObject jsonObject) {
         List<PostDTO> postDTOList = new ArrayList<>();
@@ -52,6 +65,7 @@ public class JSONParser {
                 Log.i("DT", commentObject.toString());
                 JSONObject userObject = commentObject.getJSONObject("commentSender");
                 CommentDTO commentDTO = new CommentDTO(commentObject.getInt("commentId"), commentObject.getString("commentContent"), commentObject.getInt("postId"), new UserDTO(userObject.getInt("userId"), userObject.getString("userUsername")), new Timestamp(commentObject.getLong("commentTime")));
+                commentDTOList.add(commentDTO);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -119,6 +133,99 @@ public class JSONParser {
         return list;
     }
 
+    public static List<CandleEntry> parseJSONToCandleEntryList(JSONObject jsonObject){
+        List<CandleEntry> candleEntryList=new ArrayList<>();
+        try{
+            /*String data=jsonObject.getString("data");
+            String date="";
+            String open="";
+            String close="";
+            String low="";
+            String high="";
+            String volumn="";
+            Float count=1.0f;
+            char current;
+            for(int i=0;i<data.length();i++){
+                current=data.charAt(i);
+                if(current=='['&&i!=0){
+                    i++;
+                    current=data.charAt(i);
+                    while(current!=','){
+                        date=date+current;
+                        i++;
+                        current=data.charAt(i);
+                    }
+                    i++;
+                    current=data.charAt(i);
+                    while(current!=','){
+                        open=open+current;
+                        i++;
+                        current=data.charAt(i);
+                    }
+                    i++;
+                    current=data.charAt(i);
+                    while(current!=','){
+                        close=close+current;
+                        i++;
+                        current=data.charAt(i);
+                    }
+                    i++;
+                    current=data.charAt(i);
+                    while(current!=','){
+                        low=low+current;
+                        i++;
+                        current=data.charAt(i);
+                    }
+                    i++;
+                    current=data.charAt(i);
+                    while(current!=','){
+                        high=high+current;
+                        i++;
+                        current=data.charAt(i);
+                    }
+                    i++;
+                    current=data.charAt(i);
+                    while(current!=']'){
+                        volumn=volumn+current;
+                        i++;
+                        current=data.charAt(i);
+                    }
+                    i++;
+                    current=data.charAt(i);
+                    Float fHigh=Float.parseFloat(high.trim());
+                    Float fLow=Float.parseFloat(low.trim());
+                    Float fOpen=Float.parseFloat(open.trim());
+                    Float fClose=Float.parseFloat(close.trim());
+                    CandleEntry candleEntry=new CandleEntry(count,fHigh,fLow,fOpen,fClose);
+                    candleEntryList.add(candleEntry);
+                    count=count+1;
+                    high="";
+                    low="";
+                    open="";
+                    close="";
+                }
+
+            }*/
+
+
+            String data=jsonObject.getString("data");
+            JSONArray dataList1=new JSONArray(data);
+            for(int i=0;i<dataList1.length();i++){
+                JSONArray dataList2=dataList1.getJSONArray(i);
+                Float open=Float.parseFloat(dataList2.get(1).toString());
+                Float close=Float.parseFloat(dataList2.get(2).toString());
+                Float low=Float.parseFloat(dataList2.get(3).toString());
+                Float high=Float.parseFloat(dataList2.get(4).toString());
+                CandleEntry candleEntry=new CandleEntry(i,high,low,open,close);
+                candleEntryList.add(candleEntry);
+            }
+
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+        return candleEntryList;
+    }
+
     public static BigDecimal parseJsonToAccountBalance(JSONObject jsonObject){
         BigDecimal balance=null;
         try{
@@ -158,4 +265,5 @@ public class JSONParser {
         }
         return TxList;
     }
+
 }
