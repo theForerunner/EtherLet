@@ -2,13 +2,13 @@ package com.example.l.EtherLet.network;
 
 import android.util.Log;
 
-import com.example.l.EtherLet.model.CoinInfo;
+import com.example.l.EtherLet.model.dto.CoinInfo;
 import com.example.l.EtherLet.model.dto.CommentDTO;
 import com.example.l.EtherLet.model.dto.FriendDTO;
 import com.example.l.EtherLet.model.dto.PostDTO;
+import com.example.l.EtherLet.model.dto.User;
 import com.example.l.EtherLet.model.dto.UserDTO;
 import com.example.l.EtherLet.model.WalletModel;
-import com.example.l.EtherLet.view.InfoListViewInterface;
 import com.github.mikephil.charting.data.CandleEntry;
 
 import org.json.JSONArray;
@@ -17,14 +17,23 @@ import org.json.JSONObject;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class JSONParser {
 
     private static int length=150;
+
+    public static User parseJsonToUser(JSONObject jsonObject) {
+        User user = null;
+        try {
+            JSONObject userData = jsonObject.getJSONObject("data");
+            user = new User(userData.getInt("userId"), userData.getString("userAccount"), userData.getString("userPassword"), userData.getString("userUsername"), userData.getString("userKey"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
 
     public static List<PostDTO> parseJsonToPostList(JSONObject jsonObject) {
         List<PostDTO> postDTOList = new ArrayList<>();
@@ -56,6 +65,7 @@ public class JSONParser {
                 Log.i("DT", commentObject.toString());
                 JSONObject userObject = commentObject.getJSONObject("commentSender");
                 CommentDTO commentDTO = new CommentDTO(commentObject.getInt("commentId"), commentObject.getString("commentContent"), commentObject.getInt("postId"), new UserDTO(userObject.getInt("userId"), userObject.getString("userUsername")), new Timestamp(commentObject.getLong("commentTime")));
+                commentDTOList.add(commentDTO);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -215,9 +225,6 @@ public class JSONParser {
         }
         return candleEntryList;
     }
-
-
-
 
     public static BigDecimal parseJsonToAccountBalance(JSONObject jsonObject){
         BigDecimal balance=null;

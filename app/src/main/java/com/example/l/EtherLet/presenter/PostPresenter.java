@@ -8,6 +8,8 @@ import com.example.l.EtherLet.view.PostListViewInterface;
 
 import org.json.JSONObject;
 
+import java.util.Map;
+
 public class PostPresenter implements PostPresenterInterface, PostList.LoadDataCallBack {
     private final PostListViewInterface postListViewInterface;
     private final PostList postList;
@@ -19,7 +21,12 @@ public class PostPresenter implements PostPresenterInterface, PostList.LoadDataC
 
     @Override
     public void loadPostList(Context context) {
-        postList.getPostListData(this, context);
+        postList.loadPostListData(this, context);
+    }
+
+    @Override
+    public void addNewPost(Context context, Map<String, Object> map) {
+        postList.addNewPost(this, context, map);
     }
 
     @Override

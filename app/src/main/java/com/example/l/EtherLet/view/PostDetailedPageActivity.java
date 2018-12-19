@@ -1,5 +1,6 @@
 package com.example.l.EtherLet.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,14 +17,17 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.l.EtherLet.GlobalData;
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.model.dto.CommentDTO;
+import com.example.l.EtherLet.model.dto.PostDTO;
 import com.example.l.EtherLet.model.dto.UserDTO;
 import com.example.l.EtherLet.presenter.CommentPresenter;
 import com.github.clans.fab.FloatingActionButton;
@@ -31,7 +35,9 @@ import com.github.clans.fab.FloatingActionMenu;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -56,18 +62,42 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
     @BindView(R.id.post_detailed_header)
     LinearLayout postContentLinearLayout;
     @BindView(R.id.post_detailed_comment_count)
-    TextView postDetailedCommentCountTextView;
+    TextView postDetailedCommentCount;
     @BindView(R.id.comment_list_swipe_refresh)
     SwipeRefreshLayout commentListSwipeRefreshLayout;
+    @BindView(R.id.post_detailed_creator_image)
+    CircleImageView posterImage;
+    @BindView(R.id.post_detailed_creator_name)
+    TextView posterName;
+    @BindView(R.id.post_detailed_create_time)
+    TextView postTime;
+    @BindView(R.id.post_detailed_title)
+    TextView postTitle;
+    @BindView(R.id.post_detailed_content)
+    TextView postContent;
     private BottomSheetDialog newCommentBottomSheetDialog;
     private CommentAdapter commentAdapter;
     private CommentPresenter commentPresenter;
-
+    private PostDTO postDTO;
+    GlobalData globalData;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.post_detailed_page_layout);
         ButterKnife.bind(this);
+
+        globalData = (GlobalData) getApplication();
+
+        Intent intent = getIntent();
+        postDTO = new PostDTO(intent.getIntExtra("postId", 1), intent.getStringExtra("postTitle"), new UserDTO(intent.getIntExtra("postCreatorId", 1), intent.getStringExtra("postCreatorName")), intent.getStringExtra("postContent"), new Timestamp(intent.getLongExtra("postCreateTime", 0)));
+        Glide.with(this)
+                .load(getString(R.string.host_url_real_share) + getString(R.string.download_user_image_path) + postDTO.getPostCreator().getUserId())
+                .apply(new RequestOptions().placeholder(R.drawable.my_profile))
+                .into(posterImage);
+        posterName.setText(postDTO.getPostCreator().getUserUsername());
+        postTime.setText(getString(R.string.post_create_time_text_view_header) + " " + postDTO.getPostTime());
+        postTitle.setText(postDTO.getPostTitle());
+        postContent.setText(postDTO.getPostContent());
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -79,7 +109,7 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
         commentListRecyclerView.setLayoutManager(new LinearLayoutManager(PostDetailedPageActivity.this));
         commentAdapter = new CommentAdapter(initDefaultCommentList());
         commentListRecyclerView.setAdapter(commentAdapter);
-        commentPresenter.loadCommentList(this);
+        commentPresenter.loadCommentList(this, postDTO.getPostId());
 
         nestedScrollView.setOnScrollChangeListener((View.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
             if (scrollY - oldScrollY > 10) {
@@ -90,10 +120,10 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
         });
 
         commentListSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
-        commentListSwipeRefreshLayout.setOnRefreshListener(() -> commentPresenter.loadCommentList(this));
+        commentListSwipeRefreshLayout.setOnRefreshListener(() -> commentPresenter.loadCommentList(this, postDTO.getPostId()));
 
         setUpBottomSheetDialog();
-        setUpFloatingActionBtn();
+        setUpFloatingActionBtn(postDTO.getPostId());
 
         commentListRecyclerView.setFocusable(false);
     }
@@ -124,7 +154,7 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
                     .apply(new RequestOptions().placeholder(R.drawable.my_profile))
                     .into(commenterImage);
             commenterName.setText(mCommentDTO.getCommentSender().getUserUsername());
-            commentTime.setText(getString(R.string.comment_time_text_view_header) + mCommentDTO.getCommentTime().toString());
+            commentTime.setText(getString(R.string.comment_time_text_view_header) + " " + mCommentDTO.getCommentTime().toString());
             commentContent.setText(mCommentDTO.getCommentContent());
         }
     }
@@ -176,7 +206,7 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
         return commentDTOList;
     }
 
-    private void setUpFloatingActionBtn() {
+    private void setUpFloatingActionBtn(int post_id) {
         btnComment.setOnClickListener(v -> {
             floatingActionMenu.close(true);
             newCommentBottomSheetDialog.show();
@@ -190,7 +220,7 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
         btnRefresh.setOnClickListener(v -> {
             floatingActionMenu.close(true);
             commentListSwipeRefreshLayout.setRefreshing(true);
-            commentPresenter.loadCommentList(PostDetailedPageActivity.this);
+            commentPresenter.loadCommentList(PostDetailedPageActivity.this, post_id);
         });
     }
 
@@ -204,17 +234,16 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
 
         MaterialButton btnCancel = bottomSheetView.findViewById(R.id.btn_new_comment_cancel);
         MaterialButton btnPost = bottomSheetView.findViewById(R.id.btn_new_comment);
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                newCommentBottomSheetDialog.cancel();
-            }
-        });
-        btnPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO
-            }
+        EditText comment = bottomSheetView.findViewById(R.id.new_comment_content_edit);
+        btnCancel.setOnClickListener(v -> newCommentBottomSheetDialog.cancel());
+        btnPost.setOnClickListener(v -> {
+            Map<String, Object> newCommentMap = new HashMap<>();
+            newCommentMap.put("postId", postDTO.getPostId());
+            newCommentMap.put("commentSenderId", globalData.getPrimaryUser().getUserId());
+            newCommentMap.put("commentContent", comment.getText().toString());
+            newCommentMap.put("commentTime", System.currentTimeMillis());
+            commentPresenter.addComment(this, newCommentMap);
+            newCommentBottomSheetDialog.cancel();
         });
 
     }
@@ -240,7 +269,7 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
     public void showCommentList(List<CommentDTO> commentDTOList) {
         commentAdapter = new CommentAdapter(commentDTOList);
         commentListRecyclerView.setAdapter(commentAdapter);
-        postDetailedCommentCountTextView.setText(commentDTOList.size());
+        postDetailedCommentCount.setText("" + commentDTOList.size());
         commentListSwipeRefreshLayout.setRefreshing(false);
     }
 }

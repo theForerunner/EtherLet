@@ -1,13 +1,13 @@
 package com.example.l.EtherLet.view;
 
 
-import com.example.l.EtherLet.model.UserModel;
+import com.example.l.EtherLet.model.dto.User;
 
 public interface LoginViewInterface {
-    String getUserId();
+    String getAccount();
     String getPassword();
     void clearUserId();
     void clearPassword();
-    void enterMainActivity(UserModel user);
+    void enterMainActivity(User user);
     void showFail();
 }

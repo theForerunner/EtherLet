@@ -1,4 +1,4 @@
-package com.example.l.EtherLet.model;
+package com.example.l.EtherLet.model.dto;
 
 public class CoinInfo {
     private String symbol;

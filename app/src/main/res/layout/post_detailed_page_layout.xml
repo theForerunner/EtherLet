@@ -41,6 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
+        android:layout_marginTop="?attr/actionBarSize"
         android:background="@color/white_pressed">
 
         <LinearLayout
@@ -51,10 +52,10 @@
             <LinearLayout
                 android:id="@+id/post_detailed_header"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@color/white"
-                android:elevation="5dp" >
+                android:elevation="3dp" >
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -67,7 +68,9 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:layout_alignParentStart="true"
-                        android:layout_margin="10dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginTop="10dp"
                         android:src="@drawable/my_profile" />
 
                     <TextView
@@ -101,7 +104,7 @@
                         android:gravity="center_vertical"
                         android:layout_alignParentEnd="true"
                         android:layout_marginTop="15dp"
-                        android:layout_marginEnd="20dp"
+                        android:layout_marginEnd="10dp"
                         android:text="@string/display_test_string_post_comment_count"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -122,7 +125,6 @@
                     android:id="@+id/post_detailed_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
                     android:layout_marginStart="20dp"
                     android:layout_marginEnd="20dp"
@@ -135,13 +137,13 @@
             <android.support.v4.widget.SwipeRefreshLayout
                 android:id="@+id/comment_list_swipe_refresh"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp" >
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/comment_list_recycler"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp">
+                    android:layout_height="wrap_content" >
 
                 </android.support.v7.widget.RecyclerView>
 
