@@ -386,23 +386,25 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
     @Override
     public void setCandleEntryList(List<CandleEntry> list){
 
-        candleEntryList=list;
-        CandleDataSet set = new CandleDataSet(candleEntryList, dataSet);
-        set.setAxisDependency(YAxis.AxisDependency.LEFT);
-        set.setShadowColor(Color.DKGRAY);
-        set.setShadowColorSameAsCandle(true);
-        set.setShadowWidth(0.7f);//影线
-        set.setDecreasingColor(Color.RED);
-        set.setDecreasingPaintStyle(Paint.Style.FILL);
-        set.setIncreasingColor(Color.GREEN);
-        set.setIncreasingPaintStyle(Paint.Style.STROKE);
-        set.setNeutralColor(Color.RED);
-        set.setHighlightLineWidth(1f);
-        set.setDrawValues(true);
-        CandleData data = new CandleData(set);
-        candleStickChart.setData(data);
-
+        if(!list.isEmpty()){
+            candleEntryList=list;
+            CandleDataSet set = new CandleDataSet(candleEntryList, dataSet);
+            set.setAxisDependency(YAxis.AxisDependency.LEFT);
+            set.setShadowColor(Color.DKGRAY);
+            set.setShadowColorSameAsCandle(true);
+            set.setShadowWidth(0.7f);//影线
+            set.setDecreasingColor(Color.RED);
+            set.setDecreasingPaintStyle(Paint.Style.FILL);
+            set.setIncreasingColor(Color.GREEN);
+            set.setIncreasingPaintStyle(Paint.Style.STROKE);
+            set.setNeutralColor(Color.RED);
+            set.setHighlightLineWidth(1f);
+            set.setDrawValues(true);
+            CandleData data = new CandleData(set);
+            candleStickChart.setData(data);
+        }
+        else {
+            candleStickChart.setNoDataText("Sorry,No Valid KLine Data ");
+        }
     }
-
-
 }
