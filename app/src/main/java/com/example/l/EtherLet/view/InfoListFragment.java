@@ -24,20 +24,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.l.EtherLet.R;
-import com.example.l.EtherLet.model.CoinInfo;
+import com.example.l.EtherLet.model.dto.CoinInfo;
 import com.example.l.EtherLet.presenter.InfoPresenter;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 import android.graphics.Color;
 import android.graphics.Paint;
 
 import com.github.mikephil.charting.charts.CandleStickChart;
 import com.github.mikephil.charting.components.Description;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.CandleData;

@@ -2,7 +2,7 @@ package com.example.l.EtherLet;
 
 import android.app.Application;
 
-import com.example.l.EtherLet.model.User;
+import com.example.l.EtherLet.model.dto.User;
 
 public class GlobalData extends Application {
     private User primaryUser;

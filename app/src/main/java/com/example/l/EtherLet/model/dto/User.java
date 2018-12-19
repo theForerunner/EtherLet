@@ -1,4 +1,4 @@
-package com.example.l.EtherLet.model;
+package com.example.l.EtherLet.model.dto;
 
 public class User {
     private int userId;
@@ -7,7 +7,7 @@ public class User {
     private String userUsername;
     private String userKey;
 
-    User() {
+    public User() {
 
     }
 

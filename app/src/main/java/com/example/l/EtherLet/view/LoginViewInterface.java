@@ -1,10 +1,10 @@
 package com.example.l.EtherLet.view;
 
 
-import com.example.l.EtherLet.model.User;
+import com.example.l.EtherLet.model.dto.User;
 
 public interface LoginViewInterface {
-    String getUserId();
+    String getAccount();
     String getPassword();
     void clearUserId();
     void clearPassword();
