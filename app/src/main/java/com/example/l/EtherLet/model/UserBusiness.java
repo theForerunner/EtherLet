@@ -15,15 +15,6 @@ import java.util.Map;
 public class UserBusiness implements UserInterface {
     @Override
     public void login(final OnLoginListener listener, final LocalCallBack callBack, Context context, Map<String, Object> map) {
-        /*
-        if (userAccount.equals("Robbin") && password.equals("1234")) {//模拟成功
-            User user = new User();
-            user.setUserAccount(userAccount);
-            user.setUserPassword(password);
-            listener.loginSuccess(user);
-        } else {
-            listener.loginFail();
-        }*/
         VolleyRequest.getJSONObject(JsonObjectRequest.Method.POST, context.getString(R.string.host_url_real_share) + context.getString(R.string.user_login_path), map, context, new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject, Context context) {
@@ -45,15 +36,6 @@ public class UserBusiness implements UserInterface {
         });
     }
 
-    @Override
-    public ArrayList getUserHistory() {//sqlite demo
-        ArrayList historyList=new ArrayList();
-        historyList.add("Robbin");
-        historyList.add("testUser1");
-        historyList.add("testUser2");
-        return historyList;
-
-    }
 
     @Override
     public void registration(final OnRegistrationListener listener, final LocalCallBack callBack, Context context, Map<String, Object> map) {
