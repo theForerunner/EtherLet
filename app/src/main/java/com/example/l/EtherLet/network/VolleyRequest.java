@@ -7,6 +7,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.Map;
 
 public class VolleyRequest {
@@ -29,5 +30,17 @@ public class VolleyRequest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void uploadImage(String url, final Context context, File file, final VolleyCallback volleyCallback) {
+        MultipartRequest multipartRequest = new MultipartRequest(url, file, response -> {
+            Log.i("VOLLEY", response.toString());
+            volleyCallback.onSuccess(response, context);
+        }, error -> {
+            Log.e("VOLLEY", error.toString());
+            volleyCallback.onFailure();
+        });
+
+        VolleyRequestQueueSingleton.getInstance(context).addToRequestQueue(multipartRequest);
     }
 }
