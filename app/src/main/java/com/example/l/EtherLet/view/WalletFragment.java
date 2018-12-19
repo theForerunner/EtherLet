@@ -8,10 +8,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,8 +35,10 @@ public class WalletFragment extends Fragment implements WalletInterface{
     private TransactionAdapter transactionAdapter;
     private SwipeRefreshLayout swipeRefreshLayout;
     private BottomSheetDialog newQRCodeBottomSheetDialog;
+    private BottomSheetDialog sendMoneyBottomSheet;
     private Button sendMoney;
     private Button requestMoney;
+    private String toAddress;
 
     public static WalletFragment newInstance() {
         WalletFragment f = new WalletFragment();
@@ -56,14 +60,18 @@ public class WalletFragment extends Fragment implements WalletInterface{
         walletPresenter.getBalance(this.getActivity());
         walletPresenter.getTransactionList(this.getActivity());
 
-        setUpBottomSheetDialog();
+        setUpQRCodeBottomSheetDialog();
+        setUpSendMoneyBottomSheet();
 
         sendMoney=rootView.findViewById(R.id.Send);
         requestMoney=rootView.findViewById(R.id.request);
+        toAddress=null;
         sendMoney.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendMoney();
+                //sendMoney();
+                toAddress="0x6B96D5c8AbA7fEf48f958Cc9Bb9023DF57B85925";
+                sendMoneyBottomSheet.show();
             }
         });
         requestMoney.setOnClickListener(new View.OnClickListener(){
@@ -77,8 +85,9 @@ public class WalletFragment extends Fragment implements WalletInterface{
 
     @Override
     public void showBalance(BigDecimal balance) {
-        TextView ethView = getActivity().findViewById(R.id.balanceEth);
-        TextView dollarView = getActivity().findViewById(R.id.balanceDollar);
+        //View rootView=LayoutInflater.from(getActivity()).inflate(R.layout.fragment_wallet,null);
+        TextView ethView = this.getActivity().findViewById(R.id.balanceEth);
+        TextView dollarView = this.getActivity().findViewById(R.id.balanceDollar);
         ethView.setText(balance.toString() + " ETH");
         //dollarView.setText("$"+dollarBalance.toString()+" USD");
     }
@@ -106,11 +115,13 @@ public class WalletFragment extends Fragment implements WalletInterface{
         IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
         if(intentResult != null) {
             if(intentResult.getContents() == null) {
+                Log.i("DT","二维码识别失败");
                 return;
             } else {
                 String ScanResult = intentResult.getContents();
-                System.out.println(ScanResult);
-                walletPresenter.sendMoney(ScanResult);
+                Log.i("DT",ScanResult);
+                toAddress=ScanResult;
+                sendMoneyBottomSheet.show();
             }
         } else {
             super.onActivityResult(requestCode,resultCode,data);
@@ -186,15 +197,35 @@ public class WalletFragment extends Fragment implements WalletInterface{
     /**
      * BottomSheet for QR code
      */
-    private void setUpBottomSheetDialog() {
+    private void setUpQRCodeBottomSheetDialog() {
         newQRCodeBottomSheetDialog = new BottomSheetDialog(getActivity());
         View bottomSheetView = LayoutInflater.from(getActivity()).inflate(R.layout.qr_code_layout, null);
         newQRCodeBottomSheetDialog.setContentView(bottomSheetView);
-        newQRCodeBottomSheetDialog.getDelegate().findViewById(android.support.design.R.id.design_bottom_sheet).setBackgroundColor(ContextCompat.getColor(getActivity(), android.R.color.transparent));
+        newQRCodeBottomSheetDialog.getDelegate().findViewById(android.support.design.R.id.design_bottom_sheet).setBackgroundColor(ContextCompat.getColor(getActivity(), android.R.color.white));
         newQRCodeBottomSheetDialog.setCancelable(true);
         newQRCodeBottomSheetDialog.setCanceledOnTouchOutside(true);
 
         ImageView qrImage=bottomSheetView.findViewById(R.id.qr_code);
         qrImage.setImageBitmap(walletPresenter.requestMoney());
+    }
+
+    private void setUpSendMoneyBottomSheet(){
+        sendMoneyBottomSheet=new BottomSheetDialog(getActivity());
+        View bottomSheetView=LayoutInflater.from(getActivity()).inflate(R.layout.send_money_layout,null);
+        sendMoneyBottomSheet.setContentView(bottomSheetView);
+        sendMoneyBottomSheet.getDelegate().findViewById(android.support.design.R.id.design_bottom_sheet).setBackgroundColor(ContextCompat.getColor(getActivity(),android.R.color.white));
+        sendMoneyBottomSheet.setCancelable(true);
+        sendMoneyBottomSheet.setCanceledOnTouchOutside(true);
+
+        EditText enterNumber=bottomSheetView.findViewById(R.id.enter_number);
+        Button confirm=bottomSheetView.findViewById(R.id.confirm_sending);
+
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                walletPresenter.sendMoney(toAddress,Float.parseFloat(enterNumber.getText().toString()));
+                sendMoneyBottomSheet.cancel();
+            }
+        });
     }
 }
