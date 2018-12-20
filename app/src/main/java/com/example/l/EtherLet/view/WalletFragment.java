@@ -2,6 +2,7 @@ package com.example.l.EtherLet.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -34,7 +35,7 @@ public class WalletFragment extends Fragment implements WalletInterface{
     private WalletPresenter walletPresenter;
     private RecyclerView transactionListRecyclerView;
     private TransactionAdapter transactionAdapter;
-    //private SwipeRefreshLayout swipeRefreshLayout;
+    private SwipeRefreshLayout swipeRefreshLayout;
     private BottomSheetDialog newQRCodeBottomSheetDialog;
     private BottomSheetDialog sendMoneyBottomSheet;
     private Button sendMoney;
@@ -60,6 +61,7 @@ public class WalletFragment extends Fragment implements WalletInterface{
         transactionAdapter=new TransactionAdapter(initDefaultTransactionList());
         transactionListRecyclerView.setAdapter(transactionAdapter);
         transactionListRecyclerView.addItemDecoration(new DividerItemDecoration(rootView.getContext(),DividerItemDecoration.VERTICAL));
+        swipeRefreshLayout=rootView.findViewById(R.id.wallet_slide_refresh);
 
         setUpQRCodeBottomSheetDialog();
         setUpSendMoneyBottomSheet();
@@ -72,8 +74,9 @@ public class WalletFragment extends Fragment implements WalletInterface{
         ethView.setText("0.00 ETH");
         toAddress=null;
 
-        walletPresenter.getBalance(getActivity());
-        walletPresenter.getTransactionList(getActivity());
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        swipeRefreshLayout.setOnRefreshListener(()->update());
+
 
         sendMoney.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,8 +92,18 @@ public class WalletFragment extends Fragment implements WalletInterface{
                 requestMoney();
             }
         });
+
+        update();
         return rootView;
     }
+
+
+    void update(){
+        walletPresenter.getBalance(this.getActivity());
+        walletPresenter.getTransactionList(this.getActivity());
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
 
     @Override
     public void showBalance(BigDecimal balance) {
@@ -236,4 +249,5 @@ public class WalletFragment extends Fragment implements WalletInterface{
             }
         });
     }
+
 }
