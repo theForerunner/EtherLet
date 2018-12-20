@@ -33,4 +33,11 @@
         <item name="colorControlNormal">@color/background</item>
         <item name="colorControlActivated">@color/background</item>
     </style>
+
+    <style name="LoginUserControl" parent="Theme.AppCompat">
+        <item name="android:colorControlActivated">@color/colorError</item>
+        <item name="android:colorControlNormal">@color/colorError</item>
+    </style>
+
+
 </resources>

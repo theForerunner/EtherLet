@@ -44,10 +44,6 @@ public class LoginPresenter implements UserBusiness.LocalCallBack{
         loginView.clearPassword();
     }
 
-    public ArrayList getHistoryList(){
-        return userBusiness.getUserHistory();
-    }
-
     @Override
     public void onRemoteRegisterFailure() {
 

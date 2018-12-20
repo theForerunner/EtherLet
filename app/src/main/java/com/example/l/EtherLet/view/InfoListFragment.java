@@ -102,7 +102,7 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
             @Override
             public void onClick(View v) {
                 if(!click){
-                    rangeWindow.setAdapter(new ArrayAdapter(getActivity(),R.layout.history_list,rangeList));
+                    rangeWindow.setAdapter(new ArrayAdapter(getActivity(),R.layout.popup_list,rangeList));
                     rangeWindow.setDropDownGravity(Gravity.END);
                     rangeWindow.setAnchorView(rangeLayout);
                     rangeWindow.show();
@@ -250,7 +250,7 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
                             @Override
                             public void onClick(View v) {
                                 if(!clickDetail){
-                                    detailRangeWindow.setAdapter(new ArrayAdapter(getActivity(),R.layout.history_list,detailRangeList));
+                                    detailRangeWindow.setAdapter(new ArrayAdapter(getActivity(),R.layout.popup_list,detailRangeList));
                                     detailRangeWindow.setDropDownGravity(Gravity.END);
                                     detailRangeWindow.setAnchorView(detailRangeLayout);
                                     detailRangeWindow.show();
@@ -399,7 +399,7 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
             set.setIncreasingPaintStyle(Paint.Style.STROKE);
             set.setNeutralColor(Color.RED);
             set.setHighlightLineWidth(1f);
-            set.setDrawValues(true);
+            set.setDrawValues(false);
             CandleData data = new CandleData(set);
             candleStickChart.setData(data);
         }
