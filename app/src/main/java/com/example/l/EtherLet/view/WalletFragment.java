@@ -6,6 +6,7 @@ import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -33,12 +34,14 @@ public class WalletFragment extends Fragment implements WalletInterface{
     private WalletPresenter walletPresenter;
     private RecyclerView transactionListRecyclerView;
     private TransactionAdapter transactionAdapter;
-    private SwipeRefreshLayout swipeRefreshLayout;
+    //private SwipeRefreshLayout swipeRefreshLayout;
     private BottomSheetDialog newQRCodeBottomSheetDialog;
     private BottomSheetDialog sendMoneyBottomSheet;
     private Button sendMoney;
     private Button requestMoney;
     private String toAddress;
+    private TextView ethView;
+    private TextView dollarView;
 
     public static WalletFragment newInstance() {
         WalletFragment f = new WalletFragment();
@@ -56,22 +59,28 @@ public class WalletFragment extends Fragment implements WalletInterface{
 
         transactionAdapter=new TransactionAdapter(initDefaultTransactionList());
         transactionListRecyclerView.setAdapter(transactionAdapter);
-
-        walletPresenter.getBalance(this.getActivity());
-        walletPresenter.getTransactionList(this.getActivity());
+        transactionListRecyclerView.addItemDecoration(new DividerItemDecoration(rootView.getContext(),DividerItemDecoration.VERTICAL));
 
         setUpQRCodeBottomSheetDialog();
         setUpSendMoneyBottomSheet();
 
+        ethView = rootView.findViewById(R.id.balanceEth);
+        dollarView = rootView.findViewById(R.id.balanceDollar);
         sendMoney=rootView.findViewById(R.id.Send);
         requestMoney=rootView.findViewById(R.id.request);
+
+        ethView.setText("0.00 ETH");
         toAddress=null;
+
+        walletPresenter.getBalance(getActivity());
+        walletPresenter.getTransactionList(getActivity());
+
         sendMoney.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //sendMoney();
-                toAddress="0x6B96D5c8AbA7fEf48f958Cc9Bb9023DF57B85925";
-                sendMoneyBottomSheet.show();
+                sendMoney();
+                //toAddress="0x6B96D5c8AbA7fEf48f958Cc9Bb9023DF57B85925";
+                //sendMoneyBottomSheet.show();
             }
         });
         requestMoney.setOnClickListener(new View.OnClickListener(){
@@ -86,8 +95,7 @@ public class WalletFragment extends Fragment implements WalletInterface{
     @Override
     public void showBalance(BigDecimal balance) {
         //View rootView=LayoutInflater.from(getActivity()).inflate(R.layout.fragment_wallet,null);
-        TextView ethView = this.getActivity().findViewById(R.id.balanceEth);
-        TextView dollarView = this.getActivity().findViewById(R.id.balanceDollar);
+
         ethView.setText(balance.toString() + " ETH");
         //dollarView.setText("$"+dollarBalance.toString()+" USD");
     }

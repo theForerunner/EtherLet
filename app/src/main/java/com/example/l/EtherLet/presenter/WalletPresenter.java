@@ -38,15 +38,16 @@ public class WalletPresenter implements WalletModel.ApiAccessCallBack {
     }
 
     public Bitmap requestMoney(){
-        //TODO 新活动，显示好友列表，搜索用户和扫描二维码选项
+        //TODO 新活动，显示好友列表，搜索用户
         return myWallet.getAddressQrCode();
     }
 
     public void sendMoney(String address,float sum){
-        //TODO 新活动，显示好友列表，搜索用户和展示二维码选项；做金额输入页面
-        myWallet.makeTransaction(address,sum,handler);
+        //TODO 新活动，显示好友列表，搜索用户
+        myWallet.makeTransaction(address,sum);
     }
 
+    /*
     Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -56,6 +57,7 @@ public class WalletPresenter implements WalletModel.ApiAccessCallBack {
             Log.i("DT",val);
         }
     };
+    */
 
     public void getTransactionList(Context context){
         myWallet.getTransactionList(this,context);
