@@ -19,14 +19,12 @@ public class Web3jRequest implements Runnable {
     Credentials credentials;
     String toAddress;
     float sum;
-    Handler handler;
 
-    public Web3jRequest(Web3j _web3j, Credentials _credentials, String _toAddress, float _sum,final Handler _handler){
+    public Web3jRequest(Web3j _web3j, Credentials _credentials, String _toAddress, float _sum){
         web3j=_web3j;
         credentials=_credentials;
         toAddress=_toAddress;
         sum=_sum;
-        handler=_handler;
     }
     @Override
     public void run(){
@@ -38,10 +36,12 @@ public class Web3jRequest implements Runnable {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        /*
         Message msg=new Message();
         Bundle data=new Bundle();
         data.putString("value",transactionReceipt.getTransactionHash());
         msg.setData(data);
         handler.sendMessage(msg);
+        */
     }
 }

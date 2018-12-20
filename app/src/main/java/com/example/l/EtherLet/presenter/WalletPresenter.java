@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import com.example.l.EtherLet.model.WalletModel;
 import com.example.l.EtherLet.network.JSONParser;
@@ -37,23 +38,26 @@ public class WalletPresenter implements WalletModel.ApiAccessCallBack {
     }
 
     public Bitmap requestMoney(){
-        //TODO 新活动，显示好友列表，搜索用户和扫描二维码选项
+        //TODO 新活动，显示好友列表，搜索用户
         return myWallet.getAddressQrCode();
     }
 
-    public void sendMoney(String address){
-        //TODO 新活动，显示好友列表，搜索用户和展示二维码选项；做金额输入页面
-        myWallet.makeTransaction(address,(float)0.01,handler);
+    public void sendMoney(String address,float sum){
+        //TODO 新活动，显示好友列表，搜索用户
+        myWallet.makeTransaction(address,sum);
     }
 
+    /*
     Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             Bundle data = msg.getData();
             String val = data.getString("value");
+            Log.i("DT",val);
         }
     };
+    */
 
     public void getTransactionList(Context context){
         myWallet.getTransactionList(this,context);
