@@ -22,6 +22,7 @@ import com.example.l.EtherLet.view.InfoListFragment;
 import com.example.l.EtherLet.view.LoginActivity;
 import com.example.l.EtherLet.view.MainPagerAdapter;
 import com.example.l.EtherLet.view.PostListFragment;
+import com.example.l.EtherLet.view.UserDetailActivity;
 import com.example.l.EtherLet.view.WalletFragment;
 import com.github.clans.fab.FloatingActionMenu;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
@@ -60,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
     AccountHeader accountHeader;
     GlobalData globalData;
     IProfile profile;
-
     private long exitFlag = 0;
 
     @Override
@@ -146,16 +146,30 @@ public class MainActivity extends AppCompatActivity {
                 }).withOnAccountHeaderProfileImageListener(new AccountHeader.OnAccountHeaderProfileImageListener() {
                     @Override
                     public boolean onProfileImageClick(View view, IProfile profile, boolean current) {
-                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                        startActivity(intent);
-                        return true;
+                        if(globalData.getPrimaryUser().getUserId()==0){
+                            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                            startActivity(intent);
+                            return true;
+                        }
+                        else {
+                            Intent intent = new Intent(MainActivity.this, UserDetailActivity.class);
+                            startActivity(intent);
+                            return true;
+                        }
                     }
 
                     @Override
                     public boolean onProfileImageLongClick(View view, IProfile profile, boolean current) {
-                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                        startActivity(intent);
-                        return true;
+                        if(globalData.getPrimaryUser().getUserId()==0){
+                            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                            startActivity(intent);
+                            return true;
+                        }
+                        else {
+                            Intent intent = new Intent(MainActivity.this, UserDetailActivity.class);
+                            startActivity(intent);
+                            return true;
+                        }
                     }
                 }).withOnAccountHeaderSelectionViewClickListener((view, profile) -> false)
                 .build();

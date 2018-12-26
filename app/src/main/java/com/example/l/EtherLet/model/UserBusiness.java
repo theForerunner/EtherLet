@@ -36,6 +36,10 @@ public class UserBusiness implements UserInterface {
         });
     }
 
+    @Override
+    public void upLoadImage(){
+        //
+    }
 
     @Override
     public void registration(final OnRegistrationListener listener, final LocalCallBack callBack, Context context, Map<String, Object> map) {
@@ -63,6 +67,7 @@ public class UserBusiness implements UserInterface {
 
     }
 
+
     public interface LocalCallBack {
         void onRemoteRegisterSuccess(JSONObject jsonObject);
 
@@ -71,6 +76,11 @@ public class UserBusiness implements UserInterface {
         void onRemoteLoginSuccess(JSONObject jsonObject);
 
         void onRemoteLoginFailure();
+    }
+
+    public interface DetailCallBack{
+        void onUploadImageSuccess();
+        void onUploadImageFailure();
     }
 
 }
