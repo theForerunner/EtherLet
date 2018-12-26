@@ -10,6 +10,7 @@ public class UserDetailPresenter implements UserDetailPresenterInterface,UserBus
 
     public UserDetailPresenter(UserDetailViewInterface userDetailView){
         userDetailViewInterface=userDetailView;
+        userInterface=new UserBusiness();
     }
     @Override
     public void upLoadImage(){

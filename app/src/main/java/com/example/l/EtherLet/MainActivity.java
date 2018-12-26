@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         globalData = (GlobalData) getApplication();
-        globalData.setPrimaryUser(new User(1, "", "", "  未登录", ""));
+        globalData.setPrimaryUser(new User(0, "", "", "  未登录", ""));
         profile = new ProfileDrawerItem().withName(globalData.getPrimaryUser().getUserUsername()).withEmail(globalData.getPrimaryUser().getUserAccount()).withIcon(getString(R.string.host_url_real_share) + getString(R.string.download_user_image_path) + globalData.getPrimaryUser().getUserId()).withIdentifier(100);
 
         setSupportActionBar(toolbar);
