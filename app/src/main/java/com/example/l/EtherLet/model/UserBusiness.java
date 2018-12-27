@@ -1,6 +1,7 @@
 package com.example.l.EtherLet.model;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.l.EtherLet.R;
@@ -9,7 +10,6 @@ import com.example.l.EtherLet.network.VolleyRequest;
 
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public class UserBusiness implements UserInterface {
@@ -37,22 +37,22 @@ public class UserBusiness implements UserInterface {
     }
 
     @Override
-    public void upLoadImage(){
-        //
+    public void upLoadImage(final UserBusiness.DetailCallBack callBack, Context context, Bitmap bitmap, int user_id){
+        VolleyRequest.uploadImage(context.getString(R.string.host_url_real_share) + context.getString(R.string.upload_user_image_path) + user_id, context, bitmap, new VolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject, Context context) {
+                callBack.onUploadImageSuccess(jsonObject);
+            }
+
+            @Override
+            public void onFailure() {
+                callBack.onUploadImageFailure();
+            }
+        });
     }
 
     @Override
     public void registration(final OnRegistrationListener listener, final LocalCallBack callBack, Context context, Map<String, Object> map) {
-
-        /*
-        boolean registrationResult=true;//模拟成功
-        if(registrationResult){
-            listener.registrationSuccess();
-        }
-        else{
-            listener.registrationFail();
-        }*/
-
         VolleyRequest.getJSONObject(JsonObjectRequest.Method.POST, context.getString(R.string.host_url_real_share) + context.getString(R.string.add_user_path), map, context, new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject, Context context) {
@@ -79,7 +79,7 @@ public class UserBusiness implements UserInterface {
     }
 
     public interface DetailCallBack{
-        void onUploadImageSuccess();
+        void onUploadImageSuccess(JSONObject jsonObject);
         void onUploadImageFailure();
     }
 

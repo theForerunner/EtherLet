@@ -1,12 +1,12 @@
 package com.example.l.EtherLet.model;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public interface UserInterface {
     void login(final OnLoginListener listener, final UserBusiness.LocalCallBack callBack, Context context, Map<String, Object> map);
-    void registration(OnRegistrationListener listener, final UserBusiness.LocalCallBack callBack, Context context, Map<String, Object> map);
-    void upLoadImage();
+    void registration(final OnRegistrationListener listener, final UserBusiness.LocalCallBack callBack, Context context, Map<String, Object> map);
+    void upLoadImage(final UserBusiness.DetailCallBack callBack, Context context, Bitmap bitmap, int user_id);
 }

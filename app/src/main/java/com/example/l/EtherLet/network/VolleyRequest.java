@@ -1,13 +1,13 @@
 package com.example.l.EtherLet.network;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.Map;
 
 public class VolleyRequest {
@@ -32,15 +32,14 @@ public class VolleyRequest {
         }
     }
 
-    public static void uploadImage(String url, final Context context, File file, final VolleyCallback volleyCallback) {
-        MultipartRequest multipartRequest = new MultipartRequest(url, file, response -> {
+    public static void uploadImage(String url, final Context context, Bitmap bitmap, final VolleyCallback volleyCallback) {
+        BitmapMultipartReqeust bitmapMultipartReqeust = new BitmapMultipartReqeust(url, bitmap, response -> {
             Log.i("VOLLEY", response.toString());
             volleyCallback.onSuccess(response, context);
         }, error -> {
             Log.e("VOLLEY", error.toString());
             volleyCallback.onFailure();
         });
-
-        VolleyRequestQueueSingleton.getInstance(context).addToRequestQueue(multipartRequest);
+        VolleyRequestQueueSingleton.getInstance(context).addToRequestQueue(bitmapMultipartReqeust.getMultipartRequest());
     }
 }

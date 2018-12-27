@@ -4,25 +4,31 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.l.EtherLet.DBHelper;
 import com.example.l.EtherLet.GlobalData;
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.presenter.UserDetailPresenter;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class UserDetailActivity extends AppCompatActivity implements UserDetailViewInterface {
 
     GlobalData globalData;
     DBHelper dbHelper;
     private UserDetailPresenter userDetailPresenter;
-    private ImageView image;
-    private TextView textId;
+    @BindView(R.id.user_image_detail)
+    CircleImageView image;
+    @BindView(R.id.user_id_detail)
+    TextView textId;
 
     private static final int PHOTO_REQUEST_GALLERY = 1;// 从相册中选择
     private static final int PHOTO_REQUEST_CUT = 2;// 结果
@@ -33,22 +39,24 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
         dbHelper = new DBHelper(this,"EtherLet.db",null,1);
         setContentView(R.layout.user_detail_layout);
 
+        ButterKnife.bind(this);
+
         globalData = (GlobalData) getApplication();
         userDetailPresenter=new UserDetailPresenter(UserDetailActivity.this);
-        image=findViewById(R.id.user_image_detail);
-        textId=findViewById(R.id.user_id_detail);
-        textId.setText(globalData.getPrimaryUser().getUserUsername().toString());
+        textId.setText(globalData.getPrimaryUser().getUserUsername());
 
         //image init undone
+        Glide.with(this)
+                .load(getString(R.string.host_url_real_share) + getString(R.string.download_user_image_path) + globalData.getPrimaryUser().getUserId())
+                .apply(new RequestOptions().placeholder(R.drawable.outline_account_circle_black_24)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE))
+                .into(image);
 
-        image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(Intent.ACTION_PICK);
-                intent.setType("image/*");
-                startActivityForResult(intent,PHOTO_REQUEST_GALLERY);
+        image.setOnClickListener(v -> {
+            Intent intent=new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            startActivityForResult(intent,PHOTO_REQUEST_GALLERY);
 
-            }
         });
     }
 
@@ -65,9 +73,9 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
             if(data!=null){
                 Bitmap bitmap=data.getParcelableExtra("data");//this is the image you get
 
-                userDetailPresenter.upLoadImage();//upLoad Undone
+                userDetailPresenter.upLoadImage(this, bitmap, globalData.getPrimaryUser().getUserId());//upLoad Undone
 
-                this.image.setImageBitmap(bitmap);
+                //this.image.setImageBitmap(bitmap);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -89,9 +97,14 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
     public void showInfo(int type){
         if(type==0){
             Toast.makeText(UserDetailActivity.this, "Image Upload Success", Toast.LENGTH_SHORT).show();
+            Glide.with(this)
+                    .load(getString(R.string.host_url_real_share) + getString(R.string.download_user_image_path) + globalData.getPrimaryUser().getUserId())
+                    .apply(new RequestOptions().placeholder(R.drawable.outline_account_circle_black_24)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE))
+                    .into(image);
         }
         else if(type==1){
-            Toast.makeText(UserDetailActivity.this, "Info Edit Success", Toast.LENGTH_SHORT).show();
+            Toast.makeText(UserDetailActivity.this, "Image Upload Failed", Toast.LENGTH_SHORT).show();
         }
     }
 }

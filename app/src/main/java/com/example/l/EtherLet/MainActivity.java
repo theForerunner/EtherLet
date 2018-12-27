@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.l.EtherLet.model.dto.User;
 import com.example.l.EtherLet.view.InfoListFragment;
@@ -180,7 +181,12 @@ public class MainActivity extends AppCompatActivity {
         DrawerImageLoader.init(new AbstractDrawerImageLoader() {
             @Override
             public void set(ImageView imageView, Uri uri, Drawable placeholder, String tag) {
-                Glide.with(imageView.getContext()).load(uri).apply(new RequestOptions().placeholder(R.drawable.my_profile)).into(imageView);
+                Glide.with(imageView.getContext())
+                        .load(uri)
+                        .apply(new RequestOptions()
+                                .placeholder(R.drawable.outline_account_circle_black_24)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE))
+                        .into(imageView);
             }
 
             @Override

@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.l.EtherLet.GlobalData;
 import com.example.l.EtherLet.R;
@@ -148,7 +149,9 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
             postCreateContent.setText(mPostDTO.getPostContent());
             Glide.with(getView())
                     .load(getString(R.string.host_url_real_share) + getString(R.string.download_user_image_path) + mPostDTO.getPostCreator().getUserId())
-                    .apply(new RequestOptions().placeholder(R.drawable.my_profile))
+                    .apply(new RequestOptions()
+                            .placeholder(R.drawable.outline_account_circle_black_24)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE))
                     .into(postCreatorImage);
             if (floatingActionMenu != null) {
                 postCardView.setOnClickListener(v -> {

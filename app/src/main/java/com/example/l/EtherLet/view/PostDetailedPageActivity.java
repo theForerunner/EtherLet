@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.l.EtherLet.GlobalData;
 import com.example.l.EtherLet.R;
@@ -92,7 +93,9 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
         postDTO = new PostDTO(intent.getIntExtra("postId", 1), intent.getStringExtra("postTitle"), new UserDTO(intent.getIntExtra("postCreatorId", 1), intent.getStringExtra("postCreatorName")), intent.getStringExtra("postContent"), new Timestamp(intent.getLongExtra("postCreateTime", 0)));
         Glide.with(this)
                 .load(getString(R.string.host_url_real_share) + getString(R.string.download_user_image_path) + postDTO.getPostCreator().getUserId())
-                .apply(new RequestOptions().placeholder(R.drawable.my_profile))
+                .apply(new RequestOptions()
+                        .placeholder(R.drawable.outline_account_circle_black_24)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE))
                 .into(posterImage);
         posterName.setText(postDTO.getPostCreator().getUserUsername());
         postTime.setText(getString(R.string.post_create_time_text_view_header) + " " + postDTO.getPostTime());
@@ -137,8 +140,8 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
         TextView commenterName;
         @BindView(R.id.comment_time)
         TextView commentTime;
-        @BindView(R.id.comment_seq)
-        TextView commentSeq;
+        //@BindView(R.id.comment_seq)
+        //TextView commentSeq;
         @BindView(R.id.comment_content)
         TextView commentContent;
 
@@ -151,7 +154,9 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
             mCommentDTO = commentDTO;
             Glide.with(PostDetailedPageActivity.this)
                     .load(getString(R.string.host_url_real_share) + getString(R.string.download_user_image_path) + mCommentDTO.getCommentSender().getUserId())
-                    .apply(new RequestOptions().placeholder(R.drawable.my_profile))
+                    .apply(new RequestOptions()
+                            .placeholder(R.drawable.outline_account_circle_black_24)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE))
                     .into(commenterImage);
             commenterName.setText(mCommentDTO.getCommentSender().getUserUsername());
             commentTime.setText(getString(R.string.comment_time_text_view_header) + " " + mCommentDTO.getCommentTime().toString());

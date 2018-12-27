@@ -12,7 +12,6 @@ import android.support.design.button.MaterialButton;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -26,13 +25,14 @@ import android.widget.Toast;
 
 import com.example.l.EtherLet.DBHelper;
 import com.example.l.EtherLet.GlobalData;
-import com.example.l.EtherLet.MainActivity;
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.model.dto.User;
 import com.example.l.EtherLet.presenter.LoginPresenter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity implements LoginViewInterfa
     private ArrayList<String> historyList;
     private boolean click=false;
     private LoginPresenter loginPresenter;
-    private static LoginActivity instance;
+    private LoginActivity instance;
     GlobalData globalData;
     DBHelper dbHelper;
 
