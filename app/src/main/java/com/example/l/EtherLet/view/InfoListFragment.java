@@ -393,9 +393,9 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
             set.setShadowColor(Color.DKGRAY);
             set.setShadowColorSameAsCandle(true);
             set.setShadowWidth(0.7f);//影线
-            set.setDecreasingColor(Color.RED);
+            set.setDecreasingColor(Color.GREEN);
             set.setDecreasingPaintStyle(Paint.Style.FILL);
-            set.setIncreasingColor(Color.GREEN);
+            set.setIncreasingColor(Color.RED);
             set.setIncreasingPaintStyle(Paint.Style.STROKE);
             set.setNeutralColor(Color.RED);
             set.setHighlightLineWidth(1f);

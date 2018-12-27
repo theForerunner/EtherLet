@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class JSONParser {
@@ -260,6 +261,7 @@ public class JSONParser {
                 Tx.setStatus(data.getString("txreceipt_status"));
                 TxList.add(Tx);
             }
+            Collections.reverse(TxList);
         }catch(Exception e){
             e.printStackTrace();
         }

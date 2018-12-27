@@ -26,6 +26,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".view.UserDetailActivity"/>
         <activity android:name=".view.LoginActivity" />
         <activity android:name=".view.RegistrationActivity" />
         <activity android:name=".view.PostDetailedPageActivity" />

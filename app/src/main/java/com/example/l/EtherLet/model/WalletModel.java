@@ -72,7 +72,7 @@ public class WalletModel {
         );
     }
 
-    public void makeTransaction(String toAddress,float sum,Handler handler){
+    public void makeTransaction(String toAddress,float sum){
         /*
         //TransactionReceipt transactionReceipt = null;
         try {
@@ -84,7 +84,7 @@ public class WalletModel {
             e.printStackTrace();
         }
         */
-        new Thread(new Web3jRequest(web3j, credentials, toAddress, sum,handler)).start();
+        new Thread(new Web3jRequest(web3j, credentials, toAddress, sum)).start();
     }
 
     public Bitmap getAddressQrCode(){
@@ -93,30 +93,14 @@ public class WalletModel {
         String str=credentials.getAddress();
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         try {
-            result = multiFormatWriter.encode(str, BarcodeFormat.QR_CODE, 480, 480);
-            // 使用 ZXing Android Embedded 要写的代码
+            result = multiFormatWriter.encode(str, BarcodeFormat.QR_CODE, 960, 960);
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             bitmap = barcodeEncoder.createBitmap(result);
         } catch (WriterException e){
             e.printStackTrace();
-        } catch (IllegalArgumentException iae){ // ?
+        } catch (IllegalArgumentException iae){
             return null;
         }
-
-        // 如果不使用 ZXing Android Embedded 的话，要写的代码
-
-//        int w = result.getWidth();
-//        int h = result.getHeight();
-//        int[] pixels = new int[w * h];
-//        for (int y = 0; y < h; y++) {
-//            int offset = y * w;
-//            for (int x = 0; x < w; x++) {
-//                pixels[offset + x] = result.get(x, y) ? BLACK : WHITE;
-//            }
-//        }
-//        bitmap = Bitmap.createBitmap(w,h,Bitmap.Config.ARGB_8888);
-//        bitmap.setPixels(pixels,0,100,0,0,w,h);
-
         return bitmap;
     }
 
