@@ -87,22 +87,4 @@ public class CodeScanActivity extends AppCompatActivity implements DecoratedBarc
         isLightOn = false;
     }
 
-    /*
-    // 判断是否有闪光灯功能
-    private boolean hasFlash() {
-        return getApplicationContext().getPackageManager()
-                .hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
-    }
-
-
-    // 点击切换闪光灯
-    @OnClick(R.id.btn_switch)
-    public void swichLight(){
-        if(isLightOn){
-            mDBV.setTorchOff();
-        }else{
-            mDBV.setTorchOn();
-        }
-    }
-    */
 }

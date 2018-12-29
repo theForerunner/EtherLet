@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.model.WalletModel;
@@ -54,7 +55,7 @@ public class WalletFragment extends Fragment implements WalletInterface{
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_wallet, container, false);
-        walletPresenter = new WalletPresenter(this);
+        walletPresenter = new WalletPresenter(this,rootView.getContext());
         transactionListRecyclerView=rootView.findViewById(R.id.tx_list_recycler);
         transactionListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -62,9 +63,6 @@ public class WalletFragment extends Fragment implements WalletInterface{
         transactionListRecyclerView.setAdapter(transactionAdapter);
         transactionListRecyclerView.addItemDecoration(new DividerItemDecoration(rootView.getContext(),DividerItemDecoration.VERTICAL));
         swipeRefreshLayout=rootView.findViewById(R.id.wallet_slide_refresh);
-
-        setUpQRCodeBottomSheetDialog();
-        setUpSendMoneyBottomSheet();
 
         ethView = rootView.findViewById(R.id.balanceEth);
         dollarView = rootView.findViewById(R.id.balanceDollar);
@@ -92,16 +90,22 @@ public class WalletFragment extends Fragment implements WalletInterface{
                 requestMoney();
             }
         });
-
         update();
         return rootView;
     }
 
 
     void update(){
+        if(walletPresenter.isError){
+            Toast.makeText(getActivity(), "Please set your Ethereum private key!",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
         walletPresenter.getBalance(this.getActivity());
         walletPresenter.getTransactionList(this.getActivity());
         swipeRefreshLayout.setRefreshing(false);
+        setUpQRCodeBottomSheetDialog();
+        setUpSendMoneyBottomSheet();
     }
 
 
@@ -126,13 +130,18 @@ public class WalletFragment extends Fragment implements WalletInterface{
 
     @Override
     public void sendMoney() {
+        /*
         new IntentIntegrator(this.getActivity())
                 .setOrientationLocked(false)
                 .setCaptureActivity(CodeScanActivity.class) // 设置自定义的activity是CustomActivity
                 .initiateScan(); // 初始化扫描
+         */
+            //第二个参数为请求码，可以根据业务需求自己编号
+            startActivityForResult(new Intent(getActivity(), FriendListViewActivity.class),  1);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        /*
         IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
         if(intentResult != null) {
             if(intentResult.getContents() == null) {
@@ -147,7 +156,15 @@ public class WalletFragment extends Fragment implements WalletInterface{
         } else {
             super.onActivityResult(requestCode,resultCode,data);
         }
+        */
+        if(data==null){
+            return;
+        }
+        toAddress=  data.getExtras().getString("friend address");
+        sendMoneyBottomSheet.show();
     }
+
+
 
     /**
      * Recycler view for transaction list
@@ -230,6 +247,7 @@ public class WalletFragment extends Fragment implements WalletInterface{
         qrImage.setImageBitmap(walletPresenter.requestMoney());
     }
 
+
     private void setUpSendMoneyBottomSheet(){
         sendMoneyBottomSheet=new BottomSheetDialog(getActivity());
         View bottomSheetView=LayoutInflater.from(getActivity()).inflate(R.layout.send_money_layout,null);
@@ -249,5 +267,4 @@ public class WalletFragment extends Fragment implements WalletInterface{
             }
         });
     }
-
 }
