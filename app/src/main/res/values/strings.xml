@@ -12,6 +12,7 @@
     <string name="update_user_path">/user/update</string>
     <string name="add_user_path">/user/register</string>
     <string name="upload_user_image_path">/user/image/upload/</string>
+    <string name="upload_user_private_key_path">/user/</string>
     <string name="download_user_image_path">/user/image/download/</string>
     <string name="get_post_list_path">/post/list</string>
     <string name="add_post_path">/post/add</string>

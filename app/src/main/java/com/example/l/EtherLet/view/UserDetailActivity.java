@@ -5,6 +5,9 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,6 +18,9 @@ import com.example.l.EtherLet.DBHelper;
 import com.example.l.EtherLet.GlobalData;
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.presenter.UserDetailPresenter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,6 +35,10 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
     CircleImageView image;
     @BindView(R.id.user_id_detail)
     TextView textId;
+    @BindView(R.id.key_enter_view)
+    EditText keyEnterView;
+    @BindView(R.id.key_enter_button)
+    Button keyEnterButton;
 
     private static final int PHOTO_REQUEST_GALLERY = 1;// 从相册中选择
     private static final int PHOTO_REQUEST_CUT = 2;// 结果
@@ -57,6 +67,20 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
             intent.setType("image/*");
             startActivityForResult(intent,PHOTO_REQUEST_GALLERY);
 
+        });
+        keyEnterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String keyword=keyEnterView.getText().toString();
+                if(keyword==null){
+                    Toast.makeText(UserDetailActivity.this, "The key can't be null!",
+                            Toast.LENGTH_SHORT).show();
+                }else{
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("userKey",keyword);
+                    userDetailPresenter.upLoadKey(UserDetailActivity.this,map,globalData.getPrimaryUser().getUserId());
+                }
+            }
         });
     }
 
