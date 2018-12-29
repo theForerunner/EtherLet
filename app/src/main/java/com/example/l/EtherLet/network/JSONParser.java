@@ -14,12 +14,17 @@ import com.github.mikephil.charting.data.CandleEntry;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.web3j.crypto.Credentials;
+import org.web3j.protocol.Web3j;
+import org.web3j.protocol.http.HttpService;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static org.web3j.protocol.Web3j.build;
 
 public class JSONParser {
 
@@ -83,6 +88,13 @@ public class JSONParser {
                 JSONObject friendObject = friendArray.getJSONObject(i);
                 Log.i("DT", friendObject.toString());
                 FriendDTO friendDTO = new FriendDTO(friendObject.getInt("friendshipId"), friendObject.getInt("userId"), friendObject.getString("userUsername"), friendObject.getString("userKey"));
+                //Web3j web3j=build(new HttpService("https://ropsten.infura.io/v3/311d966c7f17491d9528f19b47dea261"));
+                /**
+                 * 转换好友的私钥为地址
+                 */
+                Credentials credentials=Credentials.create(friendDTO.getUserKey());
+                friendDTO.setUserKey(credentials.getAddress());
+                friendDTOList.add(friendDTO);
             }
         } catch (Exception e) {
             e.printStackTrace();

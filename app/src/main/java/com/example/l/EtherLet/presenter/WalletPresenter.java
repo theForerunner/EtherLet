@@ -7,8 +7,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.model.WalletModel;
 import com.example.l.EtherLet.network.JSONParser;
+import com.example.l.EtherLet.network.VolleyCallback;
+import com.example.l.EtherLet.network.VolleyRequest;
 import com.example.l.EtherLet.view.WalletFragment;
 import com.example.l.EtherLet.view.WalletInterface;
 
@@ -19,15 +23,36 @@ import java.math.RoundingMode;
 public class WalletPresenter implements WalletModel.ApiAccessCallBack {
     private WalletModel myWallet;
     private WalletInterface walletInterface;
+    private String privateKey;
+    public boolean isError;
 
-    public WalletPresenter(WalletFragment walletFragment){
-        myWallet=new WalletModel(getUserPrivateKey());
+    public WalletPresenter(WalletFragment walletFragment,Context context){
+        privateKey=null;
+        isError=false;
+        getUserPrivateKey(context);
+        if(privateKey==null){
+            isError=true;
+            return;
+        }
+        myWallet=new WalletModel(privateKey);
         this.walletInterface =walletFragment;
     }
 
-    private String getUserPrivateKey(){
-        String privateKey="5f073440e41311395fcc0ff5b10454040ef332b02d2caf6976231450aede0f6a";
-        return privateKey;
+    private void getUserPrivateKey(Context context){
+        //String privateKey="5f073440e41311395fcc0ff5b10454040ef332b02d2caf6976231450aede0f6a";
+
+        String privateKey;
+        VolleyRequest.getJSONObject(JsonObjectRequest.Method.GET, context.getString(R.string.host_url_real_share) + context.getString(R.string.get_user_path), null, context, new VolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject, Context context) {
+                onGetPrivateKeySuccess(jsonObject);
+            }
+
+            @Override
+            public void onFailure(){
+                System.out.println("Connection Error: Volley Fail!!");
+            }
+        });
     }
 
     public void getBalance(Context context){
@@ -46,6 +71,8 @@ public class WalletPresenter implements WalletModel.ApiAccessCallBack {
         //TODO 新活动，显示好友列表，搜索用户
         myWallet.makeTransaction(address,sum);
     }
+
+
 
     /*
     Handler handler = new Handler(){
@@ -71,6 +98,10 @@ public class WalletPresenter implements WalletModel.ApiAccessCallBack {
     @Override
     public void onGetTxListSuccess(JSONObject jsonObject){
         walletInterface.showTransactionList(JSONParser.parseJsonToTxList(jsonObject));
+    }
+
+    public void onGetPrivateKeySuccess(JSONObject jsonObject){
+        privateKey=JSONParser.parseJsonToUser(jsonObject).getUserKey();
     }
 
     @Override
