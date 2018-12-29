@@ -52,6 +52,24 @@ public class UserBusiness implements UserInterface {
     }
 
     @Override
+    public void upLoadKey(final UserBusiness.DetailCallBack callBack,Context context,Map<String,Object> map,int user_id){
+        /**
+         * 通过map传递private key值
+         * POST地址为upload_user_priavte_key_path_user_id
+         */
+        VolleyRequest.getJSONObject(JsonObjectRequest.Method.POST,context.getString(R.string.host_url_real_share) + context.getString(R.string.upload_user_private_key_path) + user_id,map, context, new VolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject jsonObject, Context context) {
+                callBack.onUploadKeySuccess(jsonObject);
+            }
+
+            @Override
+            public void onFailure() {
+                callBack.onUploadKeyFailure();
+            }
+        });
+    }
+    @Override
     public void registration(final OnRegistrationListener listener, final LocalCallBack callBack, Context context, Map<String, Object> map) {
         VolleyRequest.getJSONObject(JsonObjectRequest.Method.POST, context.getString(R.string.host_url_real_share) + context.getString(R.string.add_user_path), map, context, new VolleyCallback() {
             @Override
@@ -81,6 +99,8 @@ public class UserBusiness implements UserInterface {
     public interface DetailCallBack{
         void onUploadImageSuccess(JSONObject jsonObject);
         void onUploadImageFailure();
+        void onUploadKeySuccess(JSONObject jsonObject);
+        void onUploadKeyFailure();
     }
 
 }

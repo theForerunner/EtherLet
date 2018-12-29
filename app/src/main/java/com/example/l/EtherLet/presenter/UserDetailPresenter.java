@@ -9,6 +9,9 @@ import com.example.l.EtherLet.view.UserDetailViewInterface;
 
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class UserDetailPresenter implements UserDetailPresenterInterface,UserBusiness.DetailCallBack {
     private UserInterface userInterface;
     private UserDetailViewInterface userDetailViewInterface;
@@ -22,6 +25,10 @@ public class UserDetailPresenter implements UserDetailPresenterInterface,UserBus
         userInterface.upLoadImage(this, context, bitmap, user_id);
     }
 
+    @Override
+    public void upLoadKey(Context context,Map<String,Object> map,int user_id){
+        userInterface.upLoadKey(this,context,map,user_id);
+    }
 
     @Override
     public void onUploadImageSuccess(JSONObject jsonObject){
@@ -34,6 +41,16 @@ public class UserDetailPresenter implements UserDetailPresenterInterface,UserBus
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
+
+    @Override
+    public void onUploadKeySuccess(JSONObject jsonObject){
+
+    }
+
+    @Override
+    public void onUploadKeyFailure(){
 
     }
 
