@@ -18,8 +18,8 @@ public class FriendListPresenter implements FriendList.LoadDataCallBack{
         friendList=new FriendList();
     }
 
-    public void loadFriendList(Context context) {
-        friendList.loadFriendListData(this, context);
+    public void loadFriendList(Context context, int user_id) {
+        friendList.loadFriendListData(this, context, user_id);
     }
 
     @Override

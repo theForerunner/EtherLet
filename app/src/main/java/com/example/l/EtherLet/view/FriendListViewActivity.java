@@ -1,10 +1,8 @@
 package com.example.l.EtherLet.view;
 
 import android.content.Intent;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,10 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.l.EtherLet.GlobalData;
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.model.dto.FriendDTO;
 import com.example.l.EtherLet.presenter.FriendListPresenter;
@@ -35,6 +33,7 @@ public class FriendListViewActivity extends AppCompatActivity implements FriendL
     private FriendListPresenter friendListPresenter;
     private CardView friendCard;
     private Button scanButton;
+    private GlobalData globalData;
     //private String toAddress;
 
 
@@ -44,24 +43,23 @@ public class FriendListViewActivity extends AppCompatActivity implements FriendL
         setContentView(R.layout.activity_friend_list);
         friendListPresenter = new FriendListPresenter(FriendListViewActivity.this);
 
+        globalData = (GlobalData) getApplication();
+
         friendListRecyclerView=findViewById(R.id.friendlist_recycler_View);
         friendListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         friendAdapter=new FriendAdapter(initDefaultFriendList());
         friendListRecyclerView.setAdapter(friendAdapter);
-        friendListPresenter.loadFriendList(FriendListViewActivity.this);
+        if (globalData.getPrimaryUser().getUserId() != 0) {
+            friendListPresenter.loadFriendList(FriendListViewActivity.this, globalData.getPrimaryUser().getUserId());
+        }
 
-        friendListPresenter.loadFriendList(FriendListViewActivity.this);
+        //friendListPresenter.loadFriendList(FriendListViewActivity.this);
 
         //setUpSendMoneyBottomSheet();
 
         scanButton=findViewById(R.id.scan_button);
 
-        scanButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                codeScan();
-            }
-        });
+        scanButton.setOnClickListener(v -> codeScan());
     }
 
     @Override
@@ -86,14 +84,11 @@ public class FriendListViewActivity extends AppCompatActivity implements FriendL
             //thumbnail.setImageBitmap();
             username.setText(mFriend.getUserUsername());
 
-            friendCard.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent();
-                    intent.putExtra("friend address", mFriend.getUserKey());
-                    setResult(RESULT_OK, intent);
-                    finish();
-                }
+            friendCard.setOnClickListener(v -> {
+                Intent intent = new Intent();
+                intent.putExtra("friend address", mFriend.getUserKey());
+                setResult(RESULT_OK, intent);
+                finish();
             });
         }
     }

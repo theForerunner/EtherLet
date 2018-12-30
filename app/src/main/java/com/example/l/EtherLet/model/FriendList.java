@@ -12,8 +12,8 @@ import org.json.JSONObject;
 
 public class FriendList implements FriendListInterface {
     @Override
-    public void loadFriendListData(final LoadDataCallBack callBack, Context context) {
-        VolleyRequest.getJSONObject(JsonObjectRequest.Method.GET, context.getString(R.string.host_url_real_share) + context.getString(R.string.get_friend_list_path), null, context, new VolleyCallback() {
+    public void loadFriendListData(final LoadDataCallBack callBack, Context context, int user_id) {
+        VolleyRequest.getJSONObject(JsonObjectRequest.Method.GET, context.getString(R.string.host_url_real_share) + context.getString(R.string.get_friend_list_path) + user_id, null, context, new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject, Context context) {
                 callBack.onSuccess(jsonObject);

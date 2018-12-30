@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -68,18 +67,15 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
             startActivityForResult(intent,PHOTO_REQUEST_GALLERY);
 
         });
-        keyEnterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String keyword=keyEnterView.getText().toString();
-                if(keyword==null){
-                    Toast.makeText(UserDetailActivity.this, "The key can't be null!",
-                            Toast.LENGTH_SHORT).show();
-                }else{
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("userKey",keyword);
-                    userDetailPresenter.upLoadKey(UserDetailActivity.this,map,globalData.getPrimaryUser().getUserId());
-                }
+        keyEnterButton.setOnClickListener(v -> {
+            String keyword = keyEnterView.getText().toString();
+            if(keyword==null){
+                Toast.makeText(UserDetailActivity.this, "The key can't be null!",
+                        Toast.LENGTH_SHORT).show();
+            }else{
+                Map<String, Object> map = new HashMap<>();
+                map.put("userKey",keyword);
+                userDetailPresenter.upLoadKey(UserDetailActivity.this,map,globalData.getPrimaryUser().getUserId());
             }
         });
     }

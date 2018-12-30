@@ -2,10 +2,6 @@ package com.example.l.EtherLet.presenter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.l.EtherLet.R;
@@ -101,7 +97,7 @@ public class WalletPresenter implements WalletModel.ApiAccessCallBack {
     }
 
     public void onGetPrivateKeySuccess(JSONObject jsonObject){
-        privateKey=JSONParser.parseJsonToUser(jsonObject).getUserKey();
+        privateKey = JSONParser.parseJsonToUser(jsonObject).getUserKey();
     }
 
     @Override

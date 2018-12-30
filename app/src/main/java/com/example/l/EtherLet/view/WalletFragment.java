@@ -2,7 +2,6 @@ package com.example.l.EtherLet.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -10,7 +9,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,8 +21,6 @@ import android.widget.Toast;
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.model.WalletModel;
 import com.example.l.EtherLet.presenter.WalletPresenter;
-import com.google.zxing.integration.android.IntentIntegrator;
-import com.google.zxing.integration.android.IntentResult;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -259,12 +255,9 @@ public class WalletFragment extends Fragment implements WalletInterface{
         EditText enterNumber=bottomSheetView.findViewById(R.id.enter_number);
         Button confirm=bottomSheetView.findViewById(R.id.confirm_sending);
 
-        confirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                walletPresenter.sendMoney(toAddress,Float.parseFloat(enterNumber.getText().toString()));
-                sendMoneyBottomSheet.cancel();
-            }
+        confirm.setOnClickListener(v -> {
+            walletPresenter.sendMoney(toAddress,Float.parseFloat(enterNumber.getText().toString()));
+            sendMoneyBottomSheet.cancel();
         });
     }
 }
