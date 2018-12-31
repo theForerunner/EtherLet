@@ -10,7 +10,7 @@ Molbile Application Development Final Project
 
 2. 初次使用clone仓库
 ```
-git clone git@github.com:byrantwithyou/DBCourseProject-Poi.git
+git clone git@github.com:theForerunner/EtherLet.git
 ```
 3. 在develop分支的基础上创建新的功能分支feature/X
 
