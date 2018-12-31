@@ -20,27 +20,27 @@ public class WalletPresenter implements WalletModel.ApiAccessCallBack {
     private WalletModel myWallet;
     private WalletInterface walletInterface;
     private String privateKey;
-    public boolean isError;
+    //public boolean isError;
 
-    public WalletPresenter(WalletFragment walletFragment,Context context){
-        privateKey=null;
-        isError=false;
-        getUserPrivateKey(context);
+    public WalletPresenter(WalletFragment walletFragment,Context context,String privateKey){
+        this.privateKey=privateKey;
+        //isError=false;
+        /*
         if(privateKey==null){
             isError=true;
             return;
         }
-        myWallet=new WalletModel(privateKey);
+        */
+        myWallet=new WalletModel(this.privateKey);
         this.walletInterface =walletFragment;
     }
 
+    /*
     private void getUserPrivateKey(Context context){
         //String privateKey="5f073440e41311395fcc0ff5b10454040ef332b02d2caf6976231450aede0f6a";
-
-        String privateKey;
         VolleyRequest.getJSONObject(JsonObjectRequest.Method.GET, context.getString(R.string.host_url_real_share) + context.getString(R.string.get_user_path), null, context, new VolleyCallback() {
             @Override
-            public void onSuccess(JSONObject jsonObject, Context context) {
+            public void onLoadListSuccess(JSONObject jsonObject, Context context) {
                 onGetPrivateKeySuccess(jsonObject);
             }
 
@@ -50,6 +50,7 @@ public class WalletPresenter implements WalletModel.ApiAccessCallBack {
             }
         });
     }
+    */
 
     public void getBalance(Context context){
         myWallet.getBalance(this,context);
@@ -96,9 +97,11 @@ public class WalletPresenter implements WalletModel.ApiAccessCallBack {
         walletInterface.showTransactionList(JSONParser.parseJsonToTxList(jsonObject));
     }
 
+    /*
     public void onGetPrivateKeySuccess(JSONObject jsonObject){
         privateKey = JSONParser.parseJsonToUser(jsonObject).getUserKey();
     }
+    */
 
     @Override
     public void onFailure(){
