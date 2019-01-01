@@ -19,7 +19,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.l.EtherLet.model.dto.User;
-import com.example.l.EtherLet.view.FriendListActivity;
 import com.example.l.EtherLet.view.InfoListFragment;
 import com.example.l.EtherLet.view.LoginActivity;
 import com.example.l.EtherLet.view.MainPagerAdapter;
@@ -130,8 +129,7 @@ public class MainActivity extends AppCompatActivity {
                 .withCurrentProfileHiddenInList(true)
                 .addProfiles(
                         profile,
-                        new ProfileSettingDrawerItem().withName("Change Account").withIcon(GoogleMaterial.Icon.gmd_person_add).withIdentifier(100000),
-                        new ProfileSettingDrawerItem().withName("Manage Account").withIcon(GoogleMaterial.Icon.gmd_settings).withIdentifier(100001)
+                        new ProfileSettingDrawerItem().withName("Change Account").withIcon(GoogleMaterial.Icon.gmd_person_add).withIdentifier(100000)
                 )
                 .withOnAccountHeaderListener((view, profile, current) -> {
                     if (profile instanceof IDrawerItem) {
@@ -221,8 +219,6 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent = null;
                         if (drawerItem.getIdentifier() == 100000) {
                             intent = new Intent(MainActivity.this, LoginActivity.class);
-                        } else if (drawerItem.getIdentifier() == 100) {
-                            intent = new Intent(MainActivity.this, FriendListActivity.class);
                         }
                         if (intent != null) {
                             startActivity(intent);
