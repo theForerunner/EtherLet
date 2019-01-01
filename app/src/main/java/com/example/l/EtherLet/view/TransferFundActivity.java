@@ -26,7 +26,7 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class FriendListViewActivity extends AppCompatActivity implements FriendListViewInterface {
+public class TransferFundActivity extends AppCompatActivity implements FriendListInterface {
     private RecyclerView friendListRecyclerView;
     //private BottomSheetDialog sendMoneyBottomSheet;
     private FriendAdapter friendAdapter;
@@ -40,20 +40,20 @@ public class FriendListViewActivity extends AppCompatActivity implements FriendL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_friend_list);
-        friendListPresenter = new FriendListPresenter(FriendListViewActivity.this);
+        setContentView(R.layout.activity_transfer_fund);
 
         globalData = (GlobalData) getApplication();
 
+        friendListPresenter = new FriendListPresenter(TransferFundActivity.this);
         friendListRecyclerView=findViewById(R.id.friendlist_recycler_View);
         friendListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         friendAdapter=new FriendAdapter(initDefaultFriendList());
         friendListRecyclerView.setAdapter(friendAdapter);
         if (globalData.getPrimaryUser().getUserId() != 0) {
-            friendListPresenter.loadFriendList(FriendListViewActivity.this, globalData.getPrimaryUser().getUserId());
+            friendListPresenter.loadFriendList(TransferFundActivity.this, globalData.getPrimaryUser().getUserId());
         }
 
-        //friendListPresenter.loadFriendList(FriendListViewActivity.this);
+        //friendListPresenter.loadFriendList(TransferFundActivity.this);
 
         //setUpSendMoneyBottomSheet();
 
@@ -63,7 +63,7 @@ public class FriendListViewActivity extends AppCompatActivity implements FriendL
     }
 
     @Override
-    public void showPostList(List<FriendDTO> friendDTOList) {
+    public void showFriendList(List<FriendDTO> friendDTOList) {
         friendAdapter = new FriendAdapter(friendDTOList);
         friendListRecyclerView.setAdapter(friendAdapter);
     }
@@ -102,8 +102,8 @@ public class FriendListViewActivity extends AppCompatActivity implements FriendL
 
         @Override
         public FriendHolder onCreateViewHolder(ViewGroup viewGroup, int i){
-            LayoutInflater layoutInflater=LayoutInflater.from(FriendListViewActivity.this);
-            View view=layoutInflater.inflate(R.layout.friendlist_item,viewGroup,false);
+            LayoutInflater layoutInflater=LayoutInflater.from(TransferFundActivity.this);
+            View view=layoutInflater.inflate(R.layout.transfer_friendlist_item,viewGroup,false);
             friendCard=view.findViewById(R.id.friend_card);
             return new FriendHolder(view);
         }
@@ -122,7 +122,7 @@ public class FriendListViewActivity extends AppCompatActivity implements FriendL
 
     @Override
     public void showFailureMessage() {
-            Toast.makeText(FriendListViewActivity.this, "Network Error", Toast.LENGTH_LONG).show();
+            Toast.makeText(TransferFundActivity.this, "Network Error", Toast.LENGTH_LONG).show();
     }
 
 

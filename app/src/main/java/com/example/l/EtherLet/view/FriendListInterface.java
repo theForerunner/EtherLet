@@ -4,7 +4,7 @@ import com.example.l.EtherLet.model.dto.FriendDTO;
 
 import java.util.List;
 
-public interface FriendListViewInterface {
+public interface FriendListInterface {
     public void showFailureMessage();
-    public void showPostList(List<FriendDTO> friendDTOList);
+    public void showFriendList(List<FriendDTO> friendDTOList);
 }

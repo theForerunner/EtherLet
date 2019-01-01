@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.l.EtherLet.GlobalData;
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.model.WalletModel;
 import com.example.l.EtherLet.presenter.WalletPresenter;
@@ -40,6 +41,7 @@ public class WalletFragment extends Fragment implements WalletInterface{
     private String toAddress;
     private TextView ethView;
     private TextView dollarView;
+    private GlobalData globalData;
 
     public static WalletFragment newInstance() {
         WalletFragment f = new WalletFragment();
@@ -51,7 +53,8 @@ public class WalletFragment extends Fragment implements WalletInterface{
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_wallet, container, false);
-        walletPresenter = new WalletPresenter(this,rootView.getContext());
+        globalData = (GlobalData) getActivity().getApplication();
+        walletPresenter = new WalletPresenter(this,rootView.getContext(),globalData.getPrimaryUser().getUserKey());
         transactionListRecyclerView=rootView.findViewById(R.id.tx_list_recycler);
         transactionListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -92,7 +95,7 @@ public class WalletFragment extends Fragment implements WalletInterface{
 
 
     void update(){
-        if(walletPresenter.isError){
+        if(globalData.getPrimaryUser().getUserKey().isEmpty() || globalData.getPrimaryUser().getUserKey()==null){
             Toast.makeText(getActivity(), "Please set your Ethereum private key!",
                     Toast.LENGTH_SHORT).show();
             return;
@@ -133,7 +136,7 @@ public class WalletFragment extends Fragment implements WalletInterface{
                 .initiateScan(); // 初始化扫描
          */
             //第二个参数为请求码，可以根据业务需求自己编号
-            startActivityForResult(new Intent(getActivity(), FriendListViewActivity.class),  1);
+            startActivityForResult(new Intent(getActivity(), TransferFundActivity.class),  1);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
