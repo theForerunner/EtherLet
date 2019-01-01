@@ -3,6 +3,7 @@ package com.example.l.EtherLet.model;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.network.VolleyCallback;
@@ -71,7 +72,7 @@ public class UserBusiness implements UserInterface {
     }
     @Override
     public void registration(final OnRegistrationListener listener, final LocalCallBack callBack, Context context, Map<String, Object> map) {
-        VolleyRequest.getJSONObject(JsonObjectRequest.Method.POST, context.getString(R.string.host_url_real_share) + context.getString(R.string.add_user_path), map, context, new VolleyCallback() {
+        VolleyRequest.getJSONObject(JsonObjectRequest.Method.PUT, context.getString(R.string.host_url_real_share) + context.getString(R.string.update_user_path), map, context, new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject, Context context) {
                 callBack.onRemoteRegisterSuccess(jsonObject);
