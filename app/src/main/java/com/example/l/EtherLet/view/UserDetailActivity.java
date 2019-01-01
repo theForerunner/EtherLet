@@ -80,9 +80,15 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
                 Toast.makeText(UserDetailActivity.this, "The key can't be null!",
                         Toast.LENGTH_SHORT).show();
             }else{
+                User temp=globalData.getPrimaryUser();
                 Map<String, Object> map = new HashMap<>();
                 map.put("userKey",keyword);
+                map.put("userId",temp.getUserId());
+                map.put("userAccount",temp.getUserAccount());
+                map.put("userPassword",temp.getUserPassword());
+                map.put("userUsername",temp.getUserUsername());
                 userDetailPresenter.upLoadKey(UserDetailActivity.this,map,globalData.getPrimaryUser().getUserId());
+                globalData.getPrimaryUser().setUserKey(keyword);
             }
         });
         keyScanButton.setOnClickListener(v -> {
@@ -124,6 +130,8 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
                     map.put("userPassword",temp.getUserPassword());
                     map.put("userUsername",temp.getUserUsername());
                     userDetailPresenter.upLoadKey(UserDetailActivity.this,map,globalData.getPrimaryUser().getUserId());
+                    globalData.getPrimaryUser().setUserKey(ScanResult);
+                    keyEnterView.setText(ScanResult);
                 }
             } else {
                 super.onActivityResult(requestCode,resultCode,data);
@@ -164,5 +172,10 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
         else if(type==1){
             Toast.makeText(UserDetailActivity.this, "Image Upload Failed", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void setUser(User user){
+        globalData.setPrimaryUser(user);
     }
 }
