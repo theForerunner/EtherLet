@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 
 import com.example.l.EtherLet.model.UserBusiness;
 import com.example.l.EtherLet.model.UserInterface;
+import com.example.l.EtherLet.network.JSONParser;
 import com.example.l.EtherLet.view.UserDetailViewInterface;
 
 import org.json.JSONObject;
@@ -46,7 +47,7 @@ public class UserDetailPresenter implements UserDetailPresenterInterface,UserBus
 
     @Override
     public void onUploadKeySuccess(JSONObject jsonObject){
-
+        userDetailViewInterface.setUser(JSONParser.parseJsonToUser(jsonObject));
     }
 
     @Override

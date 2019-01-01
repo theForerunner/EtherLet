@@ -58,7 +58,7 @@ public class UserBusiness implements UserInterface {
          * 通过map传递private key值
          * POST地址为upload_user_priavte_key_path_user_id
          */
-        VolleyRequest.getJSONObject(JsonObjectRequest.Method.POST,context.getString(R.string.host_url_real_share) + context.getString(R.string.upload_user_private_key_path) + user_id,map, context, new VolleyCallback() {
+        VolleyRequest.getJSONObject(JsonObjectRequest.Method.PUT,context.getString(R.string.host_url_real_share) + context.getString(R.string.update_user_path) + user_id,map, context, new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject, Context context) {
                 callBack.onUploadKeySuccess(jsonObject);
@@ -72,7 +72,7 @@ public class UserBusiness implements UserInterface {
     }
     @Override
     public void registration(final OnRegistrationListener listener, final LocalCallBack callBack, Context context, Map<String, Object> map) {
-        VolleyRequest.getJSONObject(JsonObjectRequest.Method.PUT, context.getString(R.string.host_url_real_share) + context.getString(R.string.update_user_path), map, context, new VolleyCallback() {
+        VolleyRequest.getJSONObject(JsonObjectRequest.Method.PUT, context.getString(R.string.host_url_real_share) + context.getString(R.string.add_user_path), map, context, new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject, Context context) {
                 callBack.onRemoteRegisterSuccess(jsonObject);
