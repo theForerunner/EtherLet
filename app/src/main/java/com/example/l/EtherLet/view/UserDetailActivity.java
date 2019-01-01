@@ -17,6 +17,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.l.EtherLet.DBHelper;
 import com.example.l.EtherLet.GlobalData;
 import com.example.l.EtherLet.R;
+import com.example.l.EtherLet.model.dto.User;
 import com.example.l.EtherLet.presenter.UserDetailPresenter;
 import com.google.zxing.client.android.Intents;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -113,10 +114,15 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
                     Log.i("DT","二维码识别失败");
                     return;
                 } else {
+                    User temp=globalData.getPrimaryUser();
                     String ScanResult = intentResult.getContents();
                     Log.i("DT",ScanResult);
                     Map<String, Object> map = new HashMap<>();
                     map.put("userKey",ScanResult);
+                    map.put("userId",temp.getUserId());
+                    map.put("userAccount",temp.getUserAccount());
+                    map.put("userPassword",temp.getUserPassword());
+                    map.put("userUsername",temp.getUserUsername());
                     userDetailPresenter.upLoadKey(UserDetailActivity.this,map,globalData.getPrimaryUser().getUserId());
                 }
             } else {
