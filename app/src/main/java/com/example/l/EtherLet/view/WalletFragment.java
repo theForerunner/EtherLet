@@ -9,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,8 @@ import com.example.l.EtherLet.GlobalData;
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.model.WalletModel;
 import com.example.l.EtherLet.presenter.WalletPresenter;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -103,10 +106,11 @@ public class WalletFragment extends Fragment implements WalletInterface{
             Toast.makeText(getActivity(), "Please set your Ethereum private key!",
                     Toast.LENGTH_SHORT).show();
             presenterRefresh=true;
+            swipeRefreshLayout.setRefreshing(false);
             return;
         }
         if(presenterRefresh){
-            walletPresenter = new WalletPresenter(this,getContext(),globalData.getPrimaryUser().getUserKey());
+            walletPresenter.setPrivateKey(globalData.getPrimaryUser().getUserKey());
         }
         walletPresenter.getBalance(this.getActivity());
         walletPresenter.getTransactionList(this.getActivity());
@@ -133,23 +137,28 @@ public class WalletFragment extends Fragment implements WalletInterface{
 
     @Override
     public void requestMoney() {
+        if(globalData.getPrimaryUser().getUserKey()==""){
+            Toast.makeText(getActivity(), "Please set your Ethereum private key!",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
         newQRCodeBottomSheetDialog.show();
     }
 
     @Override
     public void sendMoney() {
-        /*
+        if(globalData.getPrimaryUser().getUserKey()==""){
+            Toast.makeText(getActivity(), "Please set your Ethereum private key!",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
         new IntentIntegrator(this.getActivity())
                 .setOrientationLocked(false)
                 .setCaptureActivity(CodeScanActivity.class) // 设置自定义的activity是CustomActivity
                 .initiateScan(); // 初始化扫描
-         */
-            //第二个参数为请求码，可以根据业务需求自己编号
-            startActivityForResult(new Intent(getActivity(), TransferFundActivity.class),  1);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        /*
         IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
         if(intentResult != null) {
             if(intentResult.getContents() == null) {
@@ -164,11 +173,6 @@ public class WalletFragment extends Fragment implements WalletInterface{
         } else {
             super.onActivityResult(requestCode,resultCode,data);
         }
-        */
-        if(data==null){
-            return;
-        }
-        toAddress=  data.getExtras().getString("friend address");
         sendMoneyBottomSheet.show();
     }
 

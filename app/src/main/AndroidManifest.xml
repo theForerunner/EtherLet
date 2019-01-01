@@ -31,8 +31,6 @@
         <activity android:name=".view.RegistrationActivity" />
         <activity android:name=".view.PostDetailedPageActivity" />
         <activity android:name=".view.CodeScanActivity" />
-        <activity android:name=".view.TransferFundActivity" />
-        <activity android:name=".view.FriendListActivity"></activity>
     </application>
 
 </manifest>

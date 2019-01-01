@@ -131,11 +131,11 @@ public class WalletModel {
 
         public Transaction(boolean init){
             if(!init) return;
-            senderAddress="jhdsbcscldjncsldnl327e8fsdnsd";
-            receiverAddress="sdcskjcnlkjdnv3872sjdfvkjsd";
-            value="16.00";
-            timeStamp="20181212";
-            status="1";
+            senderAddress="";
+            receiverAddress="";
+            value="";
+            timeStamp="";
+            status="";
         }
 
         public String getSenderAddress() {
