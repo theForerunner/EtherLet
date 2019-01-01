@@ -214,7 +214,12 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
     private void setUpFloatingActionBtn(int post_id) {
         btnComment.setOnClickListener(v -> {
             floatingActionMenu.close(true);
-            newCommentBottomSheetDialog.show();
+            if (globalData.getPrimaryUser().getUserId() == 0) {
+                Intent intent = new Intent(PostDetailedPageActivity.this, LoginActivity.class);
+                startActivity(intent);
+            } else {
+                newCommentBottomSheetDialog.show();
+            }
         });
 
         btnToTop.setOnClickListener(v -> {

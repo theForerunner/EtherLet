@@ -44,7 +44,6 @@ import com.mikepenz.materialdrawer.util.DrawerUIUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     TabLayout tabLayout;
     @BindView(R.id.post_list_floating_menu)
     FloatingActionMenu floatingActionMenu;
-    CircleImageView userImage;
     private Drawer drawer;
     AccountHeader accountHeader;
     GlobalData globalData;
@@ -131,8 +129,7 @@ public class MainActivity extends AppCompatActivity {
                 .withCurrentProfileHiddenInList(true)
                 .addProfiles(
                         profile,
-                        new ProfileSettingDrawerItem().withName("Change Account").withIcon(GoogleMaterial.Icon.gmd_person_add).withIdentifier(100000),
-                        new ProfileSettingDrawerItem().withName("Manage Account").withIcon(GoogleMaterial.Icon.gmd_settings).withIdentifier(100001)
+                        new ProfileSettingDrawerItem().withName("Change Account").withIcon(GoogleMaterial.Icon.gmd_person_add).withIdentifier(100000)
                 )
                 .withOnAccountHeaderListener((view, profile, current) -> {
                     if (profile instanceof IDrawerItem) {
@@ -214,8 +211,8 @@ public class MainActivity extends AppCompatActivity {
                 .withTranslucentStatusBar(false)
                 .withActionBarDrawerToggle(false)
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withIcon(GoogleMaterial.Icon.gmd_group).withName(R.string.drawer_item_friends),
-                        new SecondaryDrawerItem().withIcon(GoogleMaterial.Icon.gmd_account_balance_wallet).withName(R.string.drawer_item_wallet)
+                        new PrimaryDrawerItem().withIcon(GoogleMaterial.Icon.gmd_group).withName(R.string.drawer_item_friends).withIdentifier(100),
+                        new SecondaryDrawerItem().withIcon(GoogleMaterial.Icon.gmd_account_balance_wallet).withName(R.string.drawer_item_wallet).withIdentifier(101)
                 )
                 .withOnDrawerItemClickListener((view, position, drawerItem) -> {
                     if (drawerItem != null) {
@@ -223,7 +220,6 @@ public class MainActivity extends AppCompatActivity {
                         if (drawerItem.getIdentifier() == 100000) {
                             intent = new Intent(MainActivity.this, LoginActivity.class);
                         }
-
                         if (intent != null) {
                             startActivity(intent);
                         }

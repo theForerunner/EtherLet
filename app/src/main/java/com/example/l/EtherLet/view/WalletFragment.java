@@ -9,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,8 @@ import com.example.l.EtherLet.GlobalData;
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.model.WalletModel;
 import com.example.l.EtherLet.presenter.WalletPresenter;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -42,6 +45,7 @@ public class WalletFragment extends Fragment implements WalletInterface{
     private TextView ethView;
     private TextView dollarView;
     private GlobalData globalData;
+    private boolean presenterRefresh;
 
     public static WalletFragment newInstance() {
         WalletFragment f = new WalletFragment();
@@ -54,7 +58,8 @@ public class WalletFragment extends Fragment implements WalletInterface{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_wallet, container, false);
         globalData = (GlobalData) getActivity().getApplication();
-        walletPresenter = new WalletPresenter(this,rootView.getContext(),globalData.getPrimaryUser().getUserKey());
+        //globalData.getPrimaryUser().setUserKey("5f073440e41311395fcc0ff5b10454040ef332b02d2caf6976231450aede0f6a");
+        walletPresenter = new WalletPresenter(this, rootView.getContext(), globalData.getPrimaryUser().getUserKey());
         transactionListRecyclerView=rootView.findViewById(R.id.tx_list_recycler);
         transactionListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -70,6 +75,7 @@ public class WalletFragment extends Fragment implements WalletInterface{
 
         ethView.setText("0.00 ETH");
         toAddress=null;
+        presenterRefresh=false;
 
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         swipeRefreshLayout.setOnRefreshListener(()->update());
@@ -95,16 +101,22 @@ public class WalletFragment extends Fragment implements WalletInterface{
 
 
     void update(){
-        if(globalData.getPrimaryUser().getUserKey().isEmpty() || globalData.getPrimaryUser().getUserKey()==null){
+        if(globalData.getPrimaryUser().getUserKey()==""){
             Toast.makeText(getActivity(), "Please set your Ethereum private key!",
                     Toast.LENGTH_SHORT).show();
+            presenterRefresh=true;
+            swipeRefreshLayout.setRefreshing(false);
             return;
+        }
+        if(presenterRefresh){
+            walletPresenter.setPrivateKey(globalData.getPrimaryUser().getUserKey());
         }
         walletPresenter.getBalance(this.getActivity());
         walletPresenter.getTransactionList(this.getActivity());
         swipeRefreshLayout.setRefreshing(false);
         setUpQRCodeBottomSheetDialog();
         setUpSendMoneyBottomSheet();
+        swipeRefreshLayout.setRefreshing(false);
     }
 
 
@@ -124,23 +136,28 @@ public class WalletFragment extends Fragment implements WalletInterface{
 
     @Override
     public void requestMoney() {
+        if(globalData.getPrimaryUser().getUserKey()==""){
+            Toast.makeText(getActivity(), "Please set your Ethereum private key!",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
         newQRCodeBottomSheetDialog.show();
     }
 
     @Override
     public void sendMoney() {
-        /*
+        if(globalData.getPrimaryUser().getUserKey()==""){
+            Toast.makeText(getActivity(), "Please set your Ethereum private key!",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
         new IntentIntegrator(this.getActivity())
                 .setOrientationLocked(false)
                 .setCaptureActivity(CodeScanActivity.class) // 设置自定义的activity是CustomActivity
                 .initiateScan(); // 初始化扫描
-         */
-            //第二个参数为请求码，可以根据业务需求自己编号
-            startActivityForResult(new Intent(getActivity(), TransferFundActivity.class),  1);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        /*
         IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
         if(intentResult != null) {
             if(intentResult.getContents() == null) {
@@ -155,11 +172,6 @@ public class WalletFragment extends Fragment implements WalletInterface{
         } else {
             super.onActivityResult(requestCode,resultCode,data);
         }
-        */
-        if(data==null){
-            return;
-        }
-        toAddress=  data.getExtras().getString("friend address");
         sendMoneyBottomSheet.show();
     }
 

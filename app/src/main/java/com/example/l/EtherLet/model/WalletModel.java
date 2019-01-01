@@ -2,12 +2,8 @@ package com.example.l.EtherLet.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.l.EtherLet.network.JSONParser;
 import com.example.l.EtherLet.network.VolleyCallback;
 import com.example.l.EtherLet.network.VolleyRequest;
 import com.example.l.EtherLet.network.Web3jRequest;
@@ -22,13 +18,12 @@ import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.http.HttpService;
 
-import static org.web3j.protocol.Web3j.*;
+import static org.web3j.protocol.Web3j.build;
 
 public class WalletModel {
     private String url ="https://ropsten.infura.io/v3/311d966c7f17491d9528f19b47dea261";
     private Web3j web3j;
     private Credentials credentials;
-
     public WalletModel(String privateKey){
         web3j=build(new HttpService(url));
         credentials  = Credentials.create(privateKey);
@@ -136,11 +131,11 @@ public class WalletModel {
 
         public Transaction(boolean init){
             if(!init) return;
-            senderAddress="jhdsbcscldjncsldnl327e8fsdnsd";
-            receiverAddress="sdcskjcnlkjdnv3872sjdfvkjsd";
-            value="16.00";
-            timeStamp="20181212";
-            status="1";
+            senderAddress="";
+            receiverAddress="";
+            value="";
+            timeStamp="";
+            status="";
         }
 
         public String getSenderAddress() {

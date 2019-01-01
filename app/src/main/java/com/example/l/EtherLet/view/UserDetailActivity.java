@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -16,7 +17,11 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.l.EtherLet.DBHelper;
 import com.example.l.EtherLet.GlobalData;
 import com.example.l.EtherLet.R;
+import com.example.l.EtherLet.model.dto.User;
 import com.example.l.EtherLet.presenter.UserDetailPresenter;
+import com.google.zxing.client.android.Intents;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,6 +43,8 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
     EditText keyEnterView;
     @BindView(R.id.key_enter_button)
     Button keyEnterButton;
+    @BindView(R.id.key_scan_button)
+    Button keyScanButton;
 
     private static final int PHOTO_REQUEST_GALLERY = 1;// 从相册中选择
     private static final int PHOTO_REQUEST_CUT = 2;// 结果
@@ -73,10 +80,19 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
                 Toast.makeText(UserDetailActivity.this, "The key can't be null!",
                         Toast.LENGTH_SHORT).show();
             }else{
+                User temp=globalData.getPrimaryUser();
                 Map<String, Object> map = new HashMap<>();
                 map.put("userKey",keyword);
+                map.put("userId",temp.getUserId());
+                map.put("userAccount",temp.getUserAccount());
+                map.put("userPassword",temp.getUserPassword());
+                map.put("userUsername",temp.getUserUsername());
                 userDetailPresenter.upLoadKey(UserDetailActivity.this,map,globalData.getPrimaryUser().getUserId());
+                globalData.getPrimaryUser().setUserKey(keyword);
             }
+        });
+        keyScanButton.setOnClickListener(v -> {
+            codeScan();
         });
     }
 
@@ -97,8 +113,38 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
 
                 //this.image.setImageBitmap(bitmap);
             }
+        }else{
+            IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
+            if(intentResult != null) {
+                if(intentResult.getContents() == null) {
+                    Log.i("DT","二维码识别失败");
+                    return;
+                } else {
+                    User temp=globalData.getPrimaryUser();
+                    String ScanResult = intentResult.getContents();
+                    Log.i("DT",ScanResult);
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("userKey",ScanResult);
+                    map.put("userId",temp.getUserId());
+                    map.put("userAccount",temp.getUserAccount());
+                    map.put("userPassword",temp.getUserPassword());
+                    map.put("userUsername",temp.getUserUsername());
+                    userDetailPresenter.upLoadKey(UserDetailActivity.this,map,globalData.getPrimaryUser().getUserId());
+                    globalData.getPrimaryUser().setUserKey(ScanResult);
+                    keyEnterView.setText(ScanResult);
+                }
+            } else {
+                super.onActivityResult(requestCode,resultCode,data);
+            }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void codeScan() {
+        new IntentIntegrator(this)
+                .setOrientationLocked(false)
+                .setCaptureActivity(CodeScanActivity.class) // 设置自定义的activity是CustomActivity
+                .initiateScan(); // 初始化扫描
     }
 
     private void crop(Uri uri) {
@@ -126,5 +172,10 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
         else if(type==1){
             Toast.makeText(UserDetailActivity.this, "Image Upload Failed", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void setUser(User user){
+        globalData.setPrimaryUser(user);
     }
 }
