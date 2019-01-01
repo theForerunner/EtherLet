@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.l.EtherLet.model.dto.User;
+import com.example.l.EtherLet.view.FriendListActivity;
 import com.example.l.EtherLet.view.InfoListFragment;
 import com.example.l.EtherLet.view.LoginActivity;
 import com.example.l.EtherLet.view.MainPagerAdapter;
@@ -44,7 +45,6 @@ import com.mikepenz.materialdrawer.util.DrawerUIUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
     TabLayout tabLayout;
     @BindView(R.id.post_list_floating_menu)
     FloatingActionMenu floatingActionMenu;
-    CircleImageView userImage;
     private Drawer drawer;
     AccountHeader accountHeader;
     GlobalData globalData;
@@ -214,16 +213,17 @@ public class MainActivity extends AppCompatActivity {
                 .withTranslucentStatusBar(false)
                 .withActionBarDrawerToggle(false)
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withIcon(GoogleMaterial.Icon.gmd_group).withName(R.string.drawer_item_friends),
-                        new SecondaryDrawerItem().withIcon(GoogleMaterial.Icon.gmd_account_balance_wallet).withName(R.string.drawer_item_wallet)
+                        new PrimaryDrawerItem().withIcon(GoogleMaterial.Icon.gmd_group).withName(R.string.drawer_item_friends).withIdentifier(100),
+                        new SecondaryDrawerItem().withIcon(GoogleMaterial.Icon.gmd_account_balance_wallet).withName(R.string.drawer_item_wallet).withIdentifier(101)
                 )
                 .withOnDrawerItemClickListener((view, position, drawerItem) -> {
                     if (drawerItem != null) {
                         Intent intent = null;
                         if (drawerItem.getIdentifier() == 100000) {
                             intent = new Intent(MainActivity.this, LoginActivity.class);
+                        } else if (drawerItem.getIdentifier() == 100) {
+                            intent = new Intent(MainActivity.this, FriendListActivity.class);
                         }
-
                         if (intent != null) {
                             startActivity(intent);
                         }

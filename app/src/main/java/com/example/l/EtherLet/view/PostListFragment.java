@@ -201,7 +201,12 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
         if (getActivity() != null && floatingActionMenu != null) {
             getActivity().findViewById(R.id.btn_post).setOnClickListener(v -> {
                 floatingActionMenu.close(false);
-                newPostBottomSheetDialog.show();
+                if (globalData.getPrimaryUser().getUserId() == 0) {
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    startActivity(intent);
+                } else {
+                    newPostBottomSheetDialog.show();
+                }
             });
 
             getActivity().findViewById(R.id.btn_toTop).setOnClickListener(v -> {
