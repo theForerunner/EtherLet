@@ -55,7 +55,9 @@ public class WalletFragment extends Fragment implements WalletInterface{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_wallet, container, false);
         globalData = (GlobalData) getActivity().getApplication();
-        walletPresenter = new WalletPresenter(this,rootView.getContext(),globalData.getPrimaryUser().getUserKey());
+        if(globalData.getPrimaryUser().getUserKey()!="") {
+            walletPresenter = new WalletPresenter(this, rootView.getContext(), globalData.getPrimaryUser().getUserKey());
+        }
         transactionListRecyclerView=rootView.findViewById(R.id.tx_list_recycler);
         transactionListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -97,7 +99,7 @@ public class WalletFragment extends Fragment implements WalletInterface{
 
 
     void update(){
-        if(globalData.getPrimaryUser().getUserKey().isEmpty() || globalData.getPrimaryUser().getUserKey()==null){
+        if(globalData.getPrimaryUser().getUserKey()==""){
             Toast.makeText(getActivity(), "Please set your Ethereum private key!",
                     Toast.LENGTH_SHORT).show();
             presenterRefresh=true;
