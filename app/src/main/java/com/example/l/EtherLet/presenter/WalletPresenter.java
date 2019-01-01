@@ -19,6 +19,8 @@ import java.math.RoundingMode;
 public class WalletPresenter implements WalletModel.ApiAccessCallBack {
     private WalletModel myWallet;
     private WalletInterface walletInterface;
+
+
     private String privateKey;
     //public boolean isError;
 
@@ -78,6 +80,11 @@ public class WalletPresenter implements WalletModel.ApiAccessCallBack {
         }
     };
     */
+
+    public void setPrivateKey(String privateKey) {
+        this.privateKey = privateKey;
+    }
+
 
     public void getTransactionList(Context context){
         myWallet.getTransactionList(this,context);
