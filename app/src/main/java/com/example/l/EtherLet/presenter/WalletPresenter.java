@@ -24,13 +24,9 @@ public class WalletPresenter implements WalletModel.ApiAccessCallBack {
 
     public WalletPresenter(WalletFragment walletFragment,Context context,String privateKey){
         this.privateKey=privateKey;
-        //isError=false;
-        /*
         if(privateKey==null){
-            isError=true;
             return;
         }
-        */
         myWallet=new WalletModel(this.privateKey);
         this.walletInterface =walletFragment;
     }

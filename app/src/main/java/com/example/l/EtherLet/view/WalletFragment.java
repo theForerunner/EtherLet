@@ -42,6 +42,7 @@ public class WalletFragment extends Fragment implements WalletInterface{
     private TextView ethView;
     private TextView dollarView;
     private GlobalData globalData;
+    private boolean presenterRefresh;
 
     public static WalletFragment newInstance() {
         WalletFragment f = new WalletFragment();
@@ -70,6 +71,7 @@ public class WalletFragment extends Fragment implements WalletInterface{
 
         ethView.setText("0.00 ETH");
         toAddress=null;
+        presenterRefresh=false;
 
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         swipeRefreshLayout.setOnRefreshListener(()->update());
@@ -98,13 +100,18 @@ public class WalletFragment extends Fragment implements WalletInterface{
         if(globalData.getPrimaryUser().getUserKey().isEmpty() || globalData.getPrimaryUser().getUserKey()==null){
             Toast.makeText(getActivity(), "Please set your Ethereum private key!",
                     Toast.LENGTH_SHORT).show();
+            presenterRefresh=true;
             return;
+        }
+        if(presenterRefresh){
+            walletPresenter = new WalletPresenter(this,getContext(),globalData.getPrimaryUser().getUserKey());
         }
         walletPresenter.getBalance(this.getActivity());
         walletPresenter.getTransactionList(this.getActivity());
         swipeRefreshLayout.setRefreshing(false);
         setUpQRCodeBottomSheetDialog();
         setUpSendMoneyBottomSheet();
+        swipeRefreshLayout.setRefreshing(false);
     }
 
 
