@@ -58,9 +58,8 @@ public class WalletFragment extends Fragment implements WalletInterface{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_wallet, container, false);
         globalData = (GlobalData) getActivity().getApplication();
-        if(globalData.getPrimaryUser().getUserKey()!="") {
-            walletPresenter = new WalletPresenter(this, rootView.getContext(), globalData.getPrimaryUser().getUserKey());
-        }
+        //globalData.getPrimaryUser().setUserKey("5f073440e41311395fcc0ff5b10454040ef332b02d2caf6976231450aede0f6a");
+        walletPresenter = new WalletPresenter(this, rootView.getContext(), globalData.getPrimaryUser().getUserKey());
         transactionListRecyclerView=rootView.findViewById(R.id.tx_list_recycler);
         transactionListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
