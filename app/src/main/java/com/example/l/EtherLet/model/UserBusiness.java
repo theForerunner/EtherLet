@@ -3,7 +3,6 @@ package com.example.l.EtherLet.model;
 import android.content.Context;
 import android.graphics.Bitmap;
 
-import com.android.volley.Request;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.network.VolleyCallback;
@@ -58,7 +57,7 @@ public class UserBusiness implements UserInterface {
          * 通过map传递private key值
          * POST地址为upload_user_priavte_key_path_user_id
          */
-        VolleyRequest.getJSONObject(JsonObjectRequest.Method.PUT,context.getString(R.string.host_url_real_share) + context.getString(R.string.update_user_path) + user_id,map, context, new VolleyCallback() {
+        VolleyRequest.getJSONObject(JsonObjectRequest.Method.PUT,context.getString(R.string.host_url_real_share) + context.getString(R.string.update_user_path), map, context, new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject, Context context) {
                 callBack.onUploadKeySuccess(jsonObject);
