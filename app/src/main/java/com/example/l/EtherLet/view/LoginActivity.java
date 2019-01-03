@@ -20,6 +20,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListPopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +39,7 @@ import butterknife.ButterKnife;
 
 public class LoginActivity extends AppCompatActivity implements LoginViewInterface {
     @BindView(R.id.login_constraint_layout)
-    ConstraintLayout constraintLayout;
+    RelativeLayout relativeLayout;
     @BindView(R.id.id_text)
     EditText userAccount;
     @BindView(R.id.password_text)
@@ -72,7 +73,7 @@ public class LoginActivity extends AppCompatActivity implements LoginViewInterfa
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void initViews(){
+    private void initViews(){//绑定控件
         instance=this;
         loginPresenter=new LoginPresenter(this);
         historyWindow=new ListPopupWindow(this);
@@ -98,7 +99,7 @@ public class LoginActivity extends AppCompatActivity implements LoginViewInterfa
 
             }
         });
-        loginButton.setOnClickListener(v -> {
+        loginButton.setOnClickListener(v -> {//登陆
             String account = getAccount();
             String password = getPassword();
             if (!account.equals("") && !password.equals("")) {
@@ -111,14 +112,14 @@ public class LoginActivity extends AppCompatActivity implements LoginViewInterfa
                 Toast.makeText(LoginActivity.this, R.string.info_incomplete, Toast.LENGTH_SHORT).show();
             }
         });
-        RegisterButton.setOnClickListener(v -> {
+        RegisterButton.setOnClickListener(v -> {//注册
             loginPresenter.clear();
             checkSavePassword.setChecked(false);
             Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
             startActivity(intent);
             this.finish();
         });
-        userHistory.setOnClickListener(v -> {
+        userHistory.setOnClickListener(v -> {//点开历史用户列表
             if(!click){
                 historyList=initHistory();
                 historyWindow.setAdapter(new ArrayAdapter(LoginActivity.this, R.layout.history_list, historyList));
@@ -129,7 +130,7 @@ public class LoginActivity extends AppCompatActivity implements LoginViewInterfa
             } else click = false;
 
         });
-        historyWindow.setOnItemClickListener((parent, view, position, id) -> {
+        historyWindow.setOnItemClickListener((parent, view, position, id) -> {//选择用户
             userAccount.setText(historyList.get(position));
             String password=getPassword(historyList.get(position));
             userPassword.setText(password);
@@ -144,7 +145,7 @@ public class LoginActivity extends AppCompatActivity implements LoginViewInterfa
             click=false;
         });
 
-        deleteUserButton.setOnClickListener(new View.OnClickListener() {
+        deleteUserButton.setOnClickListener(new View.OnClickListener() {//删除历史用户
             @Override
             public void onClick(View v) {
                 String account=getAccount();
@@ -156,10 +157,10 @@ public class LoginActivity extends AppCompatActivity implements LoginViewInterfa
             }
         });
 
-        constraintLayout.setOnTouchListener((v, event) -> {
-            constraintLayout.setFocusable(true);
-            constraintLayout.setFocusableInTouchMode(true);
-            constraintLayout.requestFocus();
+        relativeLayout.setOnTouchListener((v, event) -> {//edittext点击外部失焦
+            relativeLayout.setFocusable(true);
+            relativeLayout.setFocusableInTouchMode(true);
+            relativeLayout.requestFocus();
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(userAccount.getWindowToken(),0);
             imm.hideSoftInputFromWindow(userPassword.getWindowToken(),0);
@@ -190,8 +191,6 @@ public class LoginActivity extends AppCompatActivity implements LoginViewInterfa
     @Override
     public void enterMainActivity(User user) {//转到主界面
 
-        //Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-        //startActivity(intent);
         globalData.setPrimaryUser(user);
         if(checkSavePassword.isChecked()){
             insertHistoryWithPassword(user.getUserAccount(),user.getUserPassword());
@@ -208,7 +207,7 @@ public class LoginActivity extends AppCompatActivity implements LoginViewInterfa
         Toast.makeText(this,R.string.login_fail, Toast.LENGTH_SHORT).show();
     }
 
-    public boolean isInHistory(String id){
+    public boolean isInHistory(String id){//sqlite判断是否在库内
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String sql = "select * from userHistory where userAccount=?";
         Cursor cursor = db.rawQuery(sql, new String[] {id});
@@ -218,7 +217,7 @@ public class LoginActivity extends AppCompatActivity implements LoginViewInterfa
         }
         return false;
     }
-    public ArrayList<String> initHistory(){
+    public ArrayList<String> initHistory(){//sqlite获取历史用户表
 
         ArrayList<String> list=new ArrayList();
         SQLiteDatabase db =dbHelper.getWritableDatabase();
@@ -231,7 +230,7 @@ public class LoginActivity extends AppCompatActivity implements LoginViewInterfa
         cursor.close();
         return list;
     }
-    public String getPassword(String id){
+    public String getPassword(String id){//sqlite获取密码
         SQLiteDatabase db=dbHelper.getWritableDatabase();
         String sql="Select password from userHistory where userAccount=?";
         Cursor cursor=db.rawQuery(sql,new String[]{id});
@@ -249,7 +248,7 @@ public class LoginActivity extends AppCompatActivity implements LoginViewInterfa
         else return "";
 
     }
-    public void insertHistoryWithPassword(String id,String password){
+    public void insertHistoryWithPassword(String id,String password){//sqlite插入用户带密码
         SQLiteDatabase db=dbHelper.getWritableDatabase();
         ContentValues values=new ContentValues();
         values.put("userAccount",id);
@@ -264,13 +263,13 @@ public class LoginActivity extends AppCompatActivity implements LoginViewInterfa
         db.close();
     }
 
-    public void deleteUserHistory(String id){
+    public void deleteUserHistory(String id){//sqlite删除历史用户
         SQLiteDatabase db=dbHelper.getWritableDatabase();
         db.delete("userHistory","userAccount=?",new String[]{id});
         Toast.makeText(LoginActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
         db.close();
     }
-    public void insertHistoryWithoutPassword(String id){
+    public void insertHistoryWithoutPassword(String id){//sqlite插入用户不带密码
         SQLiteDatabase db=dbHelper.getWritableDatabase();
         ContentValues values=new ContentValues();
         values.put("userAccount",id);

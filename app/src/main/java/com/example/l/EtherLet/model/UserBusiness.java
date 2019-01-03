@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class UserBusiness implements UserInterface {
     @Override
-    public void login(final OnLoginListener listener, final LocalCallBack callBack, Context context, Map<String, Object> map) {
+    public void login(final OnLoginListener listener, final LocalCallBack callBack, Context context, Map<String, Object> map) {//登陆请求
         VolleyRequest.getJSONObject(JsonObjectRequest.Method.POST, context.getString(R.string.host_url_real_share) + context.getString(R.string.user_login_path), map, context, new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject, Context context) {
@@ -38,7 +38,7 @@ public class UserBusiness implements UserInterface {
     }
 
     @Override
-    public void upLoadImage(final UserBusiness.DetailCallBack callBack, Context context, Bitmap bitmap, int user_id){
+    public void upLoadImage(final UserBusiness.DetailCallBack callBack, Context context, Bitmap bitmap, int user_id){//上传图片请求
         VolleyRequest.uploadImage(context.getString(R.string.host_url_real_share) + context.getString(R.string.upload_user_image_path) + user_id, context, bitmap, new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject, Context context) {
@@ -71,7 +71,7 @@ public class UserBusiness implements UserInterface {
         });
     }
     @Override
-    public void registration(final OnRegistrationListener listener, final LocalCallBack callBack, Context context, Map<String, Object> map) {
+    public void registration(final OnRegistrationListener listener, final LocalCallBack callBack, Context context, Map<String, Object> map) {//注册请求
         VolleyRequest.getJSONObject(JsonObjectRequest.Method.PUT, context.getString(R.string.host_url_real_share) + context.getString(R.string.add_user_path), map, context, new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject jsonObject, Context context) {

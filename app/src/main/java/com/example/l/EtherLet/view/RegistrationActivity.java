@@ -51,7 +51,7 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void initViews(){
+    private void initViews(){//绑定控件
         presenter=new RegistrationPresenter(this);
         instance=this;
 
@@ -84,7 +84,7 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
 
         });
 
-        constraintLayout.setOnTouchListener((v, event) -> {
+        constraintLayout.setOnTouchListener((v, event) -> {//edittext点击外部失焦
             constraintLayout.setFocusable(true);
             constraintLayout.setFocusableInTouchMode(true);
             constraintLayout.requestFocus();
@@ -112,14 +112,14 @@ public class RegistrationActivity extends AppCompatActivity implements Registrat
     }
 
     @Override
-    public void registrationSuccess(User user) {
+    public void registrationSuccess(User user) {//登陆成功
         Toast.makeText(this,R.string.registration_success, Toast.LENGTH_SHORT).show();
         globalData.setPrimaryUser(user);
         instance.finish();
     }
 
     @Override
-    public void registrationFail() {
+    public void registrationFail() {//登陆失败
         Toast.makeText(this,R.string.registration_fail, Toast.LENGTH_SHORT).show();
         editID.setText("");
         editPassword.setText("");

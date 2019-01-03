@@ -74,8 +74,7 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.info_list_fragment, container, false);
-
+        View view = inflater.inflate(R.layout.info_list_fragment, container, false);//绑定控件信息
         range = view.findViewById(R.id.text_info_title_range);
         rangeLayout = view.findViewById(R.id.info_text_range_button_layout);
         initRangeList();
@@ -98,7 +97,7 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
                 infoPresenter.loadInfoList(getActivity());
             }
         });
-        rangeLayout.setOnClickListener(new View.OnClickListener() {
+        rangeLayout.setOnClickListener(new View.OnClickListener() {//设置范围下拉弹窗
             @Override
             public void onClick(View v) {
                 if(!click){
@@ -112,7 +111,7 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
 
             }
         });
-        rangeWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        rangeWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {//初始化范围下拉菜单
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 range.setText(rangeList.get(position));
@@ -126,7 +125,7 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
     }
 
     @Override
-    public void initInfoList(List<CoinInfo> list)
+    public void initInfoList(List<CoinInfo> list)//初始化货币信息列表
     {
         infoAdapter = new InfoAdapter(list);
         infoRecyclerView.setAdapter(infoAdapter);
@@ -134,14 +133,14 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
     }
 
     @Override
-    public void updateInfoList(List<CoinInfo> list){
+    public void updateInfoList(List<CoinInfo> list){//更新货币信息列表
         infoList=list;
         infoAdapter.notifyDataSetChanged();
         infoSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
-    public void showFailMessage(){
+    public void showFailMessage(){//显示错误信息
         infoSwipeRefreshLayout.setRefreshing(false);
         if (ifVisible) {
             Toast.makeText(getActivity(), "Network Error", Toast.LENGTH_LONG).show();
@@ -162,7 +161,7 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
 
 
 
-        private InfoHolder(View itemView) {
+        private InfoHolder(View itemView) {//绑定item控件
             super(itemView);
             constraintLayout=itemView.findViewById(R.id.info_constraint_layout);
             symbolTextView=itemView.findViewById(R.id.info_text_symbol);
@@ -175,7 +174,7 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
             changeTextView=itemView.findViewById(R.id.info_text_change);
         }
 
-        private void bindInfo(CoinInfo info) {
+        private void bindInfo(CoinInfo info) {//绑定item信息
             coinInfo=info;
             if(info.getSymbol().equals("")){
                 symbolTextView.setText("");
@@ -223,7 +222,7 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
                     changeString="+"+changeString;
                 }
                 changeTextView.setText(changeString);
-                constraintLayout.setOnClickListener(new View.OnClickListener() {
+                constraintLayout.setOnClickListener(new View.OnClickListener() {//设置K线图弹窗
                     @Override
                     public void onClick(View v) {
 
@@ -310,14 +309,14 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
 
     }
 
-    private String convertPrice(String price){
+    private String convertPrice(String price){//价格转换
         Double priceDouble=Double.parseDouble(price);
         DecimalFormat df=new DecimalFormat("0.00");
         String convertPrice=df.format(priceDouble)+"$";
         return convertPrice;
     }
 
-    public List<CoinInfo> initDefaultInfoList() {
+    public List<CoinInfo> initDefaultInfoList() {//默认列表
         List<CoinInfo> defaultInfoList = new ArrayList<>();
         CoinInfo info = new CoinInfo();
         info.setSymbol("");
@@ -332,13 +331,13 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
         return defaultInfoList;
     }
 
-    public void initRangeList(){
+    public void initRangeList(){//货币涨跌范围列表
         rangeList.add("Hour");
         rangeList.add("Daily");
         rangeList.add("Week");
         rangeList.add("Month");
     }
-    public void initDetailRangeList(){
+    public void initDetailRangeList(){//k线图范围列表
         detailRangeList.add("5m");
         detailRangeList.add("15m");
         detailRangeList.add("30m");
@@ -353,7 +352,7 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
         ifVisible = isVisibleToUser;
     }
 
-    public void initCandleChart(String symbol,String trader,String _enum,CandleStickChart mChart){
+    public void initCandleChart(String symbol,String trader,String _enum,CandleStickChart mChart){//初始化K线图表配置信息
         mChart.setDrawBorders(true);
         mChart.setBorderWidth(1);
         mChart.setDrawGridBackground(false);
@@ -384,7 +383,7 @@ public class InfoListFragment extends Fragment implements InfoListViewInterface 
     }
 
     @Override
-    public void setCandleEntryList(List<CandleEntry> list){
+    public void setCandleEntryList(List<CandleEntry> list){//设置K线图数据信息
 
         if(!list.isEmpty()){
             candleEntryList=list;

@@ -14,7 +14,7 @@ public class CandleEntryList implements CandleEntryListInterface{
 
 
     @Override
-    public void getCandleEntryListData(String symbol,String trader,String _enum,final CandleEntryListLoadDataCallBack callBack, final Context context){
+    public void getCandleEntryListData(String symbol,String trader,String _enum,final CandleEntryListLoadDataCallBack callBack, final Context context){//获取k线图数据
 
         VolleyRequest.getJSONObject(JsonObjectRequest.Method.GET, url+makeUrl(symbol,trader,_enum), null, context, new VolleyCallback() {
             @Override
