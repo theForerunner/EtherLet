@@ -150,6 +150,7 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
             Glide.with(getView())
                     .load(getString(R.string.host_url_real_share) + getString(R.string.download_user_image_path) + mPostDTO.getPostCreator().getUserId())
                     .apply(new RequestOptions()
+                            .skipMemoryCache(true)
                             .placeholder(R.drawable.outline_account_circle_black_24)
                             .diskCacheStrategy(DiskCacheStrategy.NONE))
                     .into(postCreatorImage);

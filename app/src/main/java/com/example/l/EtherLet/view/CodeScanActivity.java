@@ -1,12 +1,10 @@
 package com.example.l.EtherLet.view;
 
-import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.l.EtherLet.R;
@@ -15,7 +13,6 @@ import com.journeyapps.barcodescanner.DecoratedBarcodeView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class CodeScanActivity extends AppCompatActivity implements DecoratedBarcodeView.TorchListener {
 
@@ -41,6 +38,7 @@ public class CodeScanActivity extends AppCompatActivity implements DecoratedBarc
 
     @Override
     protected void onDestroy() {
+        Log.i("DT","CodeScan destroyed");
         super.onDestroy();
         captureManager.onDestroy();
     }
@@ -73,6 +71,7 @@ public class CodeScanActivity extends AppCompatActivity implements DecoratedBarc
         captureManager = new CaptureManager(this,mDBV);
         captureManager.initializeFromIntent(getIntent(),savedInstanceState);
         captureManager.decode();
+        Log.i("DT","CodeScan exit");
     }
     // torch 手电筒
     @Override
@@ -87,4 +86,22 @@ public class CodeScanActivity extends AppCompatActivity implements DecoratedBarc
         isLightOn = false;
     }
 
+    /*
+    // 判断是否有闪光灯功能
+    private boolean hasFlash() {
+        return getApplicationContext().getPackageManager()
+                .hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH);
+    }
+
+
+    // 点击切换闪光灯
+    @OnClick(R.id.btn_switch)
+    public void swichLight(){
+        if(isLightOn){
+            mDBV.setTorchOff();
+        }else{
+            mDBV.setTorchOn();
+        }
+    }
+    */
 }

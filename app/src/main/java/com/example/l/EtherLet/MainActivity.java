@@ -181,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
                 Glide.with(imageView.getContext())
                         .load(uri)
                         .apply(new RequestOptions()
+                                .skipMemoryCache(true)
                                 .placeholder(R.drawable.outline_account_circle_black_24)
                                 .diskCacheStrategy(DiskCacheStrategy.NONE))
                         .into(imageView);

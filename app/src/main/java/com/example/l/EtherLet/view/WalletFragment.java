@@ -79,7 +79,7 @@ public class WalletFragment extends Fragment implements WalletInterface{
 
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         swipeRefreshLayout.setOnRefreshListener(()->update());
-
+        update();
 
         sendMoney.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,7 +95,7 @@ public class WalletFragment extends Fragment implements WalletInterface{
                 requestMoney();
             }
         });
-        update();
+
         return rootView;
     }
 
@@ -151,28 +151,34 @@ public class WalletFragment extends Fragment implements WalletInterface{
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        new IntentIntegrator(this.getActivity())
+        IntentIntegrator.forSupportFragment(this)
                 .setOrientationLocked(false)
                 .setCaptureActivity(CodeScanActivity.class) // 设置自定义的activity是CustomActivity
                 .initiateScan(); // 初始化扫描
     }
 
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
+        Toast.makeText(getActivity(), "OnActivity",
+                Toast.LENGTH_SHORT).show();
+        Log.i("SC","返回成功");
         if(intentResult != null) {
             if(intentResult.getContents() == null) {
-                Log.i("DT","二维码识别失败");
+                //Log.i("DT","二维码识别失败");
                 return;
             } else {
                 String ScanResult = intentResult.getContents();
                 Log.i("DT",ScanResult);
                 toAddress=ScanResult;
+                Toast.makeText(getActivity(), toAddress,
+                        Toast.LENGTH_SHORT).show();
                 sendMoneyBottomSheet.show();
             }
-        } else {
-            super.onActivityResult(requestCode,resultCode,data);
         }
         sendMoneyBottomSheet.show();
+        super.onActivityResult(requestCode,resultCode,data);
     }
 
 

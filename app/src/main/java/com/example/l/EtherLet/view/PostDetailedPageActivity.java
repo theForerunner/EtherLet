@@ -94,6 +94,7 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
         Glide.with(this)
                 .load(getString(R.string.host_url_real_share) + getString(R.string.download_user_image_path) + postDTO.getPostCreator().getUserId())
                 .apply(new RequestOptions()
+                        .skipMemoryCache(true)
                         .placeholder(R.drawable.outline_account_circle_black_24)
                         .diskCacheStrategy(DiskCacheStrategy.NONE))
                 .into(posterImage);
@@ -155,6 +156,7 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
             Glide.with(PostDetailedPageActivity.this)
                     .load(getString(R.string.host_url_real_share) + getString(R.string.download_user_image_path) + mCommentDTO.getCommentSender().getUserId())
                     .apply(new RequestOptions()
+                            .skipMemoryCache(true)
                             .placeholder(R.drawable.outline_account_circle_black_24)
                             .diskCacheStrategy(DiskCacheStrategy.NONE))
                     .into(commenterImage);

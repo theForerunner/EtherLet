@@ -19,7 +19,6 @@ import com.example.l.EtherLet.GlobalData;
 import com.example.l.EtherLet.R;
 import com.example.l.EtherLet.model.dto.User;
 import com.example.l.EtherLet.presenter.UserDetailPresenter;
-import com.google.zxing.client.android.Intents;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -165,7 +164,9 @@ public class UserDetailActivity extends AppCompatActivity implements UserDetailV
             Toast.makeText(UserDetailActivity.this, "Image Upload Success", Toast.LENGTH_SHORT).show();
             Glide.with(this)
                     .load(getString(R.string.host_url_real_share) + getString(R.string.download_user_image_path) + globalData.getPrimaryUser().getUserId())
-                    .apply(new RequestOptions().placeholder(R.drawable.outline_account_circle_black_24)
+                    .apply(new RequestOptions()
+                            .skipMemoryCache(true)
+                            .placeholder(R.drawable.outline_account_circle_black_24)
                             .diskCacheStrategy(DiskCacheStrategy.NONE))
                     .into(image);
         }
