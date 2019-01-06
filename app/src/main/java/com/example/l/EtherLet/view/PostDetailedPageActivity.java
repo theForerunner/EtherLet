@@ -231,7 +231,8 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
 
         btnToTop.setOnClickListener(v -> {
             floatingActionMenu.close(true);
-            nestedScrollView.smoothScrollTo(0, postContentLinearLayout.getTop());
+            commentListRecyclerView.smoothScrollToPosition(0);
+            //nestedScrollView.smoothScrollTo(0, postContentLinearLayout.getTop());
         });
 
         btnRefresh.setOnClickListener(v -> {
