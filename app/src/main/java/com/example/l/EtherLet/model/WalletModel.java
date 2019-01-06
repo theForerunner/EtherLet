@@ -21,10 +21,14 @@ import org.web3j.protocol.http.HttpService;
 import static org.web3j.protocol.Web3j.build;
 
 public class WalletModel {
-    private String url ="https://ropsten.infura.io/v3/311d966c7f17491d9528f19b47dea261";
+    private String url ="https://ropsten.infura.io/v3/311d966c7f17491d9528f19b47dea261"; //The URL for Ethereum test network server
     private Web3j web3j;
     private Credentials credentials;
+
     public WalletModel(String privateKey){
+        /**
+         * Initialize Web3j protocols
+         */
         web3j=build(new HttpService(url));
         credentials  = Credentials.create(privateKey);
     }
@@ -38,7 +42,7 @@ public class WalletModel {
                 new VolleyCallback() {
                     @Override
                     public void onSuccess(JSONObject jsonObject,Context context) {
-                        callBack.onGetBalanceSuccess(jsonObject);
+                        callBack.onGetBalanceSuccess(jsonObject); //Callback methods in presenter
                     }
 
                     @Override
@@ -48,6 +52,7 @@ public class WalletModel {
                 });
     }
 
+    /*
     public void getDollarBalance(final ApiAccessCallBack callback, Context context){
         VolleyRequest.getJSONObject(
                 JsonObjectRequest.Method.POST,
@@ -67,19 +72,12 @@ public class WalletModel {
                 }
         );
     }
+    */
 
     public void makeTransaction(String toAddress,float sum){
-        /*
-        //TransactionReceipt transactionReceipt = null;
-        try {
-            //transactionReceipt =
-            Transfer.sendFunds(
-                    web3j, credentials, toAddress,
-                    BigDecimal.valueOf(sum), Convert.Unit.ETHER).send();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        */
+        /**
+         * Process Web3j transaction in a sub-thread
+         */
         new Thread(new Web3jRequest(web3j, credentials, toAddress, sum)).start();
     }
 
@@ -88,6 +86,9 @@ public class WalletModel {
         BitMatrix result = null;
         String str=credentials.getAddress();
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
+        /**
+         * Generate QR image with Zxing Barcode Encoder
+         */
         try {
             result = multiFormatWriter.encode(str, BarcodeFormat.QR_CODE, 960, 960);
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
@@ -120,6 +121,9 @@ public class WalletModel {
         );
     }
 
+    /**
+     * Define Transaction item for transaction list
+     */
     public static class Transaction {
         private String senderAddress;
         private String receiverAddress;
