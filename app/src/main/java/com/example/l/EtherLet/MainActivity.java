@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-
+        //设置全局变量里的用户信息
         globalData = (GlobalData) getApplication();
         globalData.setPrimaryUser(new User(0, "", "", "  未登录", ""));
         profile = new ProfileDrawerItem().withName(globalData.getPrimaryUser().getUserUsername()).withEmail(globalData.getPrimaryUser().getUserAccount()).withIcon(getString(R.string.host_url_real_share) + getString(R.string.download_user_image_path) + globalData.getPrimaryUser().getUserId()).withIdentifier(100);
@@ -80,11 +80,12 @@ public class MainActivity extends AppCompatActivity {
 
         floatingActionMenu.setVisibility(View.GONE);
 
-        setUpAccountHeader();
+
         setUpDrawer();
         setUpViewPager();
         refreshAccountHeader();
         tabLayout.setupWithViewPager(viewPager);
+        //用于使FAB只在对应的页面上显示
         tabLayout.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
                     case 1:
                         break;
                     case 2:
+                        //这个FAB只在一个页面上显示
                         floatingActionMenu.setVisibility(View.VISIBLE);
                 }
             }
@@ -111,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //初始化与TabLayout绑定的ViewPager
     private void setUpViewPager() {
         MainPagerAdapter mainPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
         mainPagerAdapter.addFragment(WalletFragment.newInstance(), "Wallet");
@@ -119,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(mainPagerAdapter);
     }
 
+    //初始化Drawer里的显示用户信息的部分
     private void setUpAccountHeader() {
         accountHeader = new AccountHeaderBuilder()
                 .withActivity(this)
@@ -144,12 +148,13 @@ public class MainActivity extends AppCompatActivity {
                 }).withOnAccountHeaderProfileImageListener(new AccountHeader.OnAccountHeaderProfileImageListener() {
                     @Override
                     public boolean onProfileImageClick(View view, IProfile profile, boolean current) {
+                        //未登录则跳转到登陆界面
                         if(globalData.getPrimaryUser().getUserId()==0){
                             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                             startActivity(intent);
                             return true;
                         }
-                        else {
+                        else {//已登录则跳转到个人详情页
                             Intent intent = new Intent(MainActivity.this, UserDetailActivity.class);
                             startActivity(intent);
                             return true;
@@ -174,7 +179,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //初始化Drawer
     private void setUpDrawer() {
+        //设置Drawer里的显示用户信息的部分
+        setUpAccountHeader();
+        //使其能够通过url加载图片
         DrawerImageLoader.init(new AbstractDrawerImageLoader() {
             @Override
             public void set(ImageView imageView, Uri uri, Drawable placeholder, String tag) {
@@ -230,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
     }
 
+    //工具栏上的按键的监听
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -240,6 +250,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    //用于实现后退键关闭Drawer和点击两次后退键退出
     @Override
     public void onBackPressed() {
         if (drawer != null && drawer.isDrawerOpen()) {
@@ -252,6 +263,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    //用于登陆后刷新Drawer里的用户信息
     @Override
     protected void onResume() {
         super.onResume();
@@ -259,6 +271,7 @@ public class MainActivity extends AppCompatActivity {
         refreshAccountHeader();
     }
 
+    //刷新Drawer里的用户信息
     public void refreshAccountHeader() {
         if (globalData.getPrimaryUser() != null) {
             profile = new ProfileDrawerItem().withName(globalData.getPrimaryUser().getUserUsername()).withEmail(globalData.getPrimaryUser().getUserAccount()).withIcon(getString(R.string.host_url_real_share) + getString(R.string.download_user_image_path) + globalData.getPrimaryUser().getUserId()).withIdentifier(100);

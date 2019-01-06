@@ -13,6 +13,9 @@ import com.example.l.EtherLet.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * 主要是拿来当空白页的Fragment
+ */
 public class CardFragment extends Fragment {
 
     private static final String ARG_POSITION = "position";

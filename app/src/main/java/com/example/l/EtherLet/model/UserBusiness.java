@@ -36,6 +36,13 @@ public class UserBusiness implements UserInterface {
         });
     }
 
+    /**
+     * 上传用户头像
+     * @param callBack
+     * @param context
+     * @param bitmap
+     * @param user_id
+     */
     @Override
     public void upLoadImage(final UserBusiness.DetailCallBack callBack, Context context, Bitmap bitmap, int user_id){//上传图片请求
         VolleyRequest.uploadImage(context.getString(R.string.host_url_real_share) + context.getString(R.string.upload_user_image_path) + user_id, context, bitmap, new VolleyCallback() {
@@ -69,6 +76,7 @@ public class UserBusiness implements UserInterface {
             }
         });
     }
+
     @Override
     public void registration(final OnRegistrationListener listener, final LocalCallBack callBack, Context context, Map<String, Object> map) {//注册请求
         VolleyRequest.getJSONObject(JsonObjectRequest.Method.PUT, context.getString(R.string.host_url_real_share) + context.getString(R.string.add_user_path), map, context, new VolleyCallback() {

@@ -13,6 +13,12 @@ import java.util.Map;
 
 public class CommentList implements CommentListInterface {
 
+    /**
+     * 加载评论列表
+     * @param callBack
+     * @param context
+     * @param post_id
+     */
     @Override
     public void loadCommentList(LoadDataCallBack callBack, Context context, int post_id) {
         VolleyRequest.getJSONObject(JsonObjectRequest.Method.GET, context.getString(R.string.host_url_real_share) + context.getString(R.string.get_comment_list_path) + post_id, null, context, new VolleyCallback() {
@@ -28,6 +34,12 @@ public class CommentList implements CommentListInterface {
         });
     }
 
+    /**
+     * 添加一条评论
+     * @param callBack
+     * @param context
+     * @param map
+     */
     @Override
     public void addNewComment(LoadDataCallBack callBack, Context context, Map<String, Object> map) {
         VolleyRequest.getJSONObject(JsonObjectRequest.Method.POST, context.getString(R.string.host_url_real_share) + context.getString(R.string.add_comment_path), map, context, new VolleyCallback() {
@@ -43,6 +55,9 @@ public class CommentList implements CommentListInterface {
         });
     }
 
+    /**
+     * 回调
+     */
     public interface LoadDataCallBack {
         void onLoadCommentListSuccess(JSONObject jsonObject);
 

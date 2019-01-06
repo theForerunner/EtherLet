@@ -91,6 +91,7 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
 
         Intent intent = getIntent();
         postDTO = new PostDTO(intent.getIntExtra("postId", 1), intent.getStringExtra("postTitle"), new UserDTO(intent.getIntExtra("postCreatorId", 1), intent.getStringExtra("postCreatorName")), intent.getStringExtra("postContent"), new Timestamp(intent.getLongExtra("postCreateTime", 0)));
+        //直接从上一个页面拿取主题帖信息，减少了一次网络请求
         Glide.with(this)
                 .load(getString(R.string.host_url_real_share) + getString(R.string.download_user_image_path) + postDTO.getPostCreator().getUserId())
                 .apply(new RequestOptions()
@@ -115,6 +116,7 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
         commentListRecyclerView.setAdapter(commentAdapter);
         commentPresenter.loadCommentList(this, postDTO.getPostId());
 
+        //监听滑动，用于显示和隐藏FAB
         nestedScrollView.setOnScrollChangeListener((View.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
             if (scrollY - oldScrollY > 10) {
                 floatingActionMenu.hideMenu(true);
@@ -123,6 +125,7 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
             }
         });
 
+        //设置下拉刷新图标的颜色和动作
         commentListSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         commentListSwipeRefreshLayout.setOnRefreshListener(() -> commentPresenter.loadCommentList(this, postDTO.getPostId()));
 
@@ -204,6 +207,7 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
         return true;
     }
 
+    //设置默认的评论列表
     private List<CommentDTO> initDefaultCommentList() {
         List<CommentDTO> commentDTOList = new ArrayList<>();
         CommentDTO commentDTO = new CommentDTO(1, "This is a sample content of a commentDTO. Bla bla bla.", 1, new UserDTO(1, "theForerunner"), new Timestamp(System.currentTimeMillis()));
@@ -213,6 +217,7 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
         return commentDTOList;
     }
 
+    //设置FAB的点击监听与相应的动作
     private void setUpFloatingActionBtn(int post_id) {
         btnComment.setOnClickListener(v -> {
             floatingActionMenu.close(true);
@@ -236,10 +241,12 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
         });
     }
 
+    //设置BottomSheetDialog
     private void setUpBottomSheetDialog() {
         newCommentBottomSheetDialog = new BottomSheetDialog(PostDetailedPageActivity.this);
         View bottomSheetView = LayoutInflater.from(PostDetailedPageActivity.this).inflate(R.layout.new_comment_sheet_layout, null);
         newCommentBottomSheetDialog.setContentView(bottomSheetView);
+        //设置其背景色为透明，以便让CardView的圆边效果达到最佳
         newCommentBottomSheetDialog.getDelegate().findViewById(android.support.design.R.id.design_bottom_sheet).setBackgroundColor(ContextCompat.getColor(PostDetailedPageActivity.this, android.R.color.transparent));
         newCommentBottomSheetDialog.setCancelable(true);
         newCommentBottomSheetDialog.setCanceledOnTouchOutside(true);
@@ -260,6 +267,7 @@ public class PostDetailedPageActivity extends AppCompatActivity implements Comme
 
     }
 
+    //实现先关闭FloatingActionMenu再退出
     @Override
     public void onBackPressed() {
         if (floatingActionMenu != null && floatingActionMenu.isShown()) {

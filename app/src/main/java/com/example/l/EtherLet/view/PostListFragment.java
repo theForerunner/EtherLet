@@ -71,11 +71,13 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
         postPresenter = new PostPresenter(PostListFragment.this);
 
         postListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
         postAdapter = new PostAdapter(initDefaultPostList());
         postListRecyclerView.setAdapter(postAdapter);
+
+        //刷新
         postPresenter.loadPostList(this.getActivity());
 
+        //添加对RecyclerView的监听用于隐藏和显示FAB
         postListRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -92,6 +94,7 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
             }
         });
 
+        //设定下拉刷新的颜色与动作
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         swipeRefreshLayout.setOnRefreshListener(() -> postPresenter.loadPostList(getActivity()));
 
@@ -123,6 +126,9 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
     class PostHolder extends RecyclerView.ViewHolder{
         private PostDTO mPostDTO;
 
+        /**
+         * 绑定控件
+         */
         @BindView(R.id.post_cardView)
         CardView postCardView;
         @BindView(R.id.post_creator_image)
@@ -198,6 +204,7 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
         }
     }
 
+    //设置FAB的监听
     private void setUpFloatingActionBtn() {
         if (getActivity() != null && floatingActionMenu != null) {
             getActivity().findViewById(R.id.btn_post).setOnClickListener(v -> {
@@ -223,14 +230,16 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
         }
     }
 
+    //初始化BottomSheetDialog
     private void setUpBottomSheetDialog() {
         newPostBottomSheetDialog = new BottomSheetDialog(getActivity());
         View bottomSheetView = LayoutInflater.from(getActivity()).inflate(R.layout.new_post_sheet_layout, null);
         newPostBottomSheetDialog.setContentView(bottomSheetView);
+        //设置其背景色为透明，以便让CardView的圆边效果达到最佳
         newPostBottomSheetDialog.getDelegate().findViewById(android.support.design.R.id.design_bottom_sheet).setBackgroundColor(ContextCompat.getColor(getActivity(), android.R.color.transparent));
         newPostBottomSheetDialog.setCancelable(true);
         newPostBottomSheetDialog.setCanceledOnTouchOutside(true);
-
+        //控件绑定
         MaterialButton btnCancel = bottomSheetView.findViewById(R.id.btn_new_post_cancel);
         MaterialButton btnPost = bottomSheetView.findViewById(R.id.btn_new_post);
         EditText postTitle = bottomSheetView.findViewById(R.id.new_post_title_edit);
@@ -248,6 +257,7 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
 
     }
 
+    //默认的主题帖列表
     private List<PostDTO> initDefaultPostList() {
         List<PostDTO> defaultPostDTOList = new ArrayList<>();
         if (getActivity() != null) {
@@ -259,6 +269,8 @@ public class PostListFragment extends Fragment implements PostListViewInterface 
         return defaultPostDTOList;
     }
 
+    //用于监听本Fragment是否可见（ViewPager中的Fragment生命周期紊乱
+    //不能通过onResume来判断显示状态），以避免当前Fragment的Toast显示到别的Fragment上去
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);

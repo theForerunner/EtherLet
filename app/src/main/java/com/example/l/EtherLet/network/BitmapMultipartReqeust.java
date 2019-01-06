@@ -8,6 +8,10 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 
+
+/**
+ * 只是进行了基本的封装以简化调用
+ */
 public class BitmapMultipartReqeust{
     private final String mimeType = "form-data;";
     private static MultipartRequest multipartRequest;
