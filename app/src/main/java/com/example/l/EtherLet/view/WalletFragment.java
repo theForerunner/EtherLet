@@ -45,7 +45,7 @@ public class WalletFragment extends Fragment implements WalletInterface{
     private TextView ethView;
     private TextView dollarView;
     private GlobalData globalData;
-    private boolean presenterRefresh;
+    private boolean presenterRefresh; //Determine whether the user key is updated and the presenter need to refresh
 
     public static WalletFragment newInstance() {
         WalletFragment f = new WalletFragment();
@@ -58,16 +58,22 @@ public class WalletFragment extends Fragment implements WalletInterface{
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_wallet, container, false);
         globalData = (GlobalData) getActivity().getApplication();
-        //globalData.getPrimaryUser().setUserKey("5f073440e41311395fcc0ff5b10454040ef332b02d2caf6976231450aede0f6a");
+
         walletPresenter = new WalletPresenter(this, rootView.getContext(), globalData.getPrimaryUser().getUserKey());
+        /**
+         * RecyclerView initialize
+         */
         transactionListRecyclerView=rootView.findViewById(R.id.tx_list_recycler);
         transactionListRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
         transactionAdapter=new TransactionAdapter(initDefaultTransactionList());
         transactionListRecyclerView.setAdapter(transactionAdapter);
         transactionListRecyclerView.addItemDecoration(new DividerItemDecoration(rootView.getContext(),DividerItemDecoration.VERTICAL));
+
         swipeRefreshLayout=rootView.findViewById(R.id.wallet_slide_refresh);
 
+        /**
+         * bind display elements
+         */
         ethView = rootView.findViewById(R.id.balanceEth);
         dollarView = rootView.findViewById(R.id.balanceDollar);
         sendMoney=rootView.findViewById(R.id.Send);
@@ -77,8 +83,12 @@ public class WalletFragment extends Fragment implements WalletInterface{
         toAddress=null;
         presenterRefresh=false;
 
+        /**
+         * Swipe to refresh
+         */
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         swipeRefreshLayout.setOnRefreshListener(()->update());
+
         update();
 
         sendMoney.setOnClickListener(new View.OnClickListener() {
@@ -101,14 +111,15 @@ public class WalletFragment extends Fragment implements WalletInterface{
 
 
     void update(){
-        if(globalData.getPrimaryUser().getUserKey()==""){
+
+        if(globalData.getPrimaryUser().getUserKey()==""){   //If the user key is null, show warn message and delay page updating
             Toast.makeText(getActivity(), "Please set your Ethereum private key!",
                     Toast.LENGTH_SHORT).show();
             presenterRefresh=true;
             swipeRefreshLayout.setRefreshing(false);
             return;
         }
-        if(presenterRefresh){
+        if(presenterRefresh){ //Update the presenter
             walletPresenter.setPrivateKey(globalData.getPrimaryUser().getUserKey());
         }
         walletPresenter.getBalance(this.getActivity());
@@ -151,6 +162,7 @@ public class WalletFragment extends Fragment implements WalletInterface{
                     Toast.LENGTH_SHORT).show();
             return;
         }
+        //Initialize QR code scan activity
         IntentIntegrator.forSupportFragment(this)
                 .setOrientationLocked(false)
                 .setCaptureActivity(CodeScanActivity.class) // 设置自定义的activity是CustomActivity
@@ -158,6 +170,9 @@ public class WalletFragment extends Fragment implements WalletInterface{
     }
 
 
+    /**
+     *  Receive decoded string result from QR code scanner
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult intentResult = IntentIntegrator.parseActivityResult(requestCode,resultCode,data);
@@ -265,6 +280,9 @@ public class WalletFragment extends Fragment implements WalletInterface{
     }
 
 
+    /**
+     * BottomSheet for fund number enter
+     */
     private void setUpSendMoneyBottomSheet(){
         sendMoneyBottomSheet=new BottomSheetDialog(getActivity());
         View bottomSheetView=LayoutInflater.from(getActivity()).inflate(R.layout.send_money_layout,null);
